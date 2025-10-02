@@ -39,7 +39,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     utils.CreateCorner(colorpreview, 4)
 
     local colordialog = Instance.new("Frame")
-    colordialog.Parent = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI")
+    colordialog.Parent = game.CoreGui:FindFirstChild("PCMenu")
     colordialog.BackgroundColor3 = theme.dialog
     colordialog.BorderSizePixel = 0
     colordialog.Size = UDim2.new(0, 430, 0, 0)
