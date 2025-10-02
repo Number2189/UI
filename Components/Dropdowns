@@ -44,7 +44,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
     optioncontainer.BorderSizePixel = 0
     optioncontainer.Size = UDim2.new(0, 220, 0, 0)
     optioncontainer.Visible = false
-    optioncontainer.ZIndex = 28
+    optioncontainer.ZIndex = 30
     utils.CreateCorner(optioncontainer, 6)
     utils.CreateStroke(optioncontainer)
 
@@ -116,7 +116,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
         optionbutton.TextColor3 = Color3.fromRGB(255, 255, 255)
         optionbutton.TextSize = 12
         optionbutton.Font = Enum.Font.SourceSans
-        optionbutton.ZIndex = 28
+        optionbutton.ZIndex = 31
         utils.CreateCorner(optionbutton, 4)
 
         optionbutton.MouseEnter:Connect(function()
