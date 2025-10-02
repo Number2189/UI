@@ -75,7 +75,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
                 local ui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI")
                 if ui and ui:FindFirstChild("WindowHolder") then
                     local mainframe = ui.WindowHolder:FindFirstChild("Main")
-                    if mainframe then
+                    if mainframe and optioncontainer.Visible then
                         local mainpos = mainframe.AbsolutePosition
                         local mainsize = mainframe.AbsoluteSize
                         local containersize = optioncontainer.AbsoluteSize
