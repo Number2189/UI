@@ -34,12 +34,9 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
     togglebutton.TextColor3 = Color3.fromRGB(255, 255, 255)
     togglebutton.TextSize = 12
 
-    local uip = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI") or game.CoreGui
-    local overlay = uip:FindFirstChild("WindowHolder") and uip.WindowHolder.Main.dimoverlay
-
     local optioncontainer = Instance.new("Frame")
     optioncontainer.Name = "OptionContainer"
-    optioncontainer.Parent = overlay or uip
+    optioncontainer.Parent = parent.Parent.Parent.Parent
     optioncontainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     optioncontainer.BorderSizePixel = 0
     optioncontainer.Size = UDim2.new(0, 220, 0, 0)
@@ -72,12 +69,12 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
             end
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             runservice:BindToRenderStep("DropdownCenter", Enum.RenderPriority.Input.Value, function()
-                local holder = uip:FindFirstChild("WindowHolder")
-                if holder then
-                    local holderpos = holder.AbsolutePosition
-                    local holdersize = holder.AbsoluteSize
+                local mainframe = optioncontainer.Parent:FindFirstChild("Main")
+                if mainframe then
+                    local mainpos = mainframe.AbsolutePosition
+                    local mainsize = mainframe.AbsoluteSize
                     local containersize = optioncontainer.AbsoluteSize
-                    optioncontainer.Position = UDim2.new(0, holderpos.X + holdersize.X/2 - containersize.X/2, 0, holderpos.Y + holdersize.Y/2 - containersize.Y/2)
+                    optioncontainer.Position = UDim2.new(0, mainpos.X + mainsize.X/2 - containersize.X/2, 0, mainpos.Y + mainsize.Y/2 - containersize.Y/2)
                 end
             end)
         else
