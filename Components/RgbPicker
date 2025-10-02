@@ -5,7 +5,7 @@ local rgbpicker = {}
 local userinputservice = game:GetService("UserInputService")
 local runservice = game:GetService("RunService")
 
-function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, callback)
+function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, callback, overlay)
     local button = Instance.new("TextButton")
     button.Parent = parent
     button.BackgroundColor3 = theme.dialogbutton
@@ -378,12 +378,22 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         isopen = not isopen
         if isopen then
             colordialog.Visible = true
+            if overlay then
+                overlay.Visible = true
+                local dim = overlay:FindFirstChild("Dim")
+                if dim then
+                    dim.Visible = true
+                    utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
+                end
+            end
             utils.SpringTween(colordialog, {Size = UDim2.new(0, 430, 0, 330)}):Play()
             runservice:BindToRenderStep("ColorPickerCenter", Enum.RenderPriority.Input.Value, function()
                 local holder = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI")
-                if holder then
-                    local sz = holder.AbsoluteSize
-                    colordialog.Position = UDim2.new(0, sz.X/2 - 215, 0, sz.Y/2 - 165)
+                if holder and holder:FindFirstChild("WindowHolder") then
+                    local windowholder = holder.WindowHolder
+                    local holderpos = windowholder.AbsolutePosition
+                    local holdersize = windowholder.AbsoluteSize
+                    colordialog.Position = UDim2.new(0, holderpos.X + holdersize.X/2 - 215, 0, holderpos.Y + holdersize.Y/2 - 165)
                 end
             end)
             display()
@@ -393,6 +403,16 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             task.delay(0.22, function()
                 if not isopen then
                     colordialog.Visible = false
+                    if overlay then
+                        local dim = overlay:FindFirstChild("Dim")
+                        if dim then
+                            utils.Tween(dim, {BackgroundTransparency = 1}, 0.22):Play()
+                            task.delay(0.12, function()
+                                dim.Visible = false
+                            end)
+                        end
+                        overlay.Visible = false
+                    end
                 end
             end)
         end
