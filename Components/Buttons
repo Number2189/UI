@@ -1,0 +1,49 @@
+local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+
+local buttons = {}
+
+function buttons.Create(parent, theme, text, callback)
+	local button = Instance.new("TextButton")
+	button.Name = "Button"
+	button.Parent = parent
+	button.BackgroundColor3 = theme.dialogbutton
+	button.BorderSizePixel = 0
+	button.Size = UDim2.new(1, 0, 0, 25)
+	button.Font = Enum.Font.Gotham
+	button.Text = ""
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.TextSize = 13
+	utils.CreateCorner(button, 6)
+	utils.CreateStroke(button, theme.dialogbuttonborder)
+
+	local label = Instance.new("TextLabel")
+	label.Parent = button
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.new(0, 10, 0, 0)
+	label.Size = UDim2.new(1, -20, 1, 0)
+	label.Font = Enum.Font.Gotham
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.TextSize = 13
+	label.TextXAlignment = Enum.TextXAlignment.Left
+
+	button.MouseEnter:Connect(function()
+		utils.Tween(button, {BackgroundColor3 = theme.element}):Play()
+	end)
+	button.MouseLeave:Connect(function()
+		utils.Tween(button, {BackgroundColor3 = theme.dialogbutton}):Play()
+	end)
+	button.MouseButton1Click:Connect(function()
+		if callback then callback() end
+		utils.QuickTween(button, {BackgroundColor3 = theme.tab}):Play()
+		task.delay(0.1, function()
+			utils.Tween(button, {BackgroundColor3 = theme.dialogbutton}):Play()
+		end)
+	end)
+
+	return button
+end
+
+return buttons
+
+
