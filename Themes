@@ -1,4 +1,4 @@
-local ThemeList = {}
+local Themes = {}
 
 local ThemeList = {
     Dark = {
@@ -78,11 +78,11 @@ local ThemeList = {
     },
 }
 
-function ThemeList.GetTheme(name)
+function Themes.GetTheme(name)
     return ThemeList[name] or ThemeList.Dark
 end
 
-function ThemeList.GetThemeNames()
+function Themes.GetThemeNames()
     local names = {}
     for k, _ in pairs(ThemeList) do
         table.insert(names, k)
@@ -91,4 +91,6 @@ function ThemeList.GetThemeNames()
     return names
 end
 
-return ThemeList
+return Themes
+
+
