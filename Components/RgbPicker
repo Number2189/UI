@@ -36,7 +36,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     utils.CreateCorner(colorpreview, 4)
 
     local colordialog = Instance.new("Frame")
-    colordialog.Parent = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI") or Instance.new("ScreenGui")
+    colordialog.Parent = parent.Parent.Parent.Parent
     colordialog.BackgroundColor3 = theme.dialog
     colordialog.BorderSizePixel = 0
     colordialog.Size = UDim2.new(0, 430, 0, 0)
@@ -388,12 +388,11 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             end
             utils.SpringTween(colordialog, {Size = UDim2.new(0, 430, 0, 330)}):Play()
             runservice:BindToRenderStep("ColorPickerCenter", Enum.RenderPriority.Input.Value, function()
-                local holder = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI")
-                if holder and holder:FindFirstChild("WindowHolder") then
-                    local windowholder = holder.WindowHolder
-                    local holderpos = windowholder.AbsolutePosition
-                    local holdersize = windowholder.AbsoluteSize
-                    colordialog.Position = UDim2.new(0, holderpos.X + holdersize.X/2 - 215, 0, holderpos.Y + holdersize.Y/2 - 165)
+                local mainframe = colordialog.Parent:FindFirstChild("Main")
+                if mainframe then
+                    local mainpos = mainframe.AbsolutePosition
+                    local mainsize = mainframe.AbsoluteSize
+                    colordialog.Position = UDim2.new(0, mainpos.X + mainsize.X/2 - 215, 0, mainpos.Y + mainsize.Y/2 - 165)
                 end
             end)
             display()
