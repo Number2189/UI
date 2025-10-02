@@ -1,0 +1,39 @@
+local tweenservice = game:GetService("TweenService")
+
+local utils = {}
+
+function utils.FormatNumber(num)
+	local f = string.format("%.2f", num)
+	return f:gsub("%.?0+$", "")
+end
+
+function utils.CreateCorner(parent, radius)
+	local corner = Instance.new("UICorner", parent)
+	corner.CornerRadius = UDim.new(0, radius or 8)
+	return corner
+end
+
+function utils.CreateStroke(parent, color, thickness, transparency)
+	local stroke = Instance.new("UIStroke", parent)
+	stroke.Color = color or Color3.fromRGB(60, 60, 60)
+	stroke.Thickness = thickness or 1
+	stroke.Transparency = transparency or 0
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	return stroke
+end
+
+function utils.Tween(object, properties, duration, style)
+	style = style or Enum.EasingStyle.Quad
+	duration = duration or 0.2
+	return tweenservice:Create(object, TweenInfo.new(duration, style, Enum.EasingDirection.Out), properties)
+end
+
+function utils.QuickTween(object, properties)
+	return utils.Tween(object, properties, 0.15, Enum.EasingStyle.Quad)
+end
+
+function utils.SpringTween(object, properties)
+	return utils.Tween(object, properties, 0.3, Enum.EasingStyle.Back)
+end
+
+return utils
