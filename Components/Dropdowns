@@ -4,7 +4,7 @@ local dropdowns = {}
 
 local runservice = game:GetService("RunService")
 
-function dropdowns.Create(parent, theme, text, options, default, callback)
+function dropdowns.Create(parent, theme, text, options, default, callback, overlay)
     local dropdown = Instance.new("Frame")
     dropdown.Name = "Dropdown"
     dropdown.Parent = parent
@@ -68,15 +68,17 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
                 local dim = overlay:FindFirstChild("Dim")
                 if dim then
                     dim.Visible = true
-                    Utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
+                    utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
                 end
             end
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             runservice:BindToRenderStep("DropdownCenter", Enum.RenderPriority.Input.Value, function()
                 local holder = uiParent:FindFirstChild("WindowHolder")
                 if holder then
-                    local sz = holder.AbsoluteSize
-                    optioncontainer.Position = UDim2.new(0, sz.X/2 - optioncontainer.AbsoluteSize.X/2, 0, sz.Y/2 - optioncontainer.AbsoluteSize.Y/2)
+                    local holderpos = holder.AbsolutePosition
+                    local holdersize = holder.AbsoluteSize
+                    local containersize = optioncontainer.AbsoluteSize
+                    optioncontainer.Position = UDim2.new(0, holderpos.X + holdersize.X/2 - containersize.X/2, 0, holderpos.Y + holdersize.Y/2 - containersize.Y/2)
                 end
             end)
         else
