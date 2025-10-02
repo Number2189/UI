@@ -80,7 +80,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
                         local containersize = optioncontainer.AbsoluteSize
                         local centerx = mainpos.X + mainsize.X/2 - containersize.X/2
                         local centery = mainpos.Y + mainsize.Y/2 - containersize.Y/2
-                        optioncontainer.Position = UDim2.new(0.5, 0, 0.5, 0)
+                        optioncontainer.Position = UDim2.new(0, centerx, 0, centery)
                     end
                 end
             end)
