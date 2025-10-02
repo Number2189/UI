@@ -397,7 +397,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
                     if mainframe and colordialog.Visible then
                         local mainpos = mainframe.AbsolutePosition
                         local mainsize = mainframe.AbsoluteSize
-                        colordialog.Position = UDim2.new(0, mainpos.X + mainsize.X/2 - 215, 0, mainpos.Y + mainsize.Y/2 - 165)
+                        colordialog.Position = UDim2.new(0.5, 0, 0.5, 0)
                     end
                 end
             end)
