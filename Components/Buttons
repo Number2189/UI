@@ -1,4 +1,4 @@
-local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+local utils = loadstring(game:HttpGet("https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/Utils"))()
 
 local buttons = {}
 
