@@ -1,0 +1,717 @@
+local tweenservice = game:GetService("TweenService")
+local userinputservice = game:GetService("UserInputService")
+local runservice = game:GetService("RunService")
+
+function GithubDirectory(string)
+	return "https://raw.githubusercontent.com/Roras520/Lib/refs/heads/main/" .. string
+end
+local themes = loadstring(game:HttpGet(GithubDirectory("Themes")))()
+local configmanager = loadstring(game:HttpGet(GithubDirectory("ConfigManager")))()
+local notifications = loadstring(game:HttpGet(GithubDirectory("Notifications")))()
+local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+local buttons = loadstring(game:HttpGet(GithubDirectory("Components/Buttons")))()
+local toggles = loadstring(game:HttpGet(GithubDirectory("Components/Toggles")))()
+local rgbpicker = loadstring(game:HttpGet(GithubDirectory("Components/RgbPicker")))()
+local sliders = loadstring(game:HttpGet(GithubDirectory("Components/Sliders")))()
+local dropdowns = loadstring(game:HttpGet(GithubDirectory("Components/Dropdowns")))()
+local keybinds = loadstring(game:HttpGet(GithubDirectory("Components/Keybinds")))()
+local notificationsettings = notifications.GetNotificationSettings()
+
+local themename = "Dark"
+local theme = themes.GetTheme(themename)
+local uilib = {}
+local vrui = {
+    background = nil,
+    base = nil,
+    bx = nil
+}
+function formatnum(num)
+    return utils.FormatNumber(num)
+end
+function createcorner(parent, radius)
+    return utils.CreateCorner(parent, radius)
+end
+function createstroke(parent, color, thickness, transparency)
+    return utils.CreateStroke(parent, color or theme.acrylicborder, thickness, transparency)
+end
+function smtween(object, properties, duration, style)
+    return utils.Tween(object, properties, duration, style)
+end
+function quicktween(object, properties)
+    return utils.QuickTween(object, properties)
+end
+function springtween(object, properties)
+    return utils.SpringTween(object, properties)
+end
+function uilib:CreateWindow(title, size)
+    local screengui = Instance.new("ScreenGui")
+    screengui.Name = "UI"
+    screengui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    screengui.ResetOnSpawn = false
+    vrui.base = Instance.new("Part")
+    vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
+    vrui.base.Transparency = 1
+    vrui.base.CanCollide = false
+    vrui.base.Massless = true
+    vrui.base.Parent = workspace
+    local baseweld = Instance.new("Weld")
+    if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
+        baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
+    else
+        baseweld.Enabled = false
+        vrui.base.Anchored = true
+    end
+    baseweld.Part1 = vrui.base
+    baseweld.C1 = CFrame.new(0, -0.2, 0)
+    baseweld.Parent = vrui.base
+    vrui.bx = Instance.new("Part")
+    vrui.bx.Size = Vector3.new(1.1, 1, 0.01)
+    vrui.bx.Transparency = 1
+    vrui.bx.CanCollide = false
+    vrui.bx.Massless = true
+    vrui.bx.Parent = workspace
+    local menuweld = Instance.new("Weld")
+    menuweld.Part0 = vrui.base
+    menuweld.Part1 = vrui.bx
+    menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
+    menuweld.Parent = vrui.bx
+    local sgui
+    if game:GetService("VRService").VREnabled then
+        sgui = Instance.new("SurfaceGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+        sgui.Adornee = vrui.bx
+        sgui.AlwaysOnTop = true
+        sgui.ResetOnSpawn = false
+        sgui.CanvasSize = Vector2.new(572, 512)
+        sgui.Name = "VRMenu"
+    else
+        sgui = Instance.new("ScreenGui")
+        sgui.ResetOnSpawn = false
+        sgui.Name = "PCMenu"
+        sgui.IgnoreGuiInset = true
+        if not runservice:IsStudio() then
+            sgui.Parent = game.CoreGui
+        else
+            sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        end
+    end
+    local holder = Instance.new("Frame")
+    holder.Name = "WindowHolder"
+    holder.Parent = sgui
+    holder.BackgroundTransparency = 1
+    holder.BorderSizePixel = 0
+    holder.Position = UDim2.new(0.5, -((size and size.X.Offset or 700)/2), 0, 100)
+    holder.Size = game:GetService("VRService").VREnabled and UDim2.new(1, 0, 1, 0) or (size or UDim2.new(0, 700, 0, 500))
+    local basesize = Vector2.new((size and size.X.Offset) or 700, (size and size.Y.Offset) or 500)
+    local mainf = Instance.new("Frame")
+    mainf.Name = "Main"
+    mainf.Parent = holder
+    mainf.BackgroundColor3 = theme.acrylicmain
+    mainf.BorderSizePixel = 0
+    mainf.AnchorPoint = Vector2.new(0.5, 0)
+    mainf.Position = UDim2.new(0.5, 0, 0, 0)
+    mainf.Size = UDim2.new(0, basesize.X, 0, basesize.Y)
+    mainf.ClipsDescendants = true
+    local overlay = Instance.new("Frame")
+    overlay.Name = "dimoverlay"
+    overlay.Parent = mainf
+    overlay.BackgroundTransparency = 1
+    overlay.BorderSizePixel = 0
+    overlay.Size = UDim2.new(1,0,1,0)
+    overlay.ZIndex = 29
+    overlay.Visible = true
+    local dim = Instance.new("Frame")
+    dim.Name = "Dim"
+    dim.Parent = overlay
+    dim.BackgroundColor3 = Color3.new(0,0,0)
+    dim.BackgroundTransparency = 1
+    dim.BorderSizePixel = 0
+    dim.Size = UDim2.new(1,0,1,0)
+    dim.ZIndex = 29
+    createcorner(mainf, 8)
+    createstroke(mainf, theme.acrylicborder)
+    local uiscale = Instance.new("UIScale")
+    uiscale.Parent = holder
+    uiscale.Scale = 0.96
+    if runservice:IsStudio() and game:GetService("VRService").VREnabled then
+        menuweld.Part0 = game.Players.LocalPlayer.Character:WaitForChild("Head")
+        menuweld.C1 = CFrame.new(0, 0.3, -0.5)
+    end
+    local titleb = Instance.new("Frame")
+    titleb.Name = "TitleBar"
+    titleb.Parent = mainf
+    titleb.BackgroundColor3 = theme.acrylicmain
+    titleb.BorderSizePixel = 0
+    titleb.Size = UDim2.new(1, 0, 0, 30)
+    createcorner(titleb, 8)
+    createstroke(titleb, theme.titlebarline, 1, 0.2)
+    local accent = Instance.new("Frame")
+    accent.Name = "AccentLine"
+    accent.Parent = titleb
+    accent.BackgroundColor3 = theme.accent
+    accent.BorderSizePixel = 0
+    accent.Size = UDim2.new(1, 0, 0, 2)
+    accent.Position = UDim2.new(0, 0, 1, -2)
+    local titlef = Instance.new("Frame")
+    titlef.Name = "TitleFix"
+    titlef.Parent = titleb
+    titlef.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    titlef.BorderSizePixel = 0
+    titlef.Position = UDim2.new(0, 0, 0.5, 0)
+    titlef.Size = UDim2.new(1, 0, 0.5, 0)
+    local titlel = Instance.new("TextLabel")
+    titlel.Name = "Title"
+    titlel.Parent = titleb
+    titlel.BackgroundTransparency = 1
+    titlel.Position = UDim2.new(0, 10, 0, 0)
+    titlel.Size = UDim2.new(1, -20, 1, 0)
+    titlel.Font = Enum.Font.GothamBold
+    titlel.Text = title
+    titlel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titlel.TextSize = 14
+    titlel.TextXAlignment = Enum.TextXAlignment.Left
+    local sidebar = Instance.new("Frame")
+    sidebar.Name = "Sidebar"
+    sidebar.Parent = mainf
+    sidebar.BackgroundTransparency = 1
+    sidebar.BackgroundColor3 = theme.dialogholder
+    sidebar.BorderSizePixel = 0
+    sidebar.Position = UDim2.new(0, 0, 0, 30)
+    sidebar.Size = UDim2.new(0, 120, 1, -30)
+    createcorner(sidebar, 8)
+    local sidebarf = Instance.new("Frame")
+    sidebarf.Name = "SidebarFix"
+    sidebarf.Parent = sidebar
+    sidebarf.BackgroundTransparency = 1
+    sidebarf.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    sidebarf.BorderSizePixel = 0
+    sidebarf.Position = UDim2.new(0.5, 0, 0, 0)
+    sidebarf.Size = UDim2.new(0.5, 0, 1, 0)
+    local tabcontainer = Instance.new("ScrollingFrame")
+    tabcontainer.Name = "TabContainer"
+    tabcontainer.Parent = sidebar
+    tabcontainer.BackgroundTransparency = 1
+    tabcontainer.Position = UDim2.new(0, 0, 0, 5)
+    tabcontainer.Size = UDim2.new(1, 0, 1, -10)
+    tabcontainer.ScrollBarThickness = 3
+    tabcontainer.ScrollBarImageColor3 = theme.acrylicborder
+    tabcontainer.ScrollBarImageTransparency = 0.5
+    tabcontainer.BorderSizePixel = 0
+    tabcontainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    local tablayout = Instance.new("UIListLayout")
+    tablayout.Parent = tabcontainer
+    tablayout.SortOrder = Enum.SortOrder.LayoutOrder
+    tablayout.Padding = UDim.new(0, 5)
+    local tabp = Instance.new("UIPadding")
+    tabp.Parent = tabcontainer
+    tabp.PaddingLeft = UDim.new(0, 10)
+    tabp.PaddingRight = UDim.new(0, 5)
+    tabp.PaddingTop = UDim.new(0, 5)
+    tabp.PaddingBottom = UDim.new(0, 5)
+    local content = Instance.new("Frame")
+    content.Name = "Content"
+    content.Parent = mainf
+    content.BackgroundTransparency = 1
+    content.Position = UDim2.new(0, 120, 0, 30)
+    content.Size = UDim2.new(1, -120, 1, -30)
+    local scrollf = Instance.new("ScrollingFrame", content)
+    scrollf.Name = "ContentContainer"
+    scrollf.BorderSizePixel = 0
+    scrollf.BackgroundTransparency = 1
+    scrollf.ScrollBarThickness = 3
+    scrollf.ScrollBarImageColor3 = theme.acrylicborder
+    scrollf.ScrollBarImageTransparency = 0.5
+    scrollf.Visible = true
+    scrollf.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    scrollf.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    scrollf.Size = UDim2.new(1, 0, 1, 0)
+    local contentlayout = Instance.new("UIListLayout")
+    contentlayout.Parent = scrollf
+    contentlayout.SortOrder = Enum.SortOrder.LayoutOrder
+    contentlayout.Padding = UDim.new(0, 10)
+    local contentp = Instance.new("UIPadding")
+    contentp.Parent = scrollf
+    contentp.PaddingTop = UDim.new(0, 10)
+    contentp.PaddingBottom = UDim.new(0, 10)
+    contentp.PaddingLeft = UDim.new(0, 10)
+    contentp.PaddingRight = UDim.new(0, 10)
+    
+    local resizegrip = Instance.new("Frame")
+    resizegrip.Name = "ResizeGrip"
+    resizegrip.Parent = mainf
+    resizegrip.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    resizegrip.BorderSizePixel = 0
+    resizegrip.Size = UDim2.new(0, 16, 0, 16)
+    resizegrip.Position = UDim2.new(1, -16, 1, -16)
+    resizegrip.ZIndex = 10
+
+    utils.CreateCorner(resizegrip, 4)
+    
+    local maximized = false
+    local dragging = false
+    local drags = nil
+    local startp = nil
+    local resizing = false
+    local dragstart = nil
+    local originalsize = nil
+    
+    titleb.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if maximized then return end
+            dragging = true
+            drags = input.Position
+            startp = holder.Position
+        end
+    end)
+    
+    resizegrip.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and not maximized then
+            resizing = true
+            dragstart = userinputservice:GetMouseLocation()
+            originalsize = holder.Size
+        end
+    end)
+    
+    userinputservice.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            if maximized then return end
+            local delta = input.Position - drags
+            holder.Position = UDim2.new(startp.X.Scale, startp.X.Offset + delta.X, startp.Y.Scale, startp.Y.Offset + delta.Y)
+        elseif resizing and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local currentpos = userinputservice:GetMouseLocation()
+            local delta = currentpos - dragstart
+            
+            local newwidth = math.max(100, originalsize.X.Offset + delta.X)
+            local newheight = math.max(100, originalsize.Y.Offset + delta.Y)
+            
+            holder.Size = UDim2.new(0, newwidth, 0, newheight)
+            resizegrip.Position = UDim2.new(1, -16, 1, -16)
+        end
+    end)
+    
+    userinputservice.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+            resizing = false
+        end
+    end)
+    
+    local minsize = Vector2.new(480, 320)
+    local function updatescale()
+        local abs = holder.AbsoluteSize
+        local s = abs.Y / basesize.Y
+        uiscale.Scale = s
+        if maximized then
+            mainf.AnchorPoint = Vector2.new(0, 0)
+            mainf.Position = UDim2.new(0, 0, 0, 0)
+        else
+            mainf.AnchorPoint = Vector2.new(0.5, 0)
+            mainf.Position = UDim2.new(0.5, 0, 0, 0)
+        end
+    end
+    local function setholdersize(newx, newy)
+        local clampx = math.max(minsize.X, math.floor(newx))
+        local clampy = math.max(minsize.Y, math.floor(newy))
+        holder.Size = UDim2.new(0, clampx, 0, clampy)
+        updatescale()
+    end
+    runservice.Heartbeat:Wait()
+    updatescale()
+    local controls = Instance.new("Frame")
+    controls.Name = "Controls"
+    controls.Parent = titleb
+    controls.BackgroundTransparency = 1
+    controls.AnchorPoint = Vector2.new(1, 0)
+    controls.Position = UDim2.new(1, -6, 0, 3)
+    controls.Size = UDim2.new(0, 72, 0, 24)
+    local function makettlbtn(name, text, offsetx)
+        local btn = Instance.new("TextButton")
+        btn.Name = name
+        btn.Parent = controls
+        btn.BackgroundColor3 = theme.dialog
+        btn.Text = text
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 12
+        btn.TextColor3 = Color3.fromRGB(230,230,230)
+        btn.BorderSizePixel = 0
+        btn.Size = UDim2.new(0, 22, 0, 18)
+        btn.Position = UDim2.new(0, offsetx, 0, 3)
+        createcorner(btn, 4)
+        createstroke(btn, theme.acrylicborder)
+        btn.MouseEnter:Connect(function()
+            quicktween(btn, {BackgroundColor3 = theme.element}):Play()
+        end)
+        btn.MouseLeave:Connect(function()
+            quicktween(btn, {BackgroundColor3 = theme.dialog}):Play()
+        end)
+        return btn
+    end
+    local btnmin = makettlbtn("Minimize", "—", 0)
+    local btnmax = makettlbtn("Fullscreen", "□", 25)
+    local btnclose = makettlbtn("Close", "×", 50)
+    local minimized = false
+    local closed = false
+    local prevholdersize = holder.Size
+    local prevmainsize = mainf.Size
+    local prevholderpos = holder.Position
+    local prevmainanchor = mainf.AnchorPoint
+    local prevmainpos = mainf.Position
+    local restoreg = Instance.new("ScreenGui")
+    restoreg.Name = "RestoreStub"
+    restoreg.Parent = screengui
+    restoreg.ResetOnSpawn = false
+    local restorebtn = Instance.new("TextButton")
+    restorebtn.Name = "Restore"
+    restorebtn.Parent = restoreg
+    restorebtn.AnchorPoint = Vector2.new(1,1)
+    restorebtn.Position = UDim2.new(1, -12, 1, -12)
+    restorebtn.Size = UDim2.new(0, 120, 0, 28)
+    restorebtn.BackgroundColor3 = theme.dialog
+    restorebtn.Text = "RESTORE"
+    restorebtn.Font = Enum.Font.Gotham
+    restorebtn.TextSize = 12
+    restorebtn.TextColor3 = Color3.fromRGB(235,235,235)
+    restorebtn.BorderSizePixel = 0
+    restorebtn.Visible = false
+    createcorner(restorebtn, 6)
+    createstroke(restorebtn, theme.acrylicborder)
+    local function applyminimize(min)
+        minimized = min
+        if minimized then
+            holder.Visible = false
+            restorebtn.Visible = true
+        else
+            holder.Visible = true
+            restorebtn.Visible = false
+        end
+    end
+    local function tween(a, props, t, style)
+        smtween(a, props, t or 0.25, style or Enum.EasingStyle.Quint):Play()
+    end
+    local function applymaximize(max)
+        maximized = max
+        local cam = workspace.CurrentCamera
+        if maximized then
+            prevholdersize = holder.Size
+            prevholderpos = holder.Position
+            tween(holder, {Size = UDim2.new(0, cam.ViewportSize.X, 0, cam.ViewportSize.Y), Position = UDim2.new(0,0,0,0)}, 0.3)
+            tween(uiscale, {Scale = (cam.ViewportSize.Y / basesize.Y)}, 0.3)
+            prevmainanchor = mainf.AnchorPoint
+            prevmainpos = mainf.Position
+            mainf.AnchorPoint = Vector2.new(0, 0)
+            tween(mainf, {Position = UDim2.new(0, 0, 0, 0)}, 0.3)
+            if not _G.__fluentmaxconn then
+                _G.__fluentmaxconn = cam:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+                    if maximized then
+                        holder.Size = UDim2.new(0, cam.ViewportSize.X, 0, cam.ViewportSize.Y)
+                        uiscale.Scale = (cam.ViewportSize.Y / basesize.Y)
+                        mainf.AnchorPoint = Vector2.new(0, 0)
+                        mainf.Position = UDim2.new(0, 0, 0, 0)
+                    end
+                end)
+            end
+        else
+            tween(holder, {Size = prevholdersize, Position = prevholderpos}, 0.3)
+            tween(uiscale, {Scale = (prevholdersize.Y.Offset / basesize.Y)}, 0.3)
+            mainf.AnchorPoint = prevmainanchor
+            tween(mainf, {Position = prevmainpos}, 0.3)
+            if _G.__fluentmaxconn then
+                _G.__fluentmaxconn:Disconnect()
+                _G.__fluentmaxconn = nil
+            end
+        end
+    end
+    btnmin.MouseButton1Click:Connect(function()
+        applyminimize(not minimized)
+    end)
+    btnmax.MouseButton1Click:Connect(function()
+        applymaximize(not maximized)
+    end)
+    local function setclosed(closed)
+        closed = closed
+        holder.Visible = not closed
+    end
+    btnclose.MouseButton1Click:Connect(function()
+        setclosed(true)
+    end)
+    userinputservice.InputBegan:Connect(function(input, gp)
+        if gp then return end
+        if input.KeyCode == Enum.KeyCode.RightControl then
+            if closed then
+                setclosed(false)
+            else
+                setclosed(true)
+            end
+        end
+    end)
+    restorebtn.MouseButton1Click:Connect(function()
+        applyminimize(false)
+    end)
+    local tabs = {}
+    local currenttab = nil
+    local menu = {
+        main = mainf,
+        holder = holder,
+        tabs = tabs,
+        tabcontainer = tabcontainer,
+        tablayout = tablayout,
+        contentcontainer = scrollf,
+        contentlayout = contentlayout
+    }
+    local window = menu
+    function menu:ApplyTheme(themename)
+        themename = themename or themename
+        local newtheme = themes.GetTheme(themename)
+        theme = newtheme
+        self.main.BackgroundColor3 = theme.acrylicmain
+        titleb.BackgroundColor3 = theme.acrylicmain
+        sidebar.BackgroundColor3 = theme.dialogholder
+        tabcontainer.ScrollBarImageColor3 = theme.acrylicborder
+        scrollf.ScrollBarImageColor3 = theme.acrylicborder
+        if self.main:FindFirstChildOfClass("UIStroke") then self.main.UIStroke.Color = theme.acrylicborder end
+        if titleb:FindFirstChildOfClass("UIStroke") then titleb.UIStroke.Color = theme.titlebarline end
+        for _, t in pairs(self.tabs) do
+            if t.button then
+                t.button.BackgroundColor3 = theme.dialog
+                if t.button:FindFirstChildOfClass("UIStroke") then t.button.UIStroke.Color = theme.acrylicborder end
+            end
+            for _, sp in pairs(t.spacers) do
+                if sp.frame then
+                    sp.frame.BackgroundColor3 = theme.dialog
+                    if sp.frame:FindFirstChildOfClass("UIStroke") then sp.frame.UIStroke.Color = theme.acrylicborder end
+                end
+                for _, it in ipairs(sp.items) do
+                    local el = it.element
+                    if el and el:IsA("GuiObject") then
+                        pcall(function() el.BackgroundColor3 = el.Name == "Button" and theme.dialogbutton or theme.dialog end)
+                        local s = el:FindFirstChildOfClass("UIStroke")
+                        if s then s.Color = theme.acrylicborder end
+                    end
+                end
+            end
+        end
+    end
+    function menu:CreateTab(name)
+        local tabbutton = Instance.new("TextButton")
+        tabbutton.Name = name
+        tabbutton.Parent = self.tabcontainer
+        tabbutton.BackgroundColor3 = theme.dialog
+        tabbutton.BorderSizePixel = 0
+        tabbutton.Size = UDim2.new(1, -10, 0, 30)
+        tabbutton.Font = Enum.Font.Gotham
+        tabbutton.Text = name
+        tabbutton.TextColor3 = Color3.fromRGB(170, 170, 170)
+        tabbutton.TextSize = 13
+        createcorner(tabbutton, 6)
+        createstroke(tabbutton, theme.acrylicborder)
+        local tabcontent = Instance.new("ScrollingFrame")
+        tabcontent.Name = name .. "Content"
+        tabcontent.Parent = self.contentcontainer
+        tabcontent.BackgroundTransparency = 1
+        tabcontent.Size = UDim2.new(1, 0, 1, 0)
+        tabcontent.Visible = false
+        tabcontent.ScrollBarThickness = 3
+        tabcontent.ScrollBarImageColor3 = theme.acrylicborder
+        tabcontent.ScrollBarImageTransparency = 0.5
+        tabcontent.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        local tabcontentlayout = Instance.new("UIListLayout")
+        tabcontentlayout.Parent = tabcontent
+        tabcontentlayout.SortOrder = Enum.SortOrder.LayoutOrder
+        tabcontentlayout.Padding = UDim.new(0, 10)
+        local tabcontentp = Instance.new("UIPadding")
+        tabcontentp.Parent = tabcontent
+        tabcontentp.PaddingTop = UDim.new(0, 10)
+        tabcontentp.PaddingBottom = UDim.new(0, 10)
+        tabcontentp.PaddingLeft = UDim.new(0, 10)
+        tabcontentp.PaddingRight = UDim.new(0, 10)
+        local tab = {
+            button = tabbutton,
+            content = tabcontent,
+            layout = tabcontentlayout,
+            spacers = {}
+        }
+        tabbutton.MouseButton1Click:Connect(function()
+            for _, othertab in pairs(self.tabs) do
+                smtween(othertab.button, {BackgroundColor3 = theme.dialog, TextColor3 = Color3.fromRGB(170,170,170)}):Play()
+                quicktween(othertab.button.UIStroke, {Color = theme.acrylicborder}):Play()
+                othertab.content.Visible = false
+            end
+            smtween(tabbutton, {BackgroundColor3 = theme.element, TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+            quicktween(tabbutton.UIStroke, {Color = theme.titlebarline}):Play()
+            tabcontent.Visible = true
+            currenttab = tab
+        end)
+        self.tabs[name] = tab
+        if not currenttab then
+            smtween(tabbutton, {BackgroundColor3 = theme.element, TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+            quicktween(tabbutton.UIStroke, {Color = theme.titlebarline}):Play()
+            tabcontent.Visible = true
+            currenttab = tab
+        end
+        self.tablayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            self.tabcontainer.CanvasSize = UDim2.new(0, 0, 0, self.tablayout.AbsoluteContentSize.Y)
+        end)
+        function tab:AddSpacer(title)
+            local spacer = Instance.new("Frame")
+            spacer.Name = "Spacer"
+            spacer.Parent = self.content
+            spacer.BackgroundColor3 = theme.dialog
+            spacer.BorderSizePixel = 0
+            spacer.Size = UDim2.new(1, 0, 0, 50)
+            createcorner(spacer, 8)
+            createstroke(spacer, theme.acrylicborder)
+            local spacertitle = Instance.new("TextLabel")
+            spacertitle.Parent = spacer
+            spacertitle.BackgroundTransparency = 1
+            spacertitle.Position = UDim2.new(0, 10, 0, 2)
+            spacertitle.Size = UDim2.new(1, -20, 0, 20)
+            spacertitle.Font = Enum.Font.GothamBold
+            spacertitle.Text = title
+            spacertitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+            spacertitle.TextSize = 13
+            spacertitle.TextXAlignment = Enum.TextXAlignment.Left
+            local spacercontent = Instance.new("Frame")
+            spacercontent.Parent = spacer
+            spacercontent.BackgroundTransparency = 1
+            spacercontent.Position = UDim2.new(0, 0, 0, 22)
+            spacercontent.Size = UDim2.new(1, 0, 1, -22)
+            local spacerlayout = Instance.new("UIListLayout")
+            spacerlayout.Parent = spacercontent
+            spacerlayout.SortOrder = Enum.SortOrder.LayoutOrder
+            spacerlayout.Padding = UDim.new(0, 5)
+            local spacerp = Instance.new("UIPadding")
+            spacerp.Parent = spacercontent
+            spacerp.PaddingTop = UDim.new(0, 5)
+            spacerp.PaddingBottom = UDim.new(0, 10)
+            spacerp.PaddingLeft = UDim.new(0, 10)
+            spacerp.PaddingRight = UDim.new(0, 10)
+            local spacerobj = {
+                frame = spacer,
+                content = spacercontent,
+                layout = spacerlayout,
+                items = {}
+            }
+            function spacerobj:updatespacersize()
+                spawn(function()
+                    wait()
+                    local titleh = 20
+                    local paddingh = 15
+                    local contenth = self.layout.AbsoluteContentSize.Y
+                    local total = titleh + paddingh + contenth
+                    local minh = 50
+                    self.frame.Size = UDim2.new(1, 0, 0, math.max(minh, total))
+                    spawn(function()
+                        wait()
+                        local totalh = 0
+                        for _, spacer in pairs(currenttab.spacers) do
+                            totalh = totalh + spacer.frame.AbsoluteSize.Y + 10
+                        end
+                        currenttab.content.CanvasSize = UDim2.new(0, 0, 0, totalh + 20)
+                    end)
+                end)
+            end
+            spacerlayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() spacerobj:updatespacersize() end)
+            function spacerobj:AddButton(text, callback)
+                local button = buttons.Create(self.content, theme, text, callback)
+                table.insert(self.items, {element = button, height = 25})
+                self:updatespacersize()
+                return button
+            end
+            function spacerobj:AddToggle(text, default, callback)
+                local api = toggles.Create(self.content, theme, text, default, callback)
+                table.insert(self.items, {element = api.Instance, height = 25})
+                self:updatespacersize()
+                return {
+                    SetValue = api.SetValue,
+                    GetValue = api.GetValue
+                }
+            end
+            function spacerobj:AddRgb(text, defaultr, defaultg, defaultb, callback)
+                local api = rgbpicker.Create(self.content, theme, text, defaultr, defaultg, defaultb, callback)
+                table.insert(self.items, {element = api.Instance, height = 25})
+                self:updatespacersize()
+                return {
+                    Set = api.Set,
+                    Get = api.Get
+                }
+            end
+            function spacerobj:AddDropdown(text, options, default, callback)
+                local api = dropdowns.Create(self.content, theme, text, options, default, callback)
+                table.insert(self.items, {element = api.Instance, height = 25})
+                self:updatespacersize()
+                return {
+                    Set = api.Set,
+                    Get = api.Get
+                }
+            end
+            function spacerobj:AddKeybind(text, defaultkey, callback)
+                local api = keybinds.Create(self.content, theme, text, defaultkey, callback)
+                table.insert(self.items, {element = api.Instance, height = 25})
+                self:updatespacersize()
+                return {
+                    Set = api.Set,
+                    Get = api.Get
+                }
+            end
+            function spacerobj:AddSlider(text, min, max, default, callback, step)
+                local api = sliders.Create(self.content, theme, text, min, max, default, callback, step)
+                table.insert(self.items, {element = api.Instance, height = 25})
+                self:updatespacersize()
+                return {
+                    SetValue = api.SetValue,
+                    GetValue = api.GetValue
+                }
+            end
+            self.spacers[title] = spacerobj
+            return spacerobj
+        end
+        return tab
+    end
+    function menu:createtab(name)
+        return self:CreateTab(name)
+    end
+    function menu:applytheme(themename)
+        return self:ApplyTheme(themename)
+    end
+
+    smtween(uiscale, {Scale = 1}, 0.25, Enum.EasingStyle.Quad):Play()
+
+    local uiconfig = {
+        Theme = themename,
+        UiScale = 1,
+    }
+    configmanager.Register("UI", uiconfig, "UI.json")
+
+    menu.UIConfigRef = uiconfig
+    menu.UIScaleRef = uiscale
+
+    return menu
+end
+local window = uilib:CreateWindow("UI", UDim2.new(0, 700, 0, 500))
+local settingstab = window:CreateTab("Settings")
+local configspacer = settingstab:AddSpacer("Configuration")
+local uiscale = configspacer:AddSlider("UI Scale", 0.5, 2, 1, function(scale)
+    window.UIScaleRef.Scale = scale
+    local uiinfo = configmanager.GetConfigInfo("UI")
+    if uiinfo and uiinfo.Table then
+        uiinfo.Table.UiScale = scale
+    end
+end)
+local themecolor = configspacer:AddRgb("Theme Accent", theme.accent.R, theme.accent.G, theme.accent.B, function(r, g, b)
+    theme.accent = Color3.new(r, g, b)
+    window:ApplyTheme(themename)
+end)
+
+local visualsspacer = settingstab:AddSpacer("Visuals")
+local themedropdown = visualsspacer:AddDropdown("Theme", themes.GetThemeNames(), "Dark", function(name)
+    local uiinfo = configmanager.GetConfigInfo("UI")
+    if uiinfo and uiinfo.Table then
+        uiinfo.Table.Theme = name
+    end
+    window:ApplyTheme(name)
+end)
+
+configmanager.Register("Notifications", notificationsettings, "Notifications.json")
+
+notifications.SendNotification("UI Loaded.", "Better")
+
+return uilib
