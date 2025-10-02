@@ -462,7 +462,9 @@ function uilib:CreateWindow(title, size)
     function menu:ApplyTheme(themename)
         themename = themename or themename
         local newtheme = themes.GetTheme(themename)
+        local customaccent = theme.accent
         theme = newtheme
+        theme.accent = customaccent
         self.main.BackgroundColor3 = theme.acrylicmain
         titleb.BackgroundColor3 = theme.acrylicmain
         sidebar.BackgroundColor3 = theme.dialogholder
@@ -688,6 +690,12 @@ function uilib:CreateWindow(title, size)
     return menu
 end
 local window = uilib:CreateWindow("UI", UDim2.new(0, 700, 0, 500))
+
+local uiinfo = configmanager.GetConfigInfo("UI")
+if uiinfo and uiinfo.Table and uiinfo.Table.AccentColor then
+    theme.accent = Color3.new(uiinfo.Table.AccentColor.R, uiinfo.Table.AccentColor.G, uiinfo.Table.AccentColor.B)
+end
+
 local settingstab = window:CreateTab("Settings")
 local configspacer = settingstab:AddSpacer("Configuration")
 local uiscale = configspacer:AddSlider("UI Scale", 0.5, 2, 1, function(scale)
@@ -699,6 +707,10 @@ local uiscale = configspacer:AddSlider("UI Scale", 0.5, 2, 1, function(scale)
 end)
 local themecolor = configspacer:AddRgb("Theme Accent", theme.accent.R, theme.accent.G, theme.accent.B, function(r, g, b)
     theme.accent = Color3.new(r, g, b)
+    local uiinfo = configmanager.GetConfigInfo("UI")
+    if uiinfo and uiinfo.Table then
+        uiinfo.Table.AccentColor = {R = r, G = g, B = b}
+    end
     window:ApplyTheme(themename)
 end)
 
