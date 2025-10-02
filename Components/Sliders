@@ -1,0 +1,143 @@
+local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+
+local sliders = {}
+
+function sliders.Create(parent, theme, text, min, max, default, callback, step)
+    local slider = Instance.new("Frame")
+    slider.Name = "Slider"
+    slider.Parent = parent
+    slider.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    slider.BorderSizePixel = 0
+    slider.Size = UDim2.new(1, 0, 0, 25)
+    utils.CreateCorner(slider, 4)
+    utils.CreateStroke(slider)
+
+    local label = Instance.new("TextLabel")
+    label.Parent = slider
+    label.BackgroundTransparency = 1
+    label.Position = UDim2.new(0, 10, 0, 0)
+    label.Size = UDim2.new(1, -98, 1, 0)
+    label.Font = Enum.Font.Gotham
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 12
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local ssframe = Instance.new("Frame")
+    ssframe.Parent = slider
+    ssframe.BorderSizePixel = 0
+    ssframe.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
+    ssframe.Size = UDim2.new(0, 78, 0, 20)
+    ssframe.Position = UDim2.new(1, -88, 0.5, -10)
+    ssframe.Name = "ssframe"
+    utils.CreateCorner(ssframe, 6)
+
+    local minus = Instance.new("TextButton")
+    minus.Parent = ssframe
+    minus.BackgroundColor3 = Color3.fromRGB(47, 47, 47)
+    minus.Position = UDim2.new(0, 0, 0, 0)
+    minus.Size = UDim2.new(0, 20, 0, 20)
+    minus.Text = "<"
+    minus.TextColor3 = Color3.fromRGB(190, 190, 190)
+    minus.TextSize = 12
+    minus.Font = Enum.Font.GothamBold
+    minus.BorderSizePixel = 0
+    utils.CreateCorner(minus, 6)
+
+    local plus = Instance.new("TextButton")
+    plus.Parent = ssframe
+    plus.BackgroundColor3 = Color3.fromRGB(47, 47, 47)
+    plus.Position = UDim2.new(1, -20, 0, 0)
+    plus.Size = UDim2.new(0, 20, 0, 20)
+    plus.Text = ">"
+    plus.TextColor3 = Color3.fromRGB(190, 190, 190)
+    plus.TextSize = 12
+    plus.Font = Enum.Font.GothamBold
+    plus.BorderSizePixel = 0
+    utils.CreateCorner(plus, 6)
+
+    local valuebox = Instance.new("TextBox")
+    valuebox.Parent = ssframe
+    valuebox.BorderSizePixel = 0
+    valuebox.BackgroundColor3 = Color3.fromRGB(47, 47, 47)
+    valuebox.Size = UDim2.new(0, 38, 0, 20)
+    valuebox.Position = UDim2.new(0, 20, 0, 0)
+        valuebox.Text = utils.FormatNumber(default)
+    valuebox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    valuebox.TextSize = 15
+    valuebox.Font = Enum.Font.GothamBold
+    valuebox.TextScaled = false
+    valuebox.TextXAlignment = Enum.TextXAlignment.Center
+    valuebox.ClearTextOnFocus = false
+    utils.CreateCorner(valuebox, 6)
+
+    local value = default
+    local stepsize = step or 1
+    if type(step) == "function" then
+        callback = step
+        stepsize = 1
+    elseif type(callback) == "number" then
+        stepsize = callback
+        callback = step
+    end
+
+    local function updateval(newvalue)
+        value = math.clamp(newvalue, min, max)
+        value = math.floor(value / stepsize + 0.5) * stepsize
+                valuebox.Text = utils.FormatNumber(value)
+        if callback then callback(value) end
+    end
+
+    valuebox.FocusLost:Connect(function(enterpressed)
+        local newvalue = tonumber(valuebox.Text)
+        if newvalue then
+            updateval(newvalue)
+        else
+            valuebox.Text = utils.FormatNumber(value)
+        end
+    end)
+
+    local function animbtn(btn, hover)
+        local color = hover and Color3.fromRGB(45, 45, 45) or Color3.fromRGB(35, 35, 35)
+        utils.Tween(btn, {BackgroundColor3 = color}):Play()
+    end
+
+    minus.MouseEnter:Connect(function() animbtn(minus, true) end)
+    minus.MouseLeave:Connect(function() animbtn(minus, false) end)
+    plus.MouseEnter:Connect(function() animbtn(plus, true) end)
+    plus.MouseLeave:Connect(function() animbtn(plus, false) end)
+
+    minus.MouseButton1Click:Connect(function()
+        local newvalue = value - stepsize
+        if newvalue >= min then
+            updateval(newvalue)
+            utils.QuickTween(minus, {BackgroundColor3 = Color3.fromRGB(60, 60, 70)}):Play()
+            task.delay(0.1, function()
+                utils.Tween(minus, {BackgroundColor3 = Color3.fromRGB(35, 35, 40)}):Play()
+            end)
+        end
+    end)
+
+    plus.MouseButton1Click:Connect(function()
+        local newvalue = value + stepsize
+        if newvalue <= max then
+            updateval(newvalue)
+            utils.QuickTween(plus, {BackgroundColor3 = Color3.fromRGB(60, 60, 70)}):Play()
+            task.delay(0.1, function()
+                utils.Tween(plus, {BackgroundColor3 = Color3.fromRGB(35, 35, 40)}):Play()
+            end)
+        end
+    end)
+
+    return {
+        Instance = slider,
+        SetValue = function(newvalue)
+            updateval(newvalue)
+        end,
+        GetValue = function()
+            return value
+        end
+    }
+end
+
+return sliders
