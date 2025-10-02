@@ -39,7 +39,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
 
     local optioncontainer = Instance.new("Frame")
     optioncontainer.Name = "OptionContainer"
-    optioncontainer.Parent = game.CoreGui:FindFirstChild("PCMenu")
+    optioncontainer.Parent = game.CoreGui:FindFirstChild("PCMenu") and game.CoreGui:FindFirstChild("PCMenu").WindowHolder:FindFirstChild("Main")
     optioncontainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     optioncontainer.BorderSizePixel = 0
     optioncontainer.Size = UDim2.new(0, 220, 0, 0)
