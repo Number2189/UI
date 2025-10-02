@@ -1,0 +1,75 @@
+local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+
+local toggles = {}
+
+function toggles.Create(parent, theme, text, default, callback)
+	local toggle = Instance.new("Frame")
+	toggle.Name = "Toggle"
+	toggle.Parent = parent
+	toggle.BackgroundColor3 = theme.dialog
+	toggle.BorderSizePixel = 0
+	toggle.Size = UDim2.new(1, 0, 0, 25)
+    utils.CreateCorner(toggle, 6)
+    utils.CreateStroke(toggle, theme.acrylicborder)
+
+	local label = Instance.new("TextLabel")
+	label.Parent = toggle
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.new(0, 10, 0, 0)
+	label.Size = UDim2.new(1, -50, 1, 0)
+	label.Font = Enum.Font.Gotham
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.TextSize = 14
+	label.TextXAlignment = Enum.TextXAlignment.Left
+
+	local switch = Instance.new("Frame")
+	switch.Parent = toggle
+	switch.BackgroundColor3 = default and theme.accent or Color3.fromRGB(50, 50, 50)
+	switch.BorderSizePixel = 0
+	switch.Position = UDim2.new(1, -40, 0.5, -8)
+	switch.Size = UDim2.new(0, 30, 0, 16)
+    utils.CreateCorner(switch, 8)
+
+	local knob = Instance.new("Frame")
+	knob.Parent = switch
+	knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	knob.BorderSizePixel = 0
+	knob.Position = default and UDim2.new(1, -12, 0.5, -4) or UDim2.new(0, 2, 0.5, -4)
+	knob.Size = UDim2.new(0, 8, 0, 8)
+    utils.CreateCorner(knob, 4)
+
+	local state = default
+	local function update()
+        utils.Tween(switch, {BackgroundColor3 = state and theme.accent or Color3.fromRGB(50, 50, 50)}):Play()
+        utils.SpringTween(knob, {Position = state and UDim2.new(1, -12, 0.5, -4) or UDim2.new(0, 2, 0.5, -4)}):Play()
+	end
+
+	local button = Instance.new("TextButton")
+	button.Parent = toggle
+	button.BackgroundTransparency = 1
+	button.Size = UDim2.new(1, 0, 1, 0)
+	button.Text = ""
+	button.MouseButton1Click:Connect(function()
+		state = not state
+		update()
+		if callback then callback(state) end
+	end)
+
+	update()
+
+	return {
+		Instance = toggle,
+		SetValue = function(value)
+			state = value
+			update()
+		end,
+		GetValue = function()
+			return state
+		end
+	}
+end
+
+return toggles
+
+
