@@ -285,6 +285,7 @@ function uilib:CreateWindow(title, size)
             local newheight = math.max(100, originalsize.Y.Offset + delta.Y)
             
             holder.Size = UDim2.new(0, newwidth, 0, newheight)
+            mainf.Size = UDim2.new(0, newwidth, 0, newheight)
             resizegrip.Position = UDim2.new(1, -16, 1, -16)
         end
     end)
@@ -704,14 +705,6 @@ local uiscale = configspacer:AddSlider("UI Scale", 0.5, 2, 1, function(scale)
     if uiinfo and uiinfo.Table then
         uiinfo.Table.UiScale = scale
     end
-end)
-local themecolor = configspacer:AddRgb("Theme Accent", theme.accent.R, theme.accent.G, theme.accent.B, function(r, g, b)
-    theme.accent = Color3.new(r, g, b)
-    local uiinfo = configmanager.GetConfigInfo("UI")
-    if uiinfo and uiinfo.Table then
-        uiinfo.Table.AccentColor = {R = r, G = g, B = b}
-    end
-    window:ApplyTheme(themename)
 end)
 
 local visualsspacer = settingstab:AddSpacer("Visuals")
