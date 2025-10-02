@@ -2,6 +2,10 @@ local tweenservice = game:GetService("TweenService")
 local userinputservice = game:GetService("UserInputService")
 local runservice = game:GetService("RunService")
 
+if game.CoreGui:FindFirstChild("PCMenu") then
+    game.CoreGui:FindFirstChild("PCMenu"):Destroy()
+end
+
 function GithubDirectory(string)
 	return "https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/" .. string
 end
