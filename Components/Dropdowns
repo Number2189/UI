@@ -73,8 +73,8 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             runservice:BindToRenderStep("DropdownCenter", Enum.RenderPriority.Input.Value, function()
                 local ui = game.CoreGui
-                if ui and ui:FindFirstChild("WindowHolder") then
-                    local mainframe = ui.WindowHolder:FindFirstChild("Main")
+                if ui and ui:FindFirstChild("PCMenu") then
+                    local mainframe = ui.PCMenu.WindowHolder:FindFirstChild("Main")
                     if mainframe and optioncontainer.Visible then
                         local mainpos = mainframe.AbsolutePosition
                         local mainsize = mainframe.AbsoluteSize
