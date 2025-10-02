@@ -34,13 +34,12 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
     togglebutton.TextColor3 = Color3.fromRGB(255, 255, 255)
     togglebutton.TextSize = 12
 
-    -- Find the UI parent to attach overlay
-    local uiParent = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI") or game.CoreGui
-    local overlay = uiParent:FindFirstChild("WindowHolder") and uiParent.WindowHolder.Main.dimoverlay
+    local uip = game.Players.LocalPlayer.PlayerGui:FindFirstChild("UI") or game.CoreGui
+    local overlay = uip:FindFirstChild("WindowHolder") and uip.WindowHolder.Main.dimoverlay
 
     local optioncontainer = Instance.new("Frame")
     optioncontainer.Name = "OptionContainer"
-    optioncontainer.Parent = overlay or uiParent
+    optioncontainer.Parent = overlay or uip
     optioncontainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     optioncontainer.BorderSizePixel = 0
     optioncontainer.Size = UDim2.new(0, 220, 0, 0)
@@ -73,7 +72,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
             end
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             runservice:BindToRenderStep("DropdownCenter", Enum.RenderPriority.Input.Value, function()
-                local holder = uiParent:FindFirstChild("WindowHolder")
+                local holder = uip:FindFirstChild("WindowHolder")
                 if holder then
                     local holderpos = holder.AbsolutePosition
                     local holdersize = holder.AbsoluteSize
