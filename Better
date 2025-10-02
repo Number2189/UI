@@ -118,7 +118,7 @@ function uilib:CreateWindow(title, size)
     overlay.BorderSizePixel = 0
     overlay.Size = UDim2.new(1,0,1,0)
     overlay.ZIndex = 29
-    overlay.Visible = true
+    overlay.Visible = false
     local dim = Instance.new("Frame")
     dim.Name = "Dim"
     dim.Parent = overlay
@@ -127,6 +127,7 @@ function uilib:CreateWindow(title, size)
     dim.BorderSizePixel = 0
     dim.Size = UDim2.new(1,0,1,0)
     dim.ZIndex = 29
+    dim.Visible = false
     createcorner(mainf, 8)
     createstroke(mainf, theme.acrylicborder)
     local uiscale = Instance.new("UIScale")
@@ -626,7 +627,7 @@ function uilib:CreateWindow(title, size)
                 }
             end
             function spacerobj:AddRgb(text, defaultr, defaultg, defaultb, callback)
-                local api = rgbpicker.Create(self.content, theme, text, defaultr, defaultg, defaultb, callback)
+                local api = rgbpicker.Create(self.content, theme, text, defaultr, defaultg, defaultb, callback, overlay)
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -635,7 +636,7 @@ function uilib:CreateWindow(title, size)
                 }
             end
             function spacerobj:AddDropdown(text, options, default, callback)
-                local api = dropdowns.Create(self.content, theme, text, options, default, callback)
+                local api = dropdowns.Create(self.content, theme, text, options, default, callback, overlay)
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -686,7 +687,7 @@ function uilib:CreateWindow(title, size)
 
     return menu
 end
-local window = uilib:CreateWindow("Advanced UI Library", UDim2.new(0, 700, 0, 500))
+local window = uilib:CreateWindow("UI", UDim2.new(0, 700, 0, 500))
 local settingstab = window:CreateTab("Settings")
 local configspacer = settingstab:AddSpacer("Configuration")
 local uiscale = configspacer:AddSlider("UI Scale", 0.5, 2, 1, function(scale)
@@ -707,7 +708,7 @@ local themedropdown = visualsspacer:AddDropdown("Theme", themes.GetThemeNames(),
     if uiinfo and uiinfo.Table then
         uiinfo.Table.Theme = name
     end
-    window:ApplyTheme(name)
+	window:ApplyTheme(name)
 end)
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
