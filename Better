@@ -3,11 +3,11 @@ local userinputservice = game:GetService("UserInputService")
 local runservice = game:GetService("RunService")
 
 function GithubDirectory(string)
-	return "https://raw.githubusercontent.com/Roras520/Lib/refs/heads/main/" .. string
+	return "https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/" .. string
 end
 local themes = loadstring(game:HttpGet(GithubDirectory("Themes")))()
-local configmanager = loadstring(game:HttpGet(GithubDirectory("ConfigManager")))()
-local notifications = loadstring(game:HttpGet(GithubDirectory("Notifications")))()
+local configmanager = loadstring(game:HttpGet("https://raw.githubusercontent.com/Roras520/Lib/refs/heads/main/ConfigManager"))()
+local notificationlibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/Roras520/Lib/refs/heads/main/Notifications"))()
 local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
 local buttons = loadstring(game:HttpGet(GithubDirectory("Components/Buttons")))()
 local toggles = loadstring(game:HttpGet(GithubDirectory("Components/Toggles")))()
@@ -15,7 +15,7 @@ local rgbpicker = loadstring(game:HttpGet(GithubDirectory("Components/RgbPicker"
 local sliders = loadstring(game:HttpGet(GithubDirectory("Components/Sliders")))()
 local dropdowns = loadstring(game:HttpGet(GithubDirectory("Components/Dropdowns")))()
 local keybinds = loadstring(game:HttpGet(GithubDirectory("Components/Keybinds")))()
-local notificationsettings = notifications.GetNotificationSettings()
+local notificationsettings = notificationlibrary.GetNotificationSettings()
 
 local themename = "Dark"
 local theme = themes.GetTheme(themename)
@@ -686,7 +686,7 @@ function uilib:CreateWindow(title, size)
 
     return menu
 end
-local window = uilib:CreateWindow("UI", UDim2.new(0, 700, 0, 500))
+local window = uilib:CreateWindow("Advanced UI Library", UDim2.new(0, 700, 0, 500))
 local settingstab = window:CreateTab("Settings")
 local configspacer = settingstab:AddSpacer("Configuration")
 local uiscale = configspacer:AddSlider("UI Scale", 0.5, 2, 1, function(scale)
@@ -712,6 +712,6 @@ end)
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
-notifications.SendNotification("UI Loaded.", "Better")
+notificationlibrary.SendNotification("UI Library Loaded.", "Better")
 
 return uilib
