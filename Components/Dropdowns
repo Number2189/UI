@@ -61,6 +61,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
         togglebutton.Text = isopen and "▲" or "▼"
         optioncontainer.Visible = isopen
         if isopen then
+            if dimmed_wso then return end
             local targetheight = math.min(#options, 8) * 28 + 12
             if overlay then
                 overlay.Visible = true
@@ -72,6 +73,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
             end
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
+            dimmed_wso = true
         else
             runservice:UnbindFromRenderStep("DropdownCenter")
             utils.Tween(optioncontainer, {Size = UDim2.new(0, 220, 0, 0)}, 0.2):Play()
@@ -88,6 +90,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
                         end
                         overlay.Visible = false
                     end
+                    dimmed_wso = false
                 end
             end)
         end
@@ -116,6 +119,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
         end)
         optionbutton.MouseButton1Click:Connect(function()
             currentoption = option
+            dimmed_wso = false
             updatedropdown()
             toggledropdown()
         end)
