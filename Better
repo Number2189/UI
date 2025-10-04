@@ -602,21 +602,6 @@ function uilib:CreateWindow(title, size)
 
     return menu
 end
-local window = uilib:CreateWindow("TITLE TEXT", UDim2.new(0, 584, 0, 475))
-
-local uiinfo = configmanager.GetConfigInfo("UI")
-if uiinfo and uiinfo.Table and uiinfo.Table.AccentColor then
-    theme.accent = Color3.new(uiinfo.Table.AccentColor.R, uiinfo.Table.AccentColor.G, uiinfo.Table.AccentColor.B)
-end
-
-local settingstab = window:CreateTab("Tab 1")
-local configspacer = settingstab:AddSpacer("Spacer Title")
-local testbutton = configspacer:AddButton("Button Example", function()
-    print("Button clicked!")
-end)
-local testtoggle = configspacer:AddToggle("Toggle Example", false, function(value)
-    print("Toggle value:", value)
-end)
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
