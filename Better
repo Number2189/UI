@@ -29,6 +29,7 @@ local vrui = {
     base = nil,
     bx = nil
 }
+local dimmed_wso = false
 function formatnum(num)
     return utils.FormatNumber(num)
 end
