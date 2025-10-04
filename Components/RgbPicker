@@ -363,6 +363,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         end
         isopen = false
         colordialog.Visible = false
+        dim.Visible = false
         runservice:UnbindFromRenderStep("ColorPickerCenter")
     end)
 
@@ -374,6 +375,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         display()
         isopen = false
         colordialog.Visible = false
+        dim.Visible = false
         runservice:UnbindFromRenderStep("ColorPickerCenter")
     end)
 
