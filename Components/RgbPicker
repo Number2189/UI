@@ -1,388 +1,67 @@
 local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
 
-local rgbpicker = {}
+local dropdowns = {}
 
-local userinputservice = game:GetService("UserInputService")
 local runservice = game:GetService("RunService")
 
-function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, callback, overlay)
-    local button = Instance.new("TextButton")
-    button.Parent = parent
-    button.BackgroundColor3 = theme.dialogbutton
-    button.BorderSizePixel = 0
-    button.Size = UDim2.new(1, 0, 0, 25)
-    button.Text = ""
-    button.AutoButtonColor = false
-    button.ZIndex = 38
-    utils.CreateCorner(button, 4)
-    utils.CreateStroke(button, theme.acrylicborder)
+function dropdowns.Create(parent, theme, text, options, default, callback, overlay)
+    local dropdown = Instance.new("Frame")
+    dropdown.Name = "Dropdown"
+    dropdown.Parent = parent
+    dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    dropdown.BorderSizePixel = 0
+    dropdown.Size = UDim2.new(1, 0, 0, 25)
+    dropdown.ZIndex = 38
+    utils.CreateCorner(dropdown, 4)
+    utils.CreateStroke(dropdown)
 
-    local label = Instance.new("TextLabel")
-    label.Parent = button
+    local label = Instance.new("TextButton")
+    label.Parent = dropdown
     label.BackgroundTransparency = 1
     label.Position = UDim2.new(0, 10, 0, 0)
-    label.Size = UDim2.new(1, -20, 1, 0)
-    label.Font = Enum.Font.Gotham
-    label.Text = text
+    label.Size = UDim2.new(1, -50, 1, 0)
+    label.Font = Enum.Font.SourceSans
+    label.Text = text .. ": " .. (default or options[1])
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 13
+    label.TextSize = 14
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.ZIndex = 39
 
-    local colorpreview = Instance.new("Frame")
-    colorpreview.Parent = button
-    colorpreview.BackgroundColor3 = Color3.fromRGB(defaultr * 255, defaultg * 255, defaultb * 255)
-    colorpreview.BorderSizePixel = 0
-    colorpreview.Size = UDim2.new(0, 20, 0, 20)
-    colorpreview.Position = UDim2.new(1, -25, 0, 2.5)
-    colorpreview.ZIndex = 39
-    utils.CreateCorner(colorpreview, 4)
+    local togglebutton = Instance.new("TextButton")
+    togglebutton.Parent = dropdown
+    togglebutton.BackgroundTransparency = 1
+    togglebutton.Position = UDim2.new(1, -40, 0, 0)
+    togglebutton.Size = UDim2.new(0, 30, 1, 0)
+    togglebutton.Text = "▼"
+    togglebutton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    togglebutton.TextSize = 12
+    togglebutton.ZIndex = 39
 
-    local colordialog = Instance.new("Frame")
-    colordialog.Parent = game.CoreGui:FindFirstChild("PCMenu").WindowHolder:FindFirstChild("Main")
-    colordialog.BackgroundColor3 = theme.dialog
-    colordialog.BorderSizePixel = 0
-    colordialog.Size = UDim2.new(0, 430, 0, 0)
-    colordialog.Position = UDim2.new(0.5, -215, 0.5, -165)
-    colordialog.Visible = false
-    colordialog.ZIndex = 40
-    utils.CreateCorner(colordialog, 8)
-    utils.CreateStroke(colordialog, theme.dialogborder, 1)
+    local optioncontainer = Instance.new("Frame")
+    optioncontainer.Name = "OptionContainer"
+    optioncontainer.Parent = game.CoreGui:FindFirstChild("PCMenu").WindowHolder:FindFirstChild("Main")
+    optioncontainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    optioncontainer.BorderSizePixel = 0
+    optioncontainer.Size = UDim2.new(0, 220, 0, 0)
+    optioncontainer.Visible = false
+    optioncontainer.ZIndex = 40
+    utils.CreateCorner(optioncontainer, 6)
+    utils.CreateStroke(optioncontainer)
 
     local isopen = false
-    local currenthue = 0
-    local currentsat = 0
-    local currentvib = 0
-    local currentr = math.floor(defaultr * 255)
-    local currentg = math.floor(defaultg * 255)
-    local currentb = math.floor(defaultb * 255)
+    local currentoption = default or options[1]
 
-    local function rgbtohsv(r, g, b)
-        r, g, b = r/255, g/255, b/255
-        local max, min = math.max(r, g, b), math.min(r, g, b)
-        local diff = max - min
-        local h, s, v = 0, 0, max
-        if diff ~= 0 then
-            s = diff / max
-            if max == r then
-                h = (g - b) / diff
-            elseif max == g then
-                h = 2 + (b - r) / diff
-            else
-                h = 4 + (r - g) / diff
-            end
-            h = h / 6
-            if h < 0 then h = h + 1 end
-        end
-        return h, s, v
+    local function updatedropdown()
+        label.Text = text .. ": " .. currentoption
+        if callback then callback(currentoption) end
     end
 
-    local function hsvtorgb(h, s, v)
-        local r, g, b = v, v, v
-        if s > 0 then
-            h = h * 6
-            local i = math.floor(h)
-            local f = h - i
-            local p = v * (1 - s)
-            local q = v * (1 - s * f)
-            local t = v * (1 - s * (1 - f))
-            if i == 0 then
-                r, g, b = v, t, p
-            elseif i == 1 then
-                r, g, b = q, v, p
-            elseif i == 2 then
-                r, g, b = p, v, t
-            elseif i == 3 then
-                r, g, b = p, q, v
-            elseif i == 4 then
-                r, g, b = t, p, v
-            else
-                r, g, b = v, p, q
-            end
-        end
-        return math.floor(r * 255), math.floor(g * 255), math.floor(b * 255)
-    end
-
-    currenthue, currentsat, currentvib = rgbtohsv(currentr, currentg, currentb)
-
-    local title = Instance.new("TextLabel")
-    title.Parent = colordialog
-    title.BackgroundTransparency = 1
-    title.Size = UDim2.new(1, -20, 0, 30)
-    title.Position = UDim2.new(0, 10, 0, 10)
-    title.Text = text
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.TextSize = 16
-    title.Font = Enum.Font.GothamBold
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 41
-
-    local satvibmap = Instance.new("ImageLabel")
-    satvibmap.Parent = colordialog
-    satvibmap.Size = UDim2.new(0, 180, 0, 160)
-    satvibmap.Position = UDim2.new(0, 190, 0, 52)
-    satvibmap.Image = "rbxassetid://4155801252"
-    satvibmap.BackgroundColor3 = Color3.fromHSV(currenthue, 1, 1)
-    satvibmap.ZIndex = 41
-    utils.CreateCorner(satvibmap, 4)
-
-    local satvibcursor = Instance.new("ImageLabel")
-    satvibcursor.Parent = satvibmap
-    satvibcursor.Size = UDim2.new(0, 18, 0, 18)
-    satvibcursor.Image = "http://www.roblox.com/asset/?id=4805639000"
-    satvibcursor.AnchorPoint = Vector2.new(0.5, 0.5)
-    satvibcursor.BackgroundTransparency = 1
-    satvibcursor.ZIndex = 42
-
-    local hueslider = Instance.new("Frame")
-    hueslider.Parent = colordialog
-    hueslider.Size = UDim2.new(0, 12, 0, 190)
-    hueslider.Position = UDim2.new(0, 380, 0, 52)
-    hueslider.ZIndex = 41
-    utils.CreateCorner(hueslider, 6)
-
-    local huegradient = Instance.new("UIGradient")
-    huegradient.Parent = hueslider
-    huegradient.Rotation = 90
-    local huesequence = {}
-    for i = 0, 1, 0.1 do
-        table.insert(huesequence, ColorSequenceKeypoint.new(i, Color3.fromHSV(i, 1, 1)))
-    end
-    huegradient.Color = ColorSequence.new(huesequence)
-
-    local huecursor = Instance.new("ImageLabel")
-    huecursor.Parent = hueslider
-    huecursor.Size = UDim2.new(0, 14, 0, 14)
-    huecursor.Image = "http://www.roblox.com/asset/?id=12266946128"
-    huecursor.AnchorPoint = Vector2.new(0.5, 0.5)
-    huecursor.BackgroundTransparency = 1
-    huecursor.ZIndex = 42
-
-    local function createinputbox(text, ypos)
-        local label = Instance.new("TextLabel")
-        label.Parent = colordialog
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(0, 40, 0, 20)
-        label.Position = UDim2.new(0, 34, 0, ypos)
-        label.Text = text
-        label.TextColor3 = Color3.fromRGB(240, 240, 240)
-        label.TextSize = 13
-        label.Font = Enum.Font.Gotham
-        label.TextXAlignment = Enum.TextXAlignment.Left
-        label.ZIndex = 41
-
-        local input = Instance.new("TextBox")
-        input.Parent = colordialog
-        input.Size = UDim2.new(0, 90, 0, 32)
-        input.Position = UDim2.new(0, 74, 0, ypos - 6)
-        input.BackgroundColor3 = theme.dialoginput
-        input.BorderSizePixel = 0
-        input.Text = ""
-        input.TextColor3 = Color3.fromRGB(255, 255, 255)
-        input.TextSize = 13
-        input.Font = Enum.Font.Gotham
-        input.TextXAlignment = Enum.TextXAlignment.Center
-        input.ClearTextOnFocus = false
-        input.ZIndex = 41
-        utils.CreateCorner(input, 4)
-        utils.CreateStroke(input, theme.dialoginputline, 1)
-        return input
-    end
-
-    --local hexinput = createinputbox("Hex", 55)
-    local redinput = createinputbox("Red", 95)
-    local greeninput = createinputbox("Green", 135)
-    local blueinput = createinputbox("Blue", 175)
-
-    local newcolorframe = Instance.new("Frame")
-    newcolorframe.Parent = colordialog
-    newcolorframe.Size = UDim2.new(0, 176, 0, 24)
-    newcolorframe.Position = UDim2.new(0, 190, 0, 217)
-    newcolorframe.BackgroundColor3 = Color3.fromRGB(currentr, currentg, currentb)
-    newcolorframe.ZIndex = 41
-    utils.CreateCorner(newcolorframe, 4)
-    utils.CreateStroke(newcolorframe, Color3.fromRGB(255, 255, 255), 1, 0.75)
-
-    local donebtn = Instance.new("TextButton")
-    donebtn.Parent = colordialog
-    donebtn.Size = UDim2.new(0, 80, 0, 32)
-    donebtn.Position = UDim2.new(0, 240, 0, 280)
-    donebtn.BackgroundColor3 = theme.accent
-    donebtn.BorderSizePixel = 0
-    donebtn.Text = "Done"
-    donebtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    donebtn.TextSize = 14
-    donebtn.Font = Enum.Font.GothamBold
-    donebtn.AutoButtonColor = false
-    donebtn.ZIndex = 41
-    utils.CreateCorner(donebtn, 4)
-
-    local cancelbtn = Instance.new("TextButton")
-    cancelbtn.Parent = colordialog
-    cancelbtn.Size = UDim2.new(0, 80, 0, 32)
-    cancelbtn.Position = UDim2.new(0, 330, 0, 280)
-    cancelbtn.BackgroundColor3 = theme.dialogbutton
-    cancelbtn.BorderSizePixel = 0
-    cancelbtn.Text = "Cancel"
-    cancelbtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    cancelbtn.TextSize = 14
-    cancelbtn.Font = Enum.Font.GothamBold
-    cancelbtn.AutoButtonColor = false
-    cancelbtn.ZIndex = 41
-    utils.CreateCorner(cancelbtn, 4)
-
-    local function display()
-        satvibmap.BackgroundColor3 = Color3.fromHSV(currenthue, 1, 1)
-        huecursor.Position = UDim2.new(0, -1, currenthue, -7)
-        satvibcursor.Position = UDim2.new(currentsat, 0, 1 - currentvib, 0)
-        newcolorframe.BackgroundColor3 = Color3.fromRGB(currentr, currentg, currentb)
-        --hexinput.Text = "#" .. Color3.fromRGB(currentr, currentg, currentb):ToHex()
-        redinput.Text = tostring(currentr)
-        greeninput.Text = tostring(currentg)
-        blueinput.Text = tostring(currentb)
-        utils.Tween(colorpreview, {BackgroundColor3 = Color3.fromRGB(currentr, currentg, currentb)}):Play()
-    end
-
-    local function updatergb()
-        currentr, currentg, currentb = hsvtorgb(currenthue, currentsat, currentvib)
-    end
-
-    local function updatehsv()
-        currenthue, currentsat, currentvib = rgbtohsv(currentr, currentg, currentb)
-    end
-
-    --[[hexinput.FocusLost:Connect(function(enterpressed)
-        if enterpressed then
-            local success, result = pcall(Color3.fromHex, hexinput.Text)
-            if success and typeof(result) == "Color3" then
-                currentr = math.floor(result.R * 255)
-                currentg = math.floor(result.G * 255)
-                currentb = math.floor(result.B * 255)
-                updatehsv()
-                display()
-            end
-        end
-    end)]]
-
-    redinput.FocusLost:Connect(function(enterpressed)
-        if enterpressed then
-            local value = tonumber(redinput.Text)
-            if value and value >= 0 and value <= 255 then
-                currentr = math.floor(value)
-                updatehsv()
-                display()
-            end
-        end
-    end)
-
-    greeninput.FocusLost:Connect(function(enterpressed)
-        if enterpressed then
-            local value = tonumber(greeninput.Text)
-            if value and value >= 0 and value <= 255 then
-                currentg = math.floor(value)
-                updatehsv()
-                display()
-            end
-        end
-    end)
-
-    blueinput.FocusLost:Connect(function(enterpressed)
-        if enterpressed then
-            local value = tonumber(blueinput.Text)
-            if value and value >= 0 and value <= 255 then
-                currentb = math.floor(value)
-                updatehsv()
-                display()
-            end
-        end
-    end)
-
-    satvibmap.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            local connection
-            connection = userinputservice.InputChanged:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseMovement then
-                    local mousepos = userinputservice:GetMouseLocation()
-                    local mappos = satvibmap.AbsolutePosition
-                    local mapsize = satvibmap.AbsoluteSize
-                    local relativex = math.clamp(mousepos.X - mappos.X, 0, mapsize.X) / mapsize.X
-                    local relativey = math.clamp(mousepos.Y - mappos.Y, 0, mapsize.Y) / mapsize.Y
-                    currentsat = relativex
-                    currentvib = 1 - relativey
-                    updatergb()
-                    display()
-                end
-            end)
-            userinputservice.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    connection:Disconnect()
-                end
-            end)
-        end
-    end)
-
-    hueslider.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            local connection
-            connection = userinputservice.InputChanged:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseMovement then
-                    local mousepos = userinputservice:GetMouseLocation()
-                    local sliderpos = hueslider.AbsolutePosition
-                    local slidersize = hueslider.AbsoluteSize
-                    local relativey = math.clamp(mousepos.Y - sliderpos.Y, 0, slidersize.Y) / slidersize.Y
-                    currenthue = relativey
-                    updatergb()
-                    display()
-                end
-            end)
-            userinputservice.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    connection:Disconnect()
-                end
-            end)
-        end
-    end)
-
-    donebtn.MouseEnter:Connect(function()
-        utils.Tween(donebtn, {BackgroundColor3 = Color3.fromRGB(theme.accent.R * 255 + 20, theme.accent.G * 255 + 20, theme.accent.B * 255 + 20)}):Play()
-    end)
-    donebtn.MouseLeave:Connect(function()
-        utils.Tween(donebtn, {BackgroundColor3 = theme.accent}):Play()
-    end)
-
-    cancelbtn.MouseEnter:Connect(function()
-        utils.Tween(cancelbtn, {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-    end)
-    cancelbtn.MouseLeave:Connect(function()
-        utils.Tween(cancelbtn, {BackgroundColor3 = theme.dialogbutton}):Play()
-    end)
-
-    donebtn.MouseButton1Click:Connect(function()
-        if callback then
-            callback(currentr/255, currentg/255, currentb/255)
-        end
-        isopen = false
-        colordialog.Visible = false
-        dim.Visible = false
-        runservice:UnbindFromRenderStep("ColorPickerCenter")
-    end)
-
-    cancelbtn.MouseButton1Click:Connect(function()
-        currentr = math.floor(defaultr * 255)
-        currentg = math.floor(defaultg * 255)
-        currentb = math.floor(defaultb * 255)
-        updatehsv()
-        display()
-        isopen = false
-        colordialog.Visible = false
-        dim.Visible = false
-        runservice:UnbindFromRenderStep("ColorPickerCenter")
-    end)
-
-    local function togglecolorpicker()
+    local function toggledropdown()
         isopen = not isopen
+        togglebutton.Text = isopen and "▲" or "▼"
+        optioncontainer.Visible = isopen
         if isopen then
-            colordialog.Visible = true
+            local targetheight = math.min(#options, 8) * 28 + 12
             if overlay then
                 overlay.Visible = true
                 local dim = overlay:FindFirstChild("Dim")
@@ -391,15 +70,15 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
                     utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
                 end
             end
-            utils.SpringTween(colordialog, {Size = UDim2.new(0, 430, 0, 330)}):Play()
-            colordialog.Position = UDim2.new(0.5, -215, 0.5, -165)
-            display()
+            utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
+            optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
+            dimmed_wso = true
         else
-            runservice:UnbindFromRenderStep("ColorPickerCenter")
-            utils.Tween(colordialog, {Size = UDim2.new(0, 430, 0, 0)}, 0.2):Play()
+            runservice:UnbindFromRenderStep("DropdownCenter")
+            utils.Tween(optioncontainer, {Size = UDim2.new(0, 220, 0, 0)}, 0.2):Play()
             task.delay(0.22, function()
                 if not isopen then
-                    colordialog.Visible = false
+                    optioncontainer.Visible = false
                     if overlay then
                         local dim = overlay:FindFirstChild("Dim")
                         if dim then
@@ -410,26 +89,55 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
                         end
                         overlay.Visible = false
                     end
+                    dimmed_wso = false
                 end
             end)
         end
     end
 
-    button.MouseButton1Click:Connect(togglecolorpicker)
+    for _, option in pairs(options) do
+        local optionbutton = Instance.new("TextButton")
+        optionbutton.Name = "OptionButton"
+        optionbutton.Parent = optioncontainer
+        optionbutton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        optionbutton.BorderSizePixel = 0
+        optionbutton.Size = UDim2.new(1, -12, 0, 26)
+        optionbutton.Position = UDim2.new(0, 6, 0, 6 + (_ - 1) * 28)
+        optionbutton.Text = option
+        optionbutton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        optionbutton.TextSize = 12
+        optionbutton.Font = Enum.Font.SourceSans
+        optionbutton.ZIndex = 41
+        utils.CreateCorner(optionbutton, 4)
+
+        optionbutton.MouseEnter:Connect(function()
+            utils.Tween(optionbutton, {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
+        end)
+        optionbutton.MouseLeave:Connect(function()
+            utils.Tween(optionbutton, {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
+        end)
+        optionbutton.MouseButton1Click:Connect(function()
+            currentoption = option
+            updatedropdown()
+            toggledropdown()
+        end)
+    end
+
+    label.MouseButton1Click:Connect(toggledropdown)
+    togglebutton.MouseButton1Click:Connect(toggledropdown)
 
     return {
-        Instance = button,
-        Set = function(r, g, b)
-            currentr = math.floor(r * 255)
-            currentg = math.floor(g * 255)
-            currentb = math.floor(b * 255)
-            updatehsv()
-            display()
+        Instance = dropdown,
+        Set = function(value)
+            if table.find(options, value) then
+                currentoption = value
+                updatedropdown()
+            end
         end,
         Get = function()
-            return Color3.fromRGB(currentr, currentg, currentb)
+            return currentoption
         end
     }
 end
 
-return rgbpicker
+return dropdowns
