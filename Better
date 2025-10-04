@@ -103,16 +103,16 @@ function uilib:CreateWindow(title, size)
     holder.Parent = sgui
     holder.BackgroundTransparency = 1
     holder.BorderSizePixel = 0
-    holder.Position = UDim2.new(0.5, -((size and size.X.Offset or 700)/2), 0, 100)
-    holder.Size = game:GetService("VRService").VREnabled and UDim2.new(1, 0, 1, 0) or (size or UDim2.new(0, 700, 0, 500))
-    local basesize = Vector2.new((size and size.X.Offset) or 700, (size and size.Y.Offset) or 500)
+    holder.Position = UDim2.new(0.30302, 0, 0.26597, 0)
+    holder.Size = game:GetService("VRService").VREnabled and UDim2.new(1, 0, 1, 0) or (size or UDim2.new(0, 584, 0, 475))
+    local basesize = Vector2.new((size and size.X.Offset) or 584, (size and size.Y.Offset) or 475)
     local mainf = Instance.new("Frame")
     mainf.Name = "Main"
     mainf.Parent = holder
-    mainf.BackgroundColor3 = theme.acrylicmain
+    mainf.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
     mainf.BorderSizePixel = 0
-    mainf.AnchorPoint = Vector2.new(0.5, 0)
-    mainf.Position = UDim2.new(0.5, 0, 0, 0)
+    mainf.AnchorPoint = Vector2.new(0, 0)
+    mainf.Position = UDim2.new(0, 0, 0, 0)
     mainf.Size = UDim2.new(0, basesize.X, 0, basesize.Y)
     mainf.ClipsDescendants = true
     local overlay = Instance.new("Frame")
@@ -132,8 +132,7 @@ function uilib:CreateWindow(title, size)
     dim.Size = UDim2.new(1,0,1,0)
     dim.ZIndex = 29
     dim.Visible = false
-    createcorner(mainf, 8)
-    createstroke(mainf, theme.acrylicborder)
+    createcorner(mainf, 4)
     local uiscale = Instance.new("UIScale")
     uiscale.Parent = holder
     uiscale.Scale = 0.96
@@ -144,99 +143,57 @@ function uilib:CreateWindow(title, size)
     local titleb = Instance.new("Frame")
     titleb.Name = "TitleBar"
     titleb.Parent = mainf
-    titleb.BackgroundColor3 = theme.acrylicmain
+    titleb.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     titleb.BorderSizePixel = 0
-    titleb.Size = UDim2.new(1, 0, 0, 30)
-    createcorner(titleb, 8)
-    createstroke(titleb, theme.titlebarline, 1, 0.2)
-    local accent = Instance.new("Frame")
-    accent.Name = "AccentLine"
-    accent.Parent = titleb
-    accent.BackgroundColor3 = theme.accent
-    accent.BorderSizePixel = 0
-    accent.Size = UDim2.new(1, 0, 0, 2)
-    accent.Position = UDim2.new(0, 0, 1, -2)
-    local titlef = Instance.new("Frame")
-    titlef.Name = "TitleFix"
-    titlef.Parent = titleb
-    titlef.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    titlef.BorderSizePixel = 0
-    titlef.Position = UDim2.new(0, 0, 0.5, 0)
-    titlef.Size = UDim2.new(1, 0, 0.5, 0)
+    titleb.Size = UDim2.new(1, 0, 0, 39)
+    createcorner(titleb, 4)
+    local titlebarStroke = Instance.new("UIStroke")
+    titlebarStroke.Parent = titleb
+    titlebarStroke.Color = Color3.fromRGB(60, 60, 60)
+    titlebarStroke.Thickness = 1
     local titlel = Instance.new("TextLabel")
     titlel.Name = "Title"
     titlel.Parent = titleb
     titlel.BackgroundTransparency = 1
     titlel.Position = UDim2.new(0, 10, 0, 0)
-    titlel.Size = UDim2.new(1, -20, 1, 0)
-    titlel.Font = Enum.Font.GothamBold
+    titlel.Size = UDim2.new(1, -100, 1, 0)
+    titlel.Font = Enum.Font.Highway
     titlel.Text = title
-    titlel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titlel.TextSize = 14
+    titlel.TextColor3 = Color3.fromRGB(233, 233, 233)
+    titlel.TextSize = 20
     titlel.TextXAlignment = Enum.TextXAlignment.Left
     local sidebar = Instance.new("Frame")
     sidebar.Name = "Sidebar"
     sidebar.Parent = mainf
-    sidebar.BackgroundTransparency = 1
-    sidebar.BackgroundColor3 = theme.dialogholder
+    sidebar.BackgroundTransparency = 0
+    sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     sidebar.BorderSizePixel = 0
-    sidebar.Position = UDim2.new(0, 0, 0, 30)
-    sidebar.Size = UDim2.new(0, 120, 1, -30)
-    createcorner(sidebar, 8)
-    local sidebarf = Instance.new("Frame")
-    sidebarf.Name = "SidebarFix"
-    sidebarf.Parent = sidebar
-    sidebarf.BackgroundTransparency = 1
-    sidebarf.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    sidebarf.BorderSizePixel = 0
-    sidebarf.Position = UDim2.new(0.5, 0, 0, 0)
-    sidebarf.Size = UDim2.new(0.5, 0, 1, 0)
-    local tabcontainer = Instance.new("ScrollingFrame")
-    tabcontainer.Name = "TabContainer"
-    tabcontainer.Parent = sidebar
-    tabcontainer.BackgroundTransparency = 1
-    tabcontainer.Position = UDim2.new(0, 0, 0, 5)
-    tabcontainer.Size = UDim2.new(1, 0, 1, -10)
-    tabcontainer.ScrollBarThickness = 3
-    tabcontainer.ScrollBarImageColor3 = theme.acrylicborder
-    tabcontainer.ScrollBarImageTransparency = 0.5
-    tabcontainer.BorderSizePixel = 0
-    tabcontainer.CanvasSize = UDim2.new(0, 0, 0, 0)
+    sidebar.Position = UDim2.new(0, 0, 0, 39)
+    sidebar.Size = UDim2.new(0, 136, 1, -39)
+    local sidebarStroke = Instance.new("UIStroke")
+    sidebarStroke.Parent = sidebar
+    sidebarStroke.Color = Color3.fromRGB(60, 60, 60)
+    sidebarStroke.Thickness = 1
     local tablayout = Instance.new("UIListLayout")
-    tablayout.Parent = tabcontainer
+    tablayout.Parent = sidebar
     tablayout.SortOrder = Enum.SortOrder.LayoutOrder
-    tablayout.Padding = UDim.new(0, 5)
+    tablayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     local tabp = Instance.new("UIPadding")
-    tabp.Parent = tabcontainer
-    tabp.PaddingLeft = UDim.new(0, 10)
-    tabp.PaddingRight = UDim.new(0, 5)
-    tabp.PaddingTop = UDim.new(0, 5)
-    tabp.PaddingBottom = UDim.new(0, 5)
+    tabp.Parent = sidebar
+    tabp.PaddingTop = UDim.new(0, 8)
     local content = Instance.new("Frame")
-    content.Name = "Content"
+    content.Name = "SpacerContainer"
     content.Parent = mainf
     content.BackgroundTransparency = 1
-    content.Position = UDim2.new(0, 120, 0, 30)
-    content.Size = UDim2.new(1, -120, 1, -30)
-    local scrollf = Instance.new("ScrollingFrame", content)
-    scrollf.Name = "ContentContainer"
-    scrollf.BorderSizePixel = 0
-    scrollf.BackgroundTransparency = 1
-    scrollf.ScrollBarThickness = 3
-    scrollf.ScrollBarImageColor3 = theme.acrylicborder
-    scrollf.ScrollBarImageTransparency = 0.5
-    scrollf.Visible = true
-    scrollf.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    scrollf.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    scrollf.Size = UDim2.new(1, 0, 1, 0)
+    content.Position = UDim2.new(0, 136, 0, 39)
+    content.Size = UDim2.new(1, -136, 1, -39)
     local contentlayout = Instance.new("UIListLayout")
-    contentlayout.Parent = scrollf
+    contentlayout.Parent = content
     contentlayout.SortOrder = Enum.SortOrder.LayoutOrder
-    contentlayout.Padding = UDim.new(0, 10)
+    contentlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     local contentp = Instance.new("UIPadding")
-    contentp.Parent = scrollf
-    contentp.PaddingTop = UDim.new(0, 10)
-    contentp.PaddingBottom = UDim.new(0, 10)
+    contentp.Parent = content
+    contentp.PaddingTop = UDim.new(0, 8)
     contentp.PaddingLeft = UDim.new(0, 10)
     contentp.PaddingRight = UDim.new(0, 10)
     
@@ -322,38 +279,31 @@ function uilib:CreateWindow(title, size)
     end
     runservice.Heartbeat:Wait()
     updatescale()
-    local controls = Instance.new("Frame")
-    controls.Name = "Controls"
-    controls.Parent = titleb
-    controls.BackgroundTransparency = 1
-    controls.AnchorPoint = Vector2.new(1, 0)
-    controls.Position = UDim2.new(1, -6, 0, 3)
-    controls.Size = UDim2.new(0, 72, 0, 24)
-    local function makettlbtn(name, text, offsetx)
-        local btn = Instance.new("TextButton")
-        btn.Name = name
-        btn.Parent = controls
-        btn.BackgroundColor3 = theme.dialog
-        btn.Text = text
-        btn.Font = Enum.Font.Gotham
-        btn.TextSize = 12
-        btn.TextColor3 = Color3.fromRGB(230,230,230)
-        btn.BorderSizePixel = 0
-        btn.Size = UDim2.new(0, 22, 0, 18)
-        btn.Position = UDim2.new(0, offsetx, 0, 3)
-        createcorner(btn, 4)
-        createstroke(btn, theme.acrylicborder)
-        btn.MouseEnter:Connect(function()
-            quicktween(btn, {BackgroundColor3 = theme.element}):Play()
-        end)
-        btn.MouseLeave:Connect(function()
-            quicktween(btn, {BackgroundColor3 = theme.dialog}):Play()
-        end)
-        return btn
-    end
-    local btnmin = makettlbtn("Minimize", "—", 0)
-    local btnmax = makettlbtn("Fullscreen", "□", 25)
-    local btnclose = makettlbtn("Close", "×", 50)
+    local btnmin = Instance.new("TextButton")
+    btnmin.Name = "MinimizeButton"
+    btnmin.Parent = titleb
+    btnmin.BackgroundTransparency = 1
+    btnmin.Text = "_"
+    btnmin.Font = Enum.Font.Gotham
+    btnmin.TextSize = 24
+    btnmin.TextColor3 = Color3.fromRGB(158, 158, 158)
+    btnmin.TextYAlignment = Enum.TextYAlignment.Top
+    btnmin.BorderSizePixel = 0
+    btnmin.Size = UDim2.new(0, 48, 0, 39)
+    btnmin.Position = UDim2.new(1, -100, 0, 0)
+    
+    local btnclose = Instance.new("TextButton")
+    btnclose.Name = "CloseButton"
+    btnclose.Parent = titleb
+    btnclose.BackgroundTransparency = 1
+    btnclose.Text = "+"
+    btnclose.Font = Enum.Font.Gotham
+    btnclose.TextSize = 22
+    btnclose.TextColor3 = Color3.fromRGB(158, 158, 158)
+    btnclose.BorderSizePixel = 0
+    btnclose.Size = UDim2.new(0, 40, 0, 41)
+    btnclose.Position = UDim2.new(1, -50, 0, 0)
+    btnclose.Rotation = 45
     local minimized = false
     local closed = false
     local prevholdersize = holder.Size
@@ -393,44 +343,8 @@ function uilib:CreateWindow(title, size)
     local function tween(a, props, t, style)
         smtween(a, props, t or 0.25, style or Enum.EasingStyle.Quint):Play()
     end
-    local function applymaximize(max)
-        maximized = max
-        local cam = workspace.CurrentCamera
-        if maximized then
-            prevholdersize = holder.Size
-            prevholderpos = holder.Position
-            tween(holder, {Size = UDim2.new(0, cam.ViewportSize.X, 0, cam.ViewportSize.Y), Position = UDim2.new(0,0,0,0)}, 0.3)
-            tween(uiscale, {Scale = (cam.ViewportSize.Y / basesize.Y)}, 0.3)
-            prevmainanchor = mainf.AnchorPoint
-            prevmainpos = mainf.Position
-            mainf.AnchorPoint = Vector2.new(0, 0)
-            tween(mainf, {Position = UDim2.new(0, 0, 0, 0)}, 0.3)
-            if not _G.__fluentmaxconn then
-                _G.__fluentmaxconn = cam:GetPropertyChangedSignal("ViewportSize"):Connect(function()
-                    if maximized then
-                        holder.Size = UDim2.new(0, cam.ViewportSize.X, 0, cam.ViewportSize.Y)
-                        uiscale.Scale = (cam.ViewportSize.Y / basesize.Y)
-                        mainf.AnchorPoint = Vector2.new(0, 0)
-                        mainf.Position = UDim2.new(0, 0, 0, 0)
-                    end
-                end)
-            end
-        else
-            tween(holder, {Size = prevholdersize, Position = prevholderpos}, 0.3)
-            tween(uiscale, {Scale = (prevholdersize.Y.Offset / basesize.Y)}, 0.3)
-            mainf.AnchorPoint = prevmainanchor
-            tween(mainf, {Position = prevmainpos}, 0.3)
-            if _G.__fluentmaxconn then
-                _G.__fluentmaxconn:Disconnect()
-                _G.__fluentmaxconn = nil
-            end
-        end
-    end
     btnmin.MouseButton1Click:Connect(function()
         applyminimize(not minimized)
-    end)
-    btnmax.MouseButton1Click:Connect(function()
-        applymaximize(not maximized)
     end)
     local function setclosed(closed)
         closed = closed
@@ -458,9 +372,8 @@ function uilib:CreateWindow(title, size)
         main = mainf,
         holder = holder,
         tabs = tabs,
-        tabcontainer = tabcontainer,
         tablayout = tablayout,
-        contentcontainer = scrollf,
+        contentcontainer = content,
         contentlayout = contentlayout
     }
     local window = menu
@@ -470,29 +383,27 @@ function uilib:CreateWindow(title, size)
         local customaccent = theme.accent
         theme = newtheme
         theme.accent = customaccent
-        self.main.BackgroundColor3 = theme.acrylicmain
-        titleb.BackgroundColor3 = theme.acrylicmain
-        sidebar.BackgroundColor3 = theme.dialogholder
-        tabcontainer.ScrollBarImageColor3 = theme.acrylicborder
-        scrollf.ScrollBarImageColor3 = theme.acrylicborder
-        if self.main:FindFirstChildOfClass("UIStroke") then self.main.UIStroke.Color = theme.acrylicborder end
-        if titleb:FindFirstChildOfClass("UIStroke") then titleb.UIStroke.Color = theme.titlebarline end
+        self.main.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+        titleb.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        if self.main:FindFirstChildOfClass("UIStroke") then self.main.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
+        if titleb:FindFirstChildOfClass("UIStroke") then titleb.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
         for _, t in pairs(self.tabs) do
             if t.button then
-                t.button.BackgroundColor3 = theme.dialog
-                if t.button:FindFirstChildOfClass("UIStroke") then t.button.UIStroke.Color = theme.acrylicborder end
+                t.button.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
+                if t.button:FindFirstChildOfClass("UIStroke") then t.button.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
             end
             for _, sp in pairs(t.spacers) do
                 if sp.frame then
-                    sp.frame.BackgroundColor3 = theme.dialog
-                    if sp.frame:FindFirstChildOfClass("UIStroke") then sp.frame.UIStroke.Color = theme.acrylicborder end
+                    sp.frame.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+                    if sp.frame:FindFirstChildOfClass("UIStroke") then sp.frame.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
                 end
                 for _, it in ipairs(sp.items) do
                     local el = it.element
                     if el and el:IsA("GuiObject") then
-                        pcall(function() el.BackgroundColor3 = el.Name == "Button" and theme.dialogbutton or theme.dialog end)
+                        pcall(function() el.BackgroundColor3 = Color3.fromRGB(36, 36, 36) end)
                         local s = el:FindFirstChildOfClass("UIStroke")
-                        if s then s.Color = theme.acrylicborder end
+                        if s then s.Color = Color3.fromRGB(60, 60, 60) end
                     end
                 end
             end
@@ -501,36 +412,32 @@ function uilib:CreateWindow(title, size)
     function menu:CreateTab(name)
         local tabbutton = Instance.new("TextButton")
         tabbutton.Name = name
-        tabbutton.Parent = self.tabcontainer
-        tabbutton.BackgroundColor3 = theme.dialog
+        tabbutton.Parent = sidebar
+        tabbutton.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
         tabbutton.BorderSizePixel = 0
-        tabbutton.Size = UDim2.new(1, -10, 0, 30)
+        tabbutton.Size = UDim2.new(0, 122, 0, 26)
         tabbutton.Font = Enum.Font.Gotham
         tabbutton.Text = name
-        tabbutton.TextColor3 = Color3.fromRGB(170, 170, 170)
-        tabbutton.TextSize = 13
-        createcorner(tabbutton, 6)
-        createstroke(tabbutton, theme.acrylicborder)
+        tabbutton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        tabbutton.TextSize = 14
+        createcorner(tabbutton, 2)
+        local tabStroke = Instance.new("UIStroke")
+        tabStroke.Parent = tabbutton
+        tabStroke.Color = Color3.fromRGB(60, 60, 60)
+        tabStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
         local tabcontent = Instance.new("ScrollingFrame")
         tabcontent.Name = name .. "Content"
-        tabcontent.Parent = self.contentcontainer
+        tabcontent.Parent = content
         tabcontent.BackgroundTransparency = 1
         tabcontent.Size = UDim2.new(1, 0, 1, 0)
         tabcontent.Visible = false
-        tabcontent.ScrollBarThickness = 3
-        tabcontent.ScrollBarImageColor3 = theme.acrylicborder
-        tabcontent.ScrollBarImageTransparency = 0.5
-        tabcontent.AutomaticCanvasSize = Enum.AutomaticSize.Y
         local tabcontentlayout = Instance.new("UIListLayout")
         tabcontentlayout.Parent = tabcontent
         tabcontentlayout.SortOrder = Enum.SortOrder.LayoutOrder
-        tabcontentlayout.Padding = UDim.new(0, 10)
+        tabcontentlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
         local tabcontentp = Instance.new("UIPadding")
         tabcontentp.Parent = tabcontent
-        tabcontentp.PaddingTop = UDim.new(0, 10)
-        tabcontentp.PaddingBottom = UDim.new(0, 10)
-        tabcontentp.PaddingLeft = UDim.new(0, 10)
-        tabcontentp.PaddingRight = UDim.new(0, 10)
+        tabcontentp.PaddingTop = UDim.new(0, 8)
         local tab = {
             button = tabbutton,
             content = tabcontent,
@@ -539,59 +446,56 @@ function uilib:CreateWindow(title, size)
         }
         tabbutton.MouseButton1Click:Connect(function()
             for _, othertab in pairs(self.tabs) do
-                smtween(othertab.button, {BackgroundColor3 = theme.dialog, TextColor3 = Color3.fromRGB(170,170,170)}):Play()
-                quicktween(othertab.button.UIStroke, {Color = theme.acrylicborder}):Play()
+                smtween(othertab.button, {BackgroundColor3 = Color3.fromRGB(36, 36, 36), TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+                quicktween(othertab.button.UIStroke, {Color = Color3.fromRGB(60, 60, 60)}):Play()
                 othertab.content.Visible = false
             end
-            smtween(tabbutton, {BackgroundColor3 = theme.element, TextColor3 = Color3.fromRGB(255,255,255)}):Play()
-            quicktween(tabbutton.UIStroke, {Color = theme.titlebarline}):Play()
+            smtween(tabbutton, {BackgroundColor3 = Color3.fromRGB(50, 50, 50), TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+            quicktween(tabbutton.UIStroke, {Color = Color3.fromRGB(80, 80, 80)}):Play()
             tabcontent.Visible = true
             currenttab = tab
         end)
         self.tabs[name] = tab
         if not currenttab then
-            smtween(tabbutton, {BackgroundColor3 = theme.element, TextColor3 = Color3.fromRGB(255,255,255)}):Play()
-            quicktween(tabbutton.UIStroke, {Color = theme.titlebarline}):Play()
+            smtween(tabbutton, {BackgroundColor3 = Color3.fromRGB(50, 50, 50), TextColor3 = Color3.fromRGB(255,255,255)}):Play()
+            quicktween(tabbutton.UIStroke, {Color = Color3.fromRGB(80, 80, 80)}):Play()
             tabcontent.Visible = true
             currenttab = tab
         end
-        self.tablayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            self.tabcontainer.CanvasSize = UDim2.new(0, 0, 0, self.tablayout.AbsoluteContentSize.Y)
-        end)
         function tab:AddSpacer(title)
             local spacer = Instance.new("Frame")
             spacer.Name = "Spacer"
             spacer.Parent = self.content
-            spacer.BackgroundColor3 = theme.dialog
+            spacer.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
             spacer.BorderSizePixel = 0
-            spacer.Size = UDim2.new(1, 0, 0, 50)
-            createcorner(spacer, 8)
-            createstroke(spacer, theme.acrylicborder)
+            spacer.Size = UDim2.new(0, 400, 0, 89)
+            createcorner(spacer, 5)
+            local spacerStroke = Instance.new("UIStroke")
+            spacerStroke.Parent = spacer
+            spacerStroke.Color = Color3.fromRGB(60, 60, 60)
+            spacerStroke.Thickness = 1
             local spacertitle = Instance.new("TextLabel")
+            spacertitle.Name = "SpacerTitle"
             spacertitle.Parent = spacer
             spacertitle.BackgroundTransparency = 1
-            spacertitle.Position = UDim2.new(0, 10, 0, 2)
-            spacertitle.Size = UDim2.new(1, -20, 0, 20)
-            spacertitle.Font = Enum.Font.GothamBold
+            spacertitle.Position = UDim2.new(0, 10, 0, 5)
+            spacertitle.Size = UDim2.new(1, -20, 0, 22)
+            spacertitle.Font = Enum.Font.Gotham
             spacertitle.Text = title
-            spacertitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-            spacertitle.TextSize = 13
+            spacertitle.TextColor3 = Color3.fromRGB(174, 174, 174)
+            spacertitle.TextSize = 20
             spacertitle.TextXAlignment = Enum.TextXAlignment.Left
             local spacercontent = Instance.new("Frame")
+            spacercontent.Name = "SpacerComponentsHolder"
             spacercontent.Parent = spacer
             spacercontent.BackgroundTransparency = 1
-            spacercontent.Position = UDim2.new(0, 0, 0, 22)
-            spacercontent.Size = UDim2.new(1, 0, 1, -22)
+            spacercontent.Position = UDim2.new(0, 10, 0, 30)
+            spacercontent.Size = UDim2.new(1, -20, 1, -30)
             local spacerlayout = Instance.new("UIListLayout")
             spacerlayout.Parent = spacercontent
             spacerlayout.SortOrder = Enum.SortOrder.LayoutOrder
-            spacerlayout.Padding = UDim.new(0, 5)
-            local spacerp = Instance.new("UIPadding")
-            spacerp.Parent = spacercontent
-            spacerp.PaddingTop = UDim.new(0, 5)
-            spacerp.PaddingBottom = UDim.new(0, 10)
-            spacerp.PaddingLeft = UDim.new(0, 10)
-            spacerp.PaddingRight = UDim.new(0, 10)
+            spacerlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+            spacerlayout.Padding = UDim.new(0, 6)
             local spacerobj = {
                 frame = spacer,
                 content = spacercontent,
@@ -613,7 +517,10 @@ function uilib:CreateWindow(title, size)
                         for _, spacer in pairs(currenttab.spacers) do
                             totalh = totalh + spacer.frame.AbsoluteSize.Y + 10
                         end
-                        currenttab.content.CanvasSize = UDim2.new(0, 0, 0, totalh + 20)
+                        -- currenttab.content.CanvasSize = UDim2.new(0, 0, 0, totalh + 20)
+                        if currenttab.content and currenttab.content:IsA("ScrollingFrame") then
+                            currenttab.content.CanvasSize = UDim2.new(0, 0, 0, totalh + 5)
+                        end
                     end)
                 end)
             end
@@ -694,30 +601,20 @@ function uilib:CreateWindow(title, size)
 
     return menu
 end
-local window = uilib:CreateWindow("UI", UDim2.new(0, 700, 0, 500))
+local window = uilib:CreateWindow("TITLE TEXT", UDim2.new(0, 584, 0, 475))
 
 local uiinfo = configmanager.GetConfigInfo("UI")
 if uiinfo and uiinfo.Table and uiinfo.Table.AccentColor then
     theme.accent = Color3.new(uiinfo.Table.AccentColor.R, uiinfo.Table.AccentColor.G, uiinfo.Table.AccentColor.B)
 end
 
-local settingstab = window:CreateTab("Settings")
-local configspacer = settingstab:AddSpacer("Configuration")
-local uiscale = configspacer:AddSlider("UI Scale", 0.5, 2, 1, function(scale)
-    window.UIScaleRef.Scale = scale
-    local uiinfo = configmanager.GetConfigInfo("UI")
-    if uiinfo and uiinfo.Table then
-        uiinfo.Table.UiScale = scale
-    end
+local settingstab = window:CreateTab("Tab 1")
+local configspacer = settingstab:AddSpacer("Spacer Title")
+local testbutton = configspacer:AddButton("Button Example", function()
+    print("Button clicked!")
 end)
-
-local visualsspacer = settingstab:AddSpacer("Visuals")
-local themedropdown = visualsspacer:AddDropdown("Theme", themes.GetThemeNames(), "Dark", function(name)
-    local uiinfo = configmanager.GetConfigInfo("UI")
-    if uiinfo and uiinfo.Table then
-        uiinfo.Table.Theme = name
-    end
-	window:ApplyTheme(name)
+local testtoggle = configspacer:AddToggle("Toggle Example", false, function(value)
+    print("Toggle value:", value)
 end)
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
