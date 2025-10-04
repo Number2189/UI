@@ -178,6 +178,7 @@ function uilib:CreateWindow(title, size)
     tablayout.Parent = sidebar
     tablayout.SortOrder = Enum.SortOrder.LayoutOrder
     tablayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    tablayout.Padding = UDim.new(0, 6)
     local tabp = Instance.new("UIPadding")
     tabp.Parent = sidebar
     tabp.PaddingTop = UDim.new(0, 8)
