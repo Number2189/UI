@@ -13,7 +13,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     button.Size = UDim2.new(1, 0, 0, 25)
     button.Text = ""
     button.AutoButtonColor = false
-    button.ZIndex = 28
+    button.ZIndex = 38
     utils.CreateCorner(button, 4)
     utils.CreateStroke(button, theme.acrylicborder)
 
@@ -27,7 +27,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     label.TextColor3 = Color3.fromRGB(255, 255, 255)
     label.TextSize = 13
     label.TextXAlignment = Enum.TextXAlignment.Left
-    label.ZIndex = 29
+    label.ZIndex = 39
 
     local colorpreview = Instance.new("Frame")
     colorpreview.Parent = button
@@ -35,7 +35,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     colorpreview.BorderSizePixel = 0
     colorpreview.Size = UDim2.new(0, 20, 0, 20)
     colorpreview.Position = UDim2.new(1, -25, 0, 2.5)
-    colorpreview.ZIndex = 29
+    colorpreview.ZIndex = 39
     utils.CreateCorner(colorpreview, 4)
 
     local colordialog = Instance.new("Frame")
@@ -45,7 +45,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     colordialog.Size = UDim2.new(0, 430, 0, 0)
     colordialog.Position = UDim2.new(0.5, -215, 0.5, -165)
     colordialog.Visible = false
-    colordialog.ZIndex = 30
+    colordialog.ZIndex = 40
     utils.CreateCorner(colordialog, 8)
     utils.CreateStroke(colordialog, theme.dialogborder, 1)
 
@@ -115,7 +115,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     title.TextSize = 16
     title.Font = Enum.Font.GothamBold
     title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 31
+    title.ZIndex = 41
 
     local satvibmap = Instance.new("ImageLabel")
     satvibmap.Parent = colordialog
@@ -123,7 +123,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     satvibmap.Position = UDim2.new(0, 190, 0, 52)
     satvibmap.Image = "rbxassetid://4155801252"
     satvibmap.BackgroundColor3 = Color3.fromHSV(currenthue, 1, 1)
-    satvibmap.ZIndex = 31
+    satvibmap.ZIndex = 41
     utils.CreateCorner(satvibmap, 4)
 
     local satvibcursor = Instance.new("ImageLabel")
@@ -132,13 +132,13 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     satvibcursor.Image = "http://www.roblox.com/asset/?id=4805639000"
     satvibcursor.AnchorPoint = Vector2.new(0.5, 0.5)
     satvibcursor.BackgroundTransparency = 1
-    satvibcursor.ZIndex = 32
+    satvibcursor.ZIndex = 42
 
     local hueslider = Instance.new("Frame")
     hueslider.Parent = colordialog
     hueslider.Size = UDim2.new(0, 12, 0, 190)
     hueslider.Position = UDim2.new(0, 380, 0, 52)
-    hueslider.ZIndex = 31
+    hueslider.ZIndex = 41
     utils.CreateCorner(hueslider, 6)
 
     local huegradient = Instance.new("UIGradient")
@@ -156,7 +156,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     huecursor.Image = "http://www.roblox.com/asset/?id=12266946128"
     huecursor.AnchorPoint = Vector2.new(0.5, 0.5)
     huecursor.BackgroundTransparency = 1
-    huecursor.ZIndex = 32
+    huecursor.ZIndex = 42
 
     local function createinputbox(text, ypos)
         local label = Instance.new("TextLabel")
@@ -169,7 +169,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         label.TextSize = 13
         label.Font = Enum.Font.Gotham
         label.TextXAlignment = Enum.TextXAlignment.Left
-        label.ZIndex = 31
+        label.ZIndex = 41
 
         local input = Instance.new("TextBox")
         input.Parent = colordialog
@@ -183,7 +183,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         input.Font = Enum.Font.Gotham
         input.TextXAlignment = Enum.TextXAlignment.Center
         input.ClearTextOnFocus = false
-        input.ZIndex = 31
+        input.ZIndex = 41
         utils.CreateCorner(input, 4)
         utils.CreateStroke(input, theme.dialoginputline, 1)
         return input
@@ -199,7 +199,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     newcolorframe.Size = UDim2.new(0, 176, 0, 24)
     newcolorframe.Position = UDim2.new(0, 190, 0, 217)
     newcolorframe.BackgroundColor3 = Color3.fromRGB(currentr, currentg, currentb)
-    newcolorframe.ZIndex = 31
+    newcolorframe.ZIndex = 41
     utils.CreateCorner(newcolorframe, 4)
     utils.CreateStroke(newcolorframe, Color3.fromRGB(255, 255, 255), 1, 0.75)
 
@@ -214,7 +214,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     donebtn.TextSize = 14
     donebtn.Font = Enum.Font.GothamBold
     donebtn.AutoButtonColor = false
-    donebtn.ZIndex = 31
+    donebtn.ZIndex = 41
     utils.CreateCorner(donebtn, 4)
 
     local cancelbtn = Instance.new("TextButton")
@@ -228,7 +228,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     cancelbtn.TextSize = 14
     cancelbtn.Font = Enum.Font.GothamBold
     cancelbtn.AutoButtonColor = false
-    cancelbtn.ZIndex = 31
+    cancelbtn.ZIndex = 41
     utils.CreateCorner(cancelbtn, 4)
 
     local function display()
