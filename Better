@@ -484,7 +484,7 @@ function uilib:CreateWindow(title, size)
             spacertitle.Font = Enum.Font.Gotham
             spacertitle.Text = title
             spacertitle.TextColor3 = Color3.fromRGB(174, 174, 174)
-            spacertitle.TextSize = 20
+            spacertitle.TextSize = 18
             spacertitle.TextXAlignment = Enum.TextXAlignment.Left
             local spacercontent = Instance.new("Frame")
             spacercontent.Name = "SpacerComponentsHolder"
