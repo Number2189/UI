@@ -4,7 +4,7 @@ local dropdowns = {}
 
 local runservice = game:GetService("RunService")
 
-function dropdowns.Create(parent, theme, text, options, default, callback, overlay)
+function dropdowns.Create(parent, theme, text, options, default, callback)
     local dropdown = Instance.new("Frame")
     dropdown.Name = "Dropdown"
     dropdown.Parent = parent
@@ -56,6 +56,13 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
         if callback then callback(currentoption) end
     end
 
+    local dim
+    local overlay
+    if game.CoreGui:FindFirstChild("PCMenu") then
+        overlay = game.CoreGui.PCMenu.WindowHolder.Main:FindFirstChild("DropdownOverlay")
+        dim = overlay:FindFirstChild("DropdownDim")
+    end
+
     local function toggledropdown()
         isopen = not isopen
         togglebutton.Text = isopen and "▲" or "▼"
@@ -63,13 +70,9 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
         if isopen then
             if dimmed_wso then return end
             local targetheight = math.min(#options, 8) * 28 + 12
-            if overlay then
-                overlay.Visible = true
-                local dim = overlay:FindFirstChild("Dim")
-                if dim then
-                    dim.Visible = true
-                    utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
-                end
+            if dim then
+                dim.Visible = true
+                utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
             end
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
@@ -80,16 +83,11 @@ function dropdowns.Create(parent, theme, text, options, default, callback, overl
             task.delay(0.22, function()
                 if not isopen then
                     optioncontainer.Visible = false
-                    if overlay then
-                        local dim = overlay:FindFirstChild("Dim")
-                        if dim then
-                            utils.Tween(dim, {BackgroundTransparency = 1}, 0.22):Play()
-                            task.delay(0.12, function()
-                                dim.Visible = false
-                            end)
-                        end
-                        overlay.Visible = false
-                    end
+                    utils.Tween(dim, {BackgroundTransparency = 1}, 0.22):Play()
+                    task.delay(0.12, function()
+                        dim.Visible = false
+                    end)
+                    overlay.Visible = false
                     dimmed_wso = false
                 end
             end)
