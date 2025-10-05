@@ -358,11 +358,11 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     end)
 
     donebtn.MouseButton1Click:Connect(function()
+        isopen = false
+        colordialog.Visible = false
         if callback then
             callback(currentr/255, currentg/255, currentb/255)
         end
-        isopen = false
-        colordialog.Visible = false
         runservice:UnbindFromRenderStep("ColorPickerCenter")
     end)
 
