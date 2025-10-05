@@ -502,7 +502,7 @@ function uilib:CreateWindow(title, size)
             spacertitle.Font = Enum.Font.Gotham
             spacertitle.Text = title
             spacertitle.TextColor3 = Color3.fromRGB(174, 174, 174)
-            spacertitle.TextSize = 18
+            spacertitle.TextSize = 17
             spacertitle.TextXAlignment = Enum.TextXAlignment.Left
             local spacercontent = Instance.new("Frame")
             spacercontent.Name = "SpacerComponentsHolder"
@@ -514,7 +514,7 @@ function uilib:CreateWindow(title, size)
             spacerlayout.Parent = spacercontent
             spacerlayout.SortOrder = Enum.SortOrder.LayoutOrder
             spacerlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-            spacerlayout.Padding = UDim.new(0, 3)
+            spacerlayout.Padding = UDim.new(0, 6)
             local spacerobj = {
                 frame = spacer,
                 content = spacercontent,
