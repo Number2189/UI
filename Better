@@ -209,7 +209,6 @@ function uilib:CreateWindow(title, size)
     contentlayout.Parent = content
     contentlayout.SortOrder = Enum.SortOrder.LayoutOrder
     contentlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    contentlayout.Padding = UDim.new(0, 12)
     local contentp = Instance.new("UIPadding")
     contentp.Parent = content
     contentp.PaddingTop = UDim.new(0, 8)
@@ -515,7 +514,7 @@ function uilib:CreateWindow(title, size)
             spacerlayout.Parent = spacercontent
             spacerlayout.SortOrder = Enum.SortOrder.LayoutOrder
             spacerlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-            spacerlayout.Padding = UDim.new(0, 3)
+            spacerlayout.Padding = UDim.new(0, 6)
             local spacerobj = {
                 frame = spacer,
                 content = spacercontent,
