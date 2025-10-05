@@ -5,7 +5,7 @@ local rgbpicker = {}
 local userinputservice = game:GetService("UserInputService")
 local runservice = game:GetService("RunService")
 
-function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, callback, overlay)
+function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, callback)
     local button = Instance.new("TextButton")
     button.Parent = parent
     button.BackgroundColor3 = theme.dialogbutton
@@ -344,6 +344,10 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     end)
     
     local dim
+    local overlay
+    if game.CoreGui:FindFirstChild("PCMenu") then
+        overlay = game.CoreGui:FindFirstChild("PCMenu").WindowHolder.Main:FindFirstChild("dimoverlay")
+    end
     if overlay then
         overlay.Visible = true
         dim = overlay:FindFirstChild("Dim")
