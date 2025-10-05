@@ -342,6 +342,12 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             end)
         end
     end)
+    
+    local dim
+    if overlay then
+        overlay.Visible = true
+        dim = overlay:FindFirstChild("Dim")
+    end
 
     donebtn.MouseEnter:Connect(function()
         utils.Tween(donebtn, {BackgroundColor3 = Color3.fromRGB(theme.accent.R * 255 + 20, theme.accent.G * 255 + 20, theme.accent.B * 255 + 20)}):Play()
@@ -360,6 +366,8 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     donebtn.MouseButton1Click:Connect(function()
         isopen = false
         colordialog.Visible = false
+        dim.Visible = false
+        dimmed_wso = false
         if callback then
             callback(currentr/255, currentg/255, currentb/255)
         end
@@ -373,6 +381,8 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         updatehsv()
         display()
         isopen = false
+        dim.Visible = false
+        dimmed_wso = false
         colordialog.Visible = false
         runservice:UnbindFromRenderStep("ColorPickerCenter")
     end)
@@ -382,13 +392,9 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         if isopen then
             if dimmed_wso then return end
             colordialog.Visible = true
-            if overlay then
-                overlay.Visible = true
-                local dim = overlay:FindFirstChild("Dim")
-                if dim then
-                    dim.Visible = true
-                    utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
-                end
+            if dim then
+                dim.Visible = true
+                utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
             end
             utils.SpringTween(colordialog, {Size = UDim2.new(0, 430, 0, 330)}):Play()
             colordialog.Position = UDim2.new(0.5, -215, 0.5, -165)
@@ -400,16 +406,13 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             task.delay(0.22, function()
                 if not isopen then
                     colordialog.Visible = false
-                    if overlay then
-                        local dim = overlay:FindFirstChild("Dim")
-                        if dim then
-                            utils.Tween(dim, {BackgroundTransparency = 1}, 0.22):Play()
-                            task.delay(0.12, function()
-                                dim.Visible = false
-                            end)
-                        end
-                        overlay.Visible = false
+                    if dim then
+                        utils.Tween(dim, {BackgroundTransparency = 1}, 0.22):Play()
+                        task.delay(0.12, function()
+                            dim.Visible = false
+                        end)
                     end
+                    dim.Visible = false
                     dimmed_wso = false
                 end
             end)
