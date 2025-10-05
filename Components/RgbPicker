@@ -342,15 +342,14 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             end)
         end
     end)
-    
     local dim
     local overlay
     if game.CoreGui:FindFirstChild("PCMenu") then
-        overlay = game.CoreGui:FindFirstChild("PCMenu").WindowHolder.Main:FindFirstChild("dimoverlay")
+        overlay = game.CoreGui.PCMenu.WindowHolder.Main.RGBOverlay
     end
     if overlay then
         overlay.Visible = true
-        dim = overlay:FindFirstChild("Dim")
+        dim = overlay:FindFirstChild("RGBDim")
     end
 
     donebtn.MouseEnter:Connect(function()
