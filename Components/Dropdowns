@@ -56,11 +56,25 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         if callback then callback(currentoption) end
     end
 
-    local dim
-    local overlay
-    if game.CoreGui:FindFirstChild("PCMenu") then
-        overlay = game.CoreGui.PCMenu.WindowHolder.Main:FindFirstChild("DropdownOverlay")
-        dim = overlay:FindFirstChild("DropdownDim")
+    local overlay = game.CoreGui.PCMenu.WindowHolder.Main:FindFirstChild("DropdownOverlay")
+    if not overlay then
+        overlay = Instance.new("Frame")
+        overlay.Name = "DropdownOverlay"
+        overlay.Size = UDim2.new(1, 0, 1, 0)
+        overlay.BackgroundTransparency = 1
+        overlay.BackgroundColor3 = Color3.new(0,0,0)
+        overlay.ZIndex = 99
+        overlay.Parent = game.CoreGui.PCMenu.WindowHolder.Main
+    end
+    local dim = overlay:FindFirstChild("DropdownDim")
+    if not dim then
+        dim = Instance.new("Frame")
+        dim.Name = "DropdownDim"
+        dim.Size = UDim2.new(1, 0, 1, 0)
+        dim.BackgroundColor3 = Color3.new(0,0,0)
+        dim.BackgroundTransparency = 1
+        dim.ZIndex = 100
+        dim.Parent = overlay
     end
 
     local function toggledropdown()
@@ -71,6 +85,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
             if dimmed_wso then return end
             local targetheight = math.min(#options, 8) * 28 + 12
             if dim then
+                overlay.Visible = true
                 dim.Visible = true
                 utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
             end
