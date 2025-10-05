@@ -29,7 +29,6 @@ local vrui = {
     base = nil,
     bx = nil
 }
-local dimmed_wso = false
 function formatnum(num)
     return utils.FormatNumber(num)
 end
@@ -116,23 +115,40 @@ function uilib:CreateWindow(title, size)
     mainf.Position = UDim2.new(0, 0, 0, 0)
     mainf.Size = UDim2.new(0, basesize.X, 0, basesize.Y)
     mainf.ClipsDescendants = true
-    local overlay = Instance.new("Frame")
-    overlay.Name = "dimoverlay"
-    overlay.Parent = mainf
-    overlay.BackgroundTransparency = 1
-    overlay.BorderSizePixel = 0
-    overlay.Size = UDim2.new(1,0,1,0)
-    overlay.ZIndex = 29
-    overlay.Visible = false
-    local dim = Instance.new("Frame")
-    dim.Name = "Dim"
-    dim.Parent = overlay
-    dim.BackgroundColor3 = Color3.new(0,0,0)
-    dim.BackgroundTransparency = 1
-    dim.BorderSizePixel = 0
-    dim.Size = UDim2.new(1,0,1,0)
-    dim.ZIndex = 29
-    dim.Visible = false
+    local RGBOverlay = Instance.new("Frame")
+    RGBOverlay.Name = "RGBOverlay"
+    RGBOverlay.Parent = mainf
+    RGBOverlay.BackgroundTransparency = 1
+    RGBOverlay.BorderSizePixel = 0
+    RGBOverlay.Size = UDim2.new(1,0,1,0)
+    RGBOverlay.ZIndex = 29
+    RGBOverlay.Visible = false
+    local RGBDim = Instance.new("Frame")
+    RGBDim.Name = "RGBDim"
+    RGBDim.Parent = RGBOverlay
+    RGBDim.BackgroundColor3 = Color3.new(0,0,0)
+    RGBDim.BackgroundTransparency = 1
+    RGBDim.BorderSizePixel = 0
+    RGBDim.Size = UDim2.new(1,0,1,0)
+    RGBDim.ZIndex = 29
+    RGBDim.Visible = false
+    local DropdownOverlay = Instance.new("Frame")
+    DropdownOverlay.Name = "DropdownOverlay"
+    DropdownOverlay.Parent = mainf
+    DropdownOverlay.BackgroundTransparency = 1
+    DropdownOverlay.BorderSizePixel = 0
+    DropdownOverlay.Size = UDim2.new(1,0,1,0)
+    DropdownOverlay.ZIndex = 29
+    DropdownOverlay.Visible = false
+    local DropdownDim = Instance.new("Frame")
+    DropdownDim.Name = "DropdownDim"
+    DropdownDim.Parent = DropdownOverlay
+    DropdownDim.BackgroundColor3 = Color3.new(0,0,0)
+    DropdownDim.BackgroundTransparency = 1
+    DropdownDim.BorderSizePixel = 0
+    DropdownDim.Size = UDim2.new(1,0,1,0)
+    DropdownDim.ZIndex = 29
+    DropdownDim.Visible = false
     createcorner(mainf, 4)
     local uiscale = Instance.new("UIScale")
     uiscale.Parent = holder
@@ -544,7 +560,7 @@ function uilib:CreateWindow(title, size)
                 }
             end
             function spacerobj:AddRgb(text, defaultr, defaultg, defaultb, callback)
-                local api = rgbpicker.Create(self.content, theme, text, defaultr, defaultg, defaultb, callback, overlay)
+                local api = rgbpicker.Create(self.content, theme, text, defaultr, defaultg, defaultb, callback)
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -553,7 +569,7 @@ function uilib:CreateWindow(title, size)
                 }
             end
             function spacerobj:AddDropdown(text, options, default, callback)
-                local api = dropdowns.Create(self.content, theme, text, options, default, callback, overlay)
+                local api = dropdowns.Create(self.content, theme, text, options, default, callback)
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
