@@ -444,6 +444,7 @@ function uilib:CreateWindow(title, size)
         tabcontentlayout.Parent = tabcontent
         tabcontentlayout.SortOrder = Enum.SortOrder.LayoutOrder
         tabcontentlayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        tabcontentlayout.Padding = UDim.new(0, 9)
         local tabcontentp = Instance.new("UIPadding")
         tabcontentp.Parent = tabcontent
         tabcontentp.PaddingTop = UDim.new(0, 8)
