@@ -24,11 +24,6 @@ local notificationsettings = notificationlibrary.GetNotificationSettings()
 local themename = "Dark"
 local theme = themes.GetTheme(themename)
 local uilib = {}
-local vrui = {
-    background = nil,
-    base = nil,
-    bx = nil
-}
 function formatnum(num)
     return utils.FormatNumber(num)
 end
@@ -52,51 +47,59 @@ function uilib:CreateWindow(title, size)
     screengui.Name = "UI"
     screengui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     screengui.ResetOnSpawn = false
-    vrui.base = Instance.new("Part")
-    vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
-    vrui.base.Transparency = 1
-    vrui.base.CanCollide = false
-    vrui.base.Massless = true
-    vrui.base.Parent = workspace
-    local baseweld = Instance.new("Weld")
-    if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
-        baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
+    -- vrui.base = Instance.new("Part")
+    -- vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
+    -- vrui.base.Transparency = 1
+    -- vrui.base.CanCollide = false
+    -- vrui.base.Massless = true
+    -- vrui.base.Parent = workspace
+    -- local baseweld = Instance.new("Weld")
+    -- if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
+    --     baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
+    -- else
+    --     baseweld.Enabled = false
+    --     vrui.base.Anchored = true
+    -- end
+    -- baseweld.Part1 = vrui.base
+    -- baseweld.C1 = CFrame.new(0, -0.2, 0)
+    -- baseweld.Parent = vrui.base
+    -- vrui.bx = Instance.new("Part")
+    -- vrui.bx.Size = Vector3.new(1.1, 1, 0.01)
+    -- vrui.bx.Transparency = 1
+    -- vrui.bx.CanCollide = false
+    -- vrui.bx.Massless = true
+    -- vrui.bx.Parent = workspace
+    -- local menuweld = Instance.new("Weld")
+    -- menuweld.Part0 = vrui.base
+    -- menuweld.Part1 = vrui.bx
+    -- menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
+    -- menuweld.Parent = vrui.bx
+    -- local sgui
+    -- if game:GetService("VRService").VREnabled then
+    --     sgui = Instance.new("SurfaceGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+    --     sgui.Adornee = vrui.bx
+    --     sgui.AlwaysOnTop = true
+    --     sgui.ResetOnSpawn = false
+    --     sgui.CanvasSize = Vector2.new(572, 512)
+    --     sgui.Name = "VRMenu"
+    -- else
+    --     sgui = Instance.new("ScreenGui")
+    --     sgui.ResetOnSpawn = false
+    --     sgui.Name = "PCMenu"
+    --     sgui.IgnoreGuiInset = true
+    --     if not runservice:IsStudio() then
+    --         sgui.Parent = game.CoreGui
+    --     else
+    --         sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    --     end
+    local sgui = Instance.new("ScreenGui")
+    sgui.ResetOnSpawn = false
+    sgui.Name = "PCMenu"
+    sgui.IgnoreGuiInset = true
+    if not runservice:IsStudio() then
+        sgui.Parent = game.CoreGui
     else
-        baseweld.Enabled = false
-        vrui.base.Anchored = true
-    end
-    baseweld.Part1 = vrui.base
-    baseweld.C1 = CFrame.new(0, -0.2, 0)
-    baseweld.Parent = vrui.base
-    vrui.bx = Instance.new("Part")
-    vrui.bx.Size = Vector3.new(1.1, 1, 0.01)
-    vrui.bx.Transparency = 1
-    vrui.bx.CanCollide = false
-    vrui.bx.Massless = true
-    vrui.bx.Parent = workspace
-    local menuweld = Instance.new("Weld")
-    menuweld.Part0 = vrui.base
-    menuweld.Part1 = vrui.bx
-    menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
-    menuweld.Parent = vrui.bx
-    local sgui
-    if game:GetService("VRService").VREnabled then
-        sgui = Instance.new("SurfaceGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-        sgui.Adornee = vrui.bx
-        sgui.AlwaysOnTop = true
-        sgui.ResetOnSpawn = false
-        sgui.CanvasSize = Vector2.new(572, 512)
-        sgui.Name = "VRMenu"
-    else
-        sgui = Instance.new("ScreenGui")
-        sgui.ResetOnSpawn = false
-        sgui.Name = "PCMenu"
-        sgui.IgnoreGuiInset = true
-        if not runservice:IsStudio() then
-            sgui.Parent = game.CoreGui
-        else
-            sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-        end
+        sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
     end
     local holder = Instance.new("Frame")
     holder.Name = "WindowHolder"
@@ -104,7 +107,7 @@ function uilib:CreateWindow(title, size)
     holder.BackgroundTransparency = 1
     holder.BorderSizePixel = 0
     holder.Position = UDim2.new(0.30302, 0, 0.26597, 0)
-    holder.Size = game:GetService("VRService").VREnabled and UDim2.new(1, 0, 1, 0) or (size or UDim2.new(0, 584, 0, 475))
+    holder.Size = size or UDim2.new(0, 584, 0, 475)
     local basesize = Vector2.new((size and size.X.Offset) or 584, (size and size.Y.Offset) or 475)
     local mainf = Instance.new("Frame")
     mainf.Name = "Main"
@@ -153,10 +156,6 @@ function uilib:CreateWindow(title, size)
     local uiscale = Instance.new("UIScale")
     uiscale.Parent = holder
     uiscale.Scale = 0.96
-    if runservice:IsStudio() and game:GetService("VRService").VREnabled then
-        menuweld.Part0 = game.Players.LocalPlayer.Character:WaitForChild("Head")
-        menuweld.C1 = CFrame.new(0, 0.3, -0.5)
-    end
     local titleb = Instance.new("Frame")
     titleb.Name = "TitleBar"
     titleb.Parent = mainf
@@ -164,10 +163,7 @@ function uilib:CreateWindow(title, size)
     titleb.BorderSizePixel = 0
     titleb.Size = UDim2.new(1, 0, 0, 39)
     createcorner(titleb, 4)
-    local titlebarStroke = Instance.new("UIStroke")
-    titlebarStroke.Parent = titleb
-    titlebarStroke.Color = Color3.fromRGB(60, 60, 60)
-    titlebarStroke.Thickness = 1
+    createstroke(titleb, Color3.fromRGB(60, 60, 60), 1)
     local titlel = Instance.new("TextLabel")
     titlel.Name = "Title"
     titlel.Parent = titleb
@@ -187,10 +183,7 @@ function uilib:CreateWindow(title, size)
     sidebar.BorderSizePixel = 0
     sidebar.Position = UDim2.new(0, 0, 0, 39)
     sidebar.Size = UDim2.new(0, 136, 1, -39)
-    local sidebarStroke = Instance.new("UIStroke")
-    sidebarStroke.Parent = sidebar
-    sidebarStroke.Color = Color3.fromRGB(60, 60, 60)
-    sidebarStroke.Thickness = 1
+    createstroke(sidebar, Color3.fromRGB(60, 60, 60), 1)
     local tablayout = Instance.new("UIListLayout")
     tablayout.Parent = sidebar
     tablayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -439,10 +432,7 @@ function uilib:CreateWindow(title, size)
         tabbutton.TextColor3 = Color3.fromRGB(255, 255, 255)
         tabbutton.TextSize = 14
         createcorner(tabbutton, 2)
-        local tabStroke = Instance.new("UIStroke")
-        tabStroke.Parent = tabbutton
-        tabStroke.Color = Color3.fromRGB(60, 60, 60)
-        tabStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+        createstroke(tabbutton, Color3.fromRGB(60, 60, 60), 1)
         local tabcontent = Instance.new("ScrollingFrame")
         tabcontent.Name = name .. "Content"
         tabcontent.Parent = content
@@ -489,10 +479,7 @@ function uilib:CreateWindow(title, size)
             spacer.BorderSizePixel = 0
             spacer.Size = UDim2.new(0, 400, 0, 89)
             createcorner(spacer, 5)
-            local spacerStroke = Instance.new("UIStroke")
-            spacerStroke.Parent = spacer
-            spacerStroke.Color = Color3.fromRGB(60, 60, 60)
-            spacerStroke.Thickness = 1
+            createstroke(spacer, Color3.fromRGB(60, 60, 60), 1)
             local spacertitle = Instance.new("TextLabel")
             spacertitle.Name = "SpacerTitle"
             spacertitle.Parent = spacer
