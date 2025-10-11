@@ -5,6 +5,9 @@ local runservice = game:GetService("RunService")
 if game.CoreGui:FindFirstChild("PCMenu") then
     game.CoreGui:FindFirstChild("PCMenu"):Destroy()
 end
+if game.CoreGui:FindFirstChild("VRMenu") then
+    game.CoreGui:FindFirstChild("VRMenu"):Destroy()
+end
 
 function GithubDirectory(string)
 	return "https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/" .. string
@@ -664,15 +667,16 @@ end
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
--- Global destroy function for the entire UI library
 function uilib:Destroy()
-    -- Destroy any existing PCMenu
-    local existingMenu = game.CoreGui:FindFirstChild("PCMenu")
-    if existingMenu then
-        existingMenu:Destroy()
+    local existingPCMenu = game.CoreGui:FindFirstChild("PCMenu")
+    if existingPCMenu then
+        existingPCMenu:Destroy()
+    end
+    local existingVRMenu = game.CoreGui:FindFirstChild("VRMenu")
+    if existingVRMenu then
+        existingVRMenu:Destroy()
     end
     
-    -- Destroy any VR menu parts
     if self._vrmenu_parts then
         local vrui = self._vrmenu_parts
         if vrui.base and vrui.base.Parent then
@@ -684,7 +688,6 @@ function uilib:Destroy()
         self._vrmenu_parts = nil
     end
     
-    -- Clear any global references
     self._vrmenu_parts = nil
 end
 
