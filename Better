@@ -43,63 +43,76 @@ function springtween(object, properties)
     return utils.SpringTween(object, properties)
 end
 function uilib:CreateWindow(title, size)
-    local screengui = Instance.new("ScreenGui")
-    screengui.Name = "UI"
-    screengui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    screengui.ResetOnSpawn = false
-    -- vrui.base = Instance.new("Part")
-    -- vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
-    -- vrui.base.Transparency = 1
-    -- vrui.base.CanCollide = false
-    -- vrui.base.Massless = true
-    -- vrui.base.Parent = workspace
-    -- local baseweld = Instance.new("Weld")
-    -- if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
-    --     baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
-    -- else
-    --     baseweld.Enabled = false
-    --     vrui.base.Anchored = true
-    -- end
-    -- baseweld.Part1 = vrui.base
-    -- baseweld.C1 = CFrame.new(0, -0.2, 0)
-    -- baseweld.Parent = vrui.base
-    -- vrui.bx = Instance.new("Part")
-    -- vrui.bx.Size = Vector3.new(1.1, 1, 0.01)
-    -- vrui.bx.Transparency = 1
-    -- vrui.bx.CanCollide = false
-    -- vrui.bx.Massless = true
-    -- vrui.bx.Parent = workspace
-    -- local menuweld = Instance.new("Weld")
-    -- menuweld.Part0 = vrui.base
-    -- menuweld.Part1 = vrui.bx
-    -- menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
-    -- menuweld.Parent = vrui.bx
-    -- local sgui
-    -- if game:GetService("VRService").VREnabled then
-    --     sgui = Instance.new("SurfaceGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-    --     sgui.Adornee = vrui.bx
-    --     sgui.AlwaysOnTop = true
-    --     sgui.ResetOnSpawn = false
-    --     sgui.CanvasSize = Vector2.new(572, 512)
-    --     sgui.Name = "VRMenu"
-    -- else
-    --     sgui = Instance.new("ScreenGui")
-    --     sgui.ResetOnSpawn = false
-    --     sgui.Name = "PCMenu"
-    --     sgui.IgnoreGuiInset = true
-    --     if not runservice:IsStudio() then
-    --         sgui.Parent = game.CoreGui
-    --     else
-    --         sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-    --     end
-    local sgui = Instance.new("ScreenGui")
-    sgui.ResetOnSpawn = false
-    sgui.Name = "PCMenu"
-    sgui.IgnoreGuiInset = true
-    if not runservice:IsStudio() then
-        sgui.Parent = game.CoreGui
-    else
+    local DEFAULT_MENU_DISTANCE = -3
+    local menudistance = DEFAULT_MENU_DISTANCE
+
+    local vrui = {}
+
+    function uilib.SetMenuDistance(dist)
+        menudistance = dist
+        if vrui.menuweld and vrui.menuweld.Parent then
+            vrui.menuweld.C1 = CFrame.new(0, 0, menudistance) * CFrame.Angles(math.rad(-90), 0, 0)
+        end
+    end
+
+    local sgui
+    if game:GetService("VRService").VREnabled then
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        local head = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head")
+        if not head then
+            head = LocalPlayer.Character and LocalPlayer.Character:WaitForChild("Head")
+        end
+
+        vrui.base = Instance.new("Part")
+        vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
+        vrui.base.Transparency = 1
+        vrui.base.CanCollide = false
+        vrui.base.Massless = true
+        vrui.base.Anchored = false
+        vrui.base.Name = "MenuBasePart"
+        vrui.base.Parent = workspace
+
+        vrui.baseweld = Instance.new("Weld")
+        vrui.baseweld.Part0 = head
+        vrui.baseweld.Part1 = vrui.base
+        vrui.baseweld.C1 = CFrame.new(0, 0, 0)
+        vrui.baseweld.Parent = vrui.base
+
+        vrui.bx = Instance.new("Part")
+        vrui.bx.Size = Vector3.new(4, 2.2, 0.02)
+        vrui.bx.Transparency = 1
+        vrui.bx.CanCollide = false
+        vrui.bx.Massless = true
+        vrui.bx.Anchored = false
+        vrui.bx.Name = "MenuAdorneePart"
+        vrui.bx.Parent = workspace
+
+        vrui.menuweld = Instance.new("Weld")
+        vrui.menuweld.Part0 = vrui.base
+        vrui.menuweld.Part1 = vrui.bx
+        vrui.menuweld.C1 = CFrame.new(0, 0, menudistance) * CFrame.Angles(math.rad(-90), 0, 0)
+        vrui.menuweld.Parent = vrui.bx
+
+        sgui = Instance.new("SurfaceGui")
+        sgui.Adornee = vrui.bx
+        sgui.AlwaysOnTop = true
+        sgui.ResetOnSpawn = false
+        sgui.CanvasSize = Vector2.new(572, 512)
+        sgui.Name = "VRMenu"
         sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+        uilib._vrmenu_parts = vrui
+    else
+        sgui = Instance.new("ScreenGui")
+        sgui.ResetOnSpawn = false
+        sgui.Name = "PCMenu"
+        sgui.IgnoreGuiInset = true
+        if not runservice:IsStudio() then
+            sgui.Parent = game.CoreGui
+        else
+            sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        end
     end
     local holder = Instance.new("Frame")
     holder.Name = "WindowHolder"
@@ -324,7 +337,7 @@ function uilib:CreateWindow(title, size)
     local prevmainpos = mainf.Position
     local restoreg = Instance.new("ScreenGui")
     restoreg.Name = "RestoreStub"
-    restoreg.Parent = screengui
+    restoreg.Parent = game.CoreGui
     restoreg.ResetOnSpawn = false
     local restorebtn = Instance.new("TextButton")
     restorebtn.Name = "Restore"
@@ -594,7 +607,6 @@ function uilib:CreateWindow(title, size)
     function menu:applytheme(themename)
         return self:ApplyTheme(themename)
     end
-
     smtween(uiscale, {Scale = 1}, 0.25, Enum.EasingStyle.Quad):Play()
 
     local uiconfig = {
@@ -606,10 +618,75 @@ function uilib:CreateWindow(title, size)
     menu.UIConfigRef = uiconfig
     menu.UIScaleRef = uiscale
 
+    function menu:Unload()
+        if uilib._vrmenu_parts then
+            local vrui = uilib._vrmenu_parts
+            if vrui.base and vrui.base.Parent then
+                vrui.base:Destroy()
+            end
+            if vrui.bx and vrui.bx.Parent then
+                vrui.bx:Destroy()
+            end
+            uilib._vrmenu_parts = nil
+        end
+        
+        if restoreg and restoreg.Parent then
+            restoreg:Destroy()
+        end
+        
+        if sgui and sgui.Parent then
+            sgui:Destroy()
+        end
+        
+        self.main = nil
+        self.holder = nil
+        self.tabs = nil
+        self.tablayout = nil
+        self.contentcontainer = nil
+        self.contentlayout = nil
+        self.UIConfigRef = nil
+        self.UIScaleRef = nil
+        
+        sgui = nil
+        holder = nil
+        mainf = nil
+        titleb = nil
+        sidebar = nil
+        content = nil
+        restoreg = nil
+        restorebtn = nil
+        tabs = nil
+        currenttab = nil
+    end
+
     return menu
 end
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
+
+-- Global destroy function for the entire UI library
+function uilib:Destroy()
+    -- Destroy any existing PCMenu
+    local existingMenu = game.CoreGui:FindFirstChild("PCMenu")
+    if existingMenu then
+        existingMenu:Destroy()
+    end
+    
+    -- Destroy any VR menu parts
+    if self._vrmenu_parts then
+        local vrui = self._vrmenu_parts
+        if vrui.base and vrui.base.Parent then
+            vrui.base:Destroy()
+        end
+        if vrui.bx and vrui.bx.Parent then
+            vrui.bx:Destroy()
+        end
+        self._vrmenu_parts = nil
+    end
+    
+    -- Clear any global references
+    self._vrmenu_parts = nil
+end
 
 notificationlibrary.SendNotification("UI Library Loaded.", "Better")
 
