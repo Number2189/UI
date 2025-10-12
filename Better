@@ -46,7 +46,7 @@ function springtween(object, properties)
     return utils.SpringTween(object, properties)
 end
 function uilib:CreateWindow(title, size)
-    local DEFAULT_MENU_DISTANCE = -6
+    local DEFAULT_MENU_DISTANCE = 3
     local menudistance = DEFAULT_MENU_DISTANCE
 
     local vrui = {}
@@ -54,7 +54,7 @@ function uilib:CreateWindow(title, size)
     function uilib.SetMenuDistance(dist)
         menudistance = dist
         if vrui.menuweld and vrui.menuweld.Parent then
-            vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
+            vrui.menuweld.C1 = CFrame.new(0, 0, menudistance) * CFrame.Angles(math.rad(-90), 0, 0)
         end
     end
 
@@ -94,7 +94,7 @@ function uilib:CreateWindow(title, size)
         vrui.menuweld = Instance.new("Weld")
         vrui.menuweld.Part0 = vrui.base
         vrui.menuweld.Part1 = vrui.bx
-        vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
+        vrui.menuweld.C1 = CFrame.new(0, 0, menudistance) * CFrame.Angles(math.rad(-90), 0, 0)
         vrui.menuweld.Parent = vrui.bx
 
         sgui = Instance.new("SurfaceGui")
@@ -667,7 +667,7 @@ end
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
-function uilib:Destroy()
+function uilib:Unload()
     local existingPCMenu = game.CoreGui:FindFirstChild("PCMenu")
     if existingPCMenu then
         existingPCMenu:Destroy()
