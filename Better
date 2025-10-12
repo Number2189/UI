@@ -198,11 +198,11 @@ function uilib:CreateWindow(title, size, options)
             end
         end
         
+        -- Apply transparency to main frame and all descendants
+        mainf.BackgroundTransparency = 0.42
         for _, descendant in pairs(mainf:GetDescendants()) do
             setTransparency(descendant, 0.42)
         end
-        
-        mainf.BackgroundTransparency = 0.42
     end
     
     local uiscale = Instance.new("UIScale")
@@ -214,6 +214,7 @@ function uilib:CreateWindow(title, size, options)
     titleb.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     titleb.BorderSizePixel = 0
     titleb.Size = UDim2.new(1, 0, 0, 39)
+    if enableAcrylic then titleb.BackgroundTransparency = 0.42 end
     createcorner(titleb, 4)
     createstroke(titleb, Color3.fromRGB(60, 60, 60), 1)
     local titlel = Instance.new("TextLabel")
@@ -235,6 +236,7 @@ function uilib:CreateWindow(title, size, options)
     sidebar.BorderSizePixel = 0
     sidebar.Position = UDim2.new(0, 0, 0, 39)
     sidebar.Size = UDim2.new(0, 136, 1, -39)
+    if enableAcrylic then sidebar.BackgroundTransparency = 0.42 end
     createstroke(sidebar, Color3.fromRGB(60, 60, 60), 1)
     local tablayout = Instance.new("UIListLayout")
     tablayout.Parent = sidebar
@@ -711,12 +713,14 @@ function uilib:CreateWindow(title, size, options)
             spacerlayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() spacerobj:updatespacersize() end)
             function spacerobj:AddButton(text, callback)
                 local button = buttons.Create(self.content, theme, text, callback)
+                if enableAcrylic then button.BackgroundTransparency = 0.42 end
                 table.insert(self.items, {element = button, height = 25})
                 self:updatespacersize()
                 return button
             end
             function spacerobj:AddToggle(text, default, callback)
                 local api = toggles.Create(self.content, theme, text, default, callback)
+                if enableAcrylic then api.Instance.BackgroundTransparency = 0.42 end
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -726,6 +730,7 @@ function uilib:CreateWindow(title, size, options)
             end
             function spacerobj:AddRgb(text, defaultr, defaultg, defaultb, callback)
                 local api = rgbpicker.Create(self.content, theme, text, defaultr, defaultg, defaultb, callback)
+                if enableAcrylic then api.Instance.BackgroundTransparency = 0.42 end
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -735,6 +740,7 @@ function uilib:CreateWindow(title, size, options)
             end
             function spacerobj:AddDropdown(text, options, default, callback)
                 local api = dropdowns.Create(self.content, theme, text, options, default, callback)
+                if enableAcrylic then api.Instance.BackgroundTransparency = 0.42 end
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -744,6 +750,7 @@ function uilib:CreateWindow(title, size, options)
             end
             function spacerobj:AddKeybind(text, defaultkey, callback)
                 local api = keybinds.Create(self.content, theme, text, defaultkey, callback)
+                if enableAcrylic then api.Instance.BackgroundTransparency = 0.42 end
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -753,6 +760,7 @@ function uilib:CreateWindow(title, size, options)
             end
             function spacerobj:AddSlider(text, min, max, default, callback, step)
                 local api = sliders.Create(self.content, theme, text, min, max, default, callback, step)
+                if enableAcrylic then api.Instance.BackgroundTransparency = 0.42 end
                 table.insert(self.items, {element = api.Instance, height = 25})
                 self:updatespacersize()
                 return {
@@ -845,15 +853,15 @@ uilib.Unload = function()
         existingVRMenu:Destroy()
     end
     
-    if self._vrmenu_parts then
-        local vrui = self._vrmenu_parts
+    if uilib._vrmenu_parts then
+        local vrui = uilib._vrmenu_parts
         if vrui.base and vrui.base.Parent then
             vrui.base:Destroy()
         end
         if vrui.billboard and vrui.billboard.Parent then
             vrui.billboard:Destroy()
         end
-        self._vrmenu_parts = nil
+        uilib._vrmenu_parts = nil
     end
     
     if VRMenuParts and VRMenuParts.Parent then
@@ -866,7 +874,7 @@ uilib.Unload = function()
         DropdownFolder:Destroy()
     end
     
-    self._vrmenu_parts = nil
+    uilib._vrmenu_parts = nil
 end
 
 notificationlibrary.SendNotification("UI Loaded.", "Better")
