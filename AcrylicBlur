@@ -105,8 +105,21 @@ function updateGui(blurObj)
 	
 	part.Transparency = PART_TRANSPARENCY
 	
-	local corner0 = frame.AbsolutePosition + BLUR_SIZE
-	local corner1 = corner0 + frame.AbsoluteSize - BLUR_SIZE*2
+	local framePos = frame.AbsolutePosition
+	local frameSize = frame.AbsoluteSize
+	
+	local corner0 = framePos + BLUR_SIZE
+	local corner1 = corner0 + frameSize - BLUR_SIZE*2
+	
+	corner0 = Vector2.new(
+		math.max(corner0.X, framePos.X),
+		math.max(corner0.Y, framePos.Y)
+	)
+	corner1 = Vector2.new(
+		math.min(corner1.X, framePos.X + frameSize.X),
+		math.min(corner1.Y, framePos.Y + frameSize.Y)
+	)
+	
 	local ray0, ray1
 
 	if (blurObj.IgnoreGuiInset) then
