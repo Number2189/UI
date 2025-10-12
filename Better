@@ -59,39 +59,39 @@ function uilib:CreateWindow(title, size)
     end
 
     local sgui
-    if game:GetService("VRService").VREnabled then
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer
-        local head = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head")
-        if not head then
-            head = LocalPlayer.Character and LocalPlayer.Character:WaitForChild("Head")
-        end
+    -- if game:GetService("VRService").VREnabled then
+    --     local Players = game:GetService("Players")
+    --     local LocalPlayer = Players.LocalPlayer
+    --     local head = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head")
+    --     if not head then
+    --         head = LocalPlayer.Character and LocalPlayer.Character:WaitForChild("Head")
+    --     end
 
-        vrui.bx = Instance.new("Part")
-        vrui.bx.Size = Vector3.new(4, 2.2, 0.02)
-        vrui.bx.Transparency = 1
-        vrui.bx.CanCollide = false
-        vrui.bx.Massless = true
-        vrui.bx.Anchored = false
-        vrui.bx.Name = "MenuAdorneePart"
-        vrui.bx.Parent = workspace
+    --     vrui.bx = Instance.new("Part")
+    --     vrui.bx.Size = Vector3.new(4, 2.2, 0.02)
+    --     vrui.bx.Transparency = 1
+    --     vrui.bx.CanCollide = false
+    --     vrui.bx.Massless = true
+    --     vrui.bx.Anchored = false
+    --     vrui.bx.Name = "MenuAdorneePart"
+    --     vrui.bx.Parent = workspace
 
-        vrui.menuweld = Instance.new("Weld")
-        vrui.menuweld.Part0 = head
-        vrui.menuweld.Part1 = vrui.bx
-        vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
-        vrui.menuweld.Parent = vrui.bx
+    --     vrui.menuweld = Instance.new("Weld")
+    --     vrui.menuweld.Part0 = head
+    --     vrui.menuweld.Part1 = vrui.bx
+    --     vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
+    --     vrui.menuweld.Parent = vrui.bx
 
-        sgui = Instance.new("SurfaceGui")
-        sgui.Adornee = vrui.bx
-        sgui.AlwaysOnTop = true
-        sgui.ResetOnSpawn = false
-        sgui.CanvasSize = Vector2.new(572, 512)
-        sgui.Name = "VRMenu"
-        sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    --     sgui = Instance.new("SurfaceGui")
+    --     sgui.Adornee = vrui.bx
+    --     sgui.AlwaysOnTop = true
+    --     sgui.ResetOnSpawn = false
+    --     sgui.CanvasSize = Vector2.new(572, 512)
+    --     sgui.Name = "VRMenu"
+    --     sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-        uilib._vrmenu_parts = vrui
-    else
+    --     uilib._vrmenu_parts = vrui
+    -- else
         sgui = Instance.new("ScreenGui")
         sgui.ResetOnSpawn = false
         sgui.Name = "PCMenu"
@@ -101,7 +101,7 @@ function uilib:CreateWindow(title, size)
         else
             sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
         end
-    end
+    -- end
     local holder = Instance.new("Frame")
     holder.Name = "WindowHolder"
     holder.Parent = sgui
