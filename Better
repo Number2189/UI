@@ -131,7 +131,7 @@ function uilib:CreateWindow(title, size)
     holder.Parent = sgui
     holder.BackgroundTransparency = 1
     holder.BorderSizePixel = 0
-    holder.Position = UDim2.new(0.30302, 0, 0.26597, 0)
+    holder.Position = UDim2.new(0, 0, 0, 0)
     holder.Size = size or UDim2.new(0, 584, 0, 475)
     local basesize = Vector2.new((size and size.X.Offset) or 584, (size and size.Y.Offset) or 475)
     local mainf = Instance.new("Frame")
@@ -700,7 +700,6 @@ function uilib:Unload()
         self._vrmenu_parts = nil
     end
     
-    -- Clean up VR folders like in uimainmodule.lua
     if VRMenuParts and VRMenuParts.Parent then
         VRMenuParts:Destroy()
     end
