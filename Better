@@ -86,7 +86,7 @@ function uilib:CreateWindow(title, size)
         sgui.Adornee = vrui.bx
         sgui.AlwaysOnTop = true
         sgui.ResetOnSpawn = false
-        sgui.CanvasSize = Vector2.new(572, 512)
+        sgui.CanvasSize = Vector2.new(400, 512)
         sgui.Face = Enum.NormalId.Back
         sgui.Name = "VRMenu"
         sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
