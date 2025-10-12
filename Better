@@ -71,6 +71,8 @@ function uilib:CreateWindow(title, size)
         vrui.bx.Size = Vector3.new(4, 2.2, 0.02)
         vrui.bx.Transparency = 1
         vrui.bx.CanCollide = false
+		vrui.bx.CanTouch = false
+		vrui.bx.CanQuery = false
         vrui.bx.Massless = true
         vrui.bx.Anchored = false
         vrui.bx.Name = "MenuAdorneePart"
