@@ -784,7 +784,7 @@ function uilib:CreateWindow(title, size, options)
     
     menu:LoadUserProfile()
 
-    function menu:Unload()
+    menu.Unload = function()
         if blurEffect then
             blurEffect:Destroy()
             blurEffect = nil
@@ -835,7 +835,7 @@ end
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
-function uilib:Unload()
+uilib.Unload = function()
     local existingPCMenu = game.CoreGui:FindFirstChild("PCMenu")
     if existingPCMenu then
         existingPCMenu:Destroy()
