@@ -36,8 +36,7 @@ local dropdowns = loadstring(game:HttpGet(GithubDirectory("Components/Dropdowns"
 local keybinds = loadstring(game:HttpGet(GithubDirectory("Components/Keybinds")))()
 local notificationsettings = notificationlibrary.GetNotificationSettings()
 
--- Load AcrylicBlur module
-local AcrylicBlur = require(script.Parent.Modules.AcrylicBlur)
+local AcrylicBlur = loadstring(game:HttpGet(GithubDirectory("AcrylicBlur")))()
 
 local themename = "Dark"
 local theme = themes.GetTheme(themename)
