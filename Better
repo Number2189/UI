@@ -267,6 +267,7 @@ function uilib:CreateWindow(title, size)
     profilePicture.Position = UDim2.new(0, 5, 0, 5)
     profilePicture.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
     profilePicture.ScaleType = Enum.ScaleType.Crop
+    profilePicture.ZIndex = 28
     createcorner(profilePicture, 20)
     createstroke(profilePicture, Color3.fromRGB(100, 100, 100), 1)
     
@@ -276,6 +277,7 @@ function uilib:CreateWindow(title, size)
     userInfo.BackgroundTransparency = 1
     userInfo.Size = UDim2.new(1, -55, 1, -10)
     userInfo.Position = UDim2.new(0, 50, 0, 5)
+    userInfo.ZIndex = 28
     
     local displayName = Instance.new("TextLabel")
     displayName.Name = "DisplayName"
@@ -291,6 +293,7 @@ function uilib:CreateWindow(title, size)
     displayName.TextYAlignment = Enum.TextYAlignment.Top
     displayName.TextStrokeTransparency = 0.5
     displayName.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    displayName.ZIndex = 28
     
     local username = Instance.new("TextLabel")
     username.Name = "Username"
@@ -306,6 +309,7 @@ function uilib:CreateWindow(title, size)
     username.TextYAlignment = Enum.TextYAlignment.Top
     username.TextStrokeTransparency = 0.5
     username.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
+    username.ZIndex = 28
     
     local maximized = false
     local dragging = false
