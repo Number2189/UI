@@ -6,6 +6,13 @@ local userinputservice = game:GetService("UserInputService")
 local runservice = game:GetService("RunService")
 
 function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, callback)
+    local windowHolderParent = nil
+    if game.CoreGui:FindFirstChild("PCMenu") then
+        windowHolderParent = game.CoreGui.PCMenu.WindowHolder
+    elseif game.CoreGui:FindFirstChild("VRMenu") then
+        windowHolderParent = game.CoreGui.VRMenu.WindowHolder
+    end
+
     local button = Instance.new("TextButton")
     button.Parent = parent
     button.BackgroundColor3 = theme.dialogbutton
@@ -39,12 +46,6 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     utils.CreateCorner(colorpreview, 4)
 
     local colordialog = Instance.new("Frame")
-    local windowHolderParent = nil
-    if game.CoreGui:FindFirstChild("PCMenu") then
-        windowHolderParent = game.CoreGui.PCMenu.WindowHolder
-    elseif game.CoreGui:FindFirstChild("VRMenu") then
-        windowHolderParent = game.CoreGui.VRMenu.WindowHolder
-    end
     colordialog.Parent = windowHolderParent
     colordialog.BackgroundColor3 = theme.dialog
     colordialog.BorderSizePixel = 0
@@ -350,7 +351,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     end)
     local dim
     local overlay
-    overlay = windowHolderParent.Main.RGBOverlay
+    overlay = rgbOverlay
     if overlay then
         overlay.Visible = true
         dim = overlay:FindFirstChild("RGBDim")
