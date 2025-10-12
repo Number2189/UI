@@ -141,7 +141,7 @@ function uilib:CreateWindow(title, size)
     mainf.BorderSizePixel = 0
     mainf.AnchorPoint = Vector2.new(0, 0)
     mainf.Position = UDim2.new(0, 0, 0, 0)
-    mainf.Size = UDim2.new(0, basesize.X, 0, basesize.Y)
+    mainf.Size = size--UDim2.new(0, basesize.X, 0, basesize.Y)
     mainf.ClipsDescendants = true
     local RGBOverlay = Instance.new("Frame")
     RGBOverlay.Name = "RGBOverlay"
