@@ -1,6 +1,7 @@
 local tweenservice = game:GetService("TweenService")
 local userinputservice = game:GetService("UserInputService")
 local runservice = game:GetService("RunService")
+local VRService = game:GetService("VRService")
 
 if game.CoreGui:FindFirstChild("PCMenu") then
     game.CoreGui:FindFirstChild("PCMenu"):Destroy()
@@ -9,7 +10,6 @@ if game.CoreGui:FindFirstChild("VRMenu") then
     game.CoreGui:FindFirstChild("VRMenu"):Destroy()
 end
 
--- Create VR UI folders like in uimainmodule.lua
 local VRMenuParts = Instance.new("Folder", workspace)
 VRMenuParts.Name = "VRMenuParts"
 
@@ -23,6 +23,8 @@ function GithubDirectory(string)
 	return "https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/" .. string
 end
 local themes = loadstring(game:HttpGet(GithubDirectory("Themes")))()
+local rgbOverlay = nil
+local dropdownOverlay = nil
 local configmanager = loadstring(game:HttpGet("https://raw.githubusercontent.com/Roras520/Lib/refs/heads/main/ConfigManager"))()
 local notificationlibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/Roras520/Lib/refs/heads/main/Notifications"))()
 local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
@@ -149,6 +151,7 @@ function uilib:CreateWindow(title, size)
     RGBOverlay.Size = UDim2.new(1,0,1,0)
     RGBOverlay.ZIndex = 29
     RGBOverlay.Visible = false
+    rgbOverlay = RGBOverlay
     local RGBDim = Instance.new("Frame")
     RGBDim.Name = "RGBDim"
     RGBDim.Parent = RGBOverlay
@@ -166,6 +169,7 @@ function uilib:CreateWindow(title, size)
     DropdownOverlay.Size = UDim2.new(1,0,1,0)
     DropdownOverlay.ZIndex = 29
     DropdownOverlay.Visible = false
+    dropdownOverlay = DropdownOverlay
     local DropdownDim = Instance.new("Frame")
     DropdownDim.Name = "DropdownDim"
     DropdownDim.Parent = DropdownOverlay
@@ -249,48 +253,49 @@ function uilib:CreateWindow(title, size)
     local resizing = false
     local dragstart = nil
     local originalsize = nil
-    
-    titleb.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            if maximized then return end
-            dragging = true
-            drags = input.Position
-            startp = holder.Position
-        end
-    end)
-    
-    resizegrip.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 and not maximized then
-            resizing = true
-            dragstart = userinputservice:GetMouseLocation()
-            originalsize = holder.Size
-        end
-    end)
-    
-    userinputservice.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            if maximized then return end
-            local delta = input.Position - drags
-            holder.Position = UDim2.new(startp.X.Scale, startp.X.Offset + delta.X, startp.Y.Scale, startp.Y.Offset + delta.Y)
-        elseif resizing and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local currentpos = userinputservice:GetMouseLocation()
-            local delta = currentpos - dragstart
-            
-            local newwidth = math.max(100, originalsize.X.Offset + delta.X)
-            local newheight = math.max(100, originalsize.Y.Offset + delta.Y)
-            
-            holder.Size = UDim2.new(0, newwidth, 0, newheight)
-            mainf.Size = UDim2.new(0, newwidth, 0, newheight)
-            resizegrip.Position = UDim2.new(1, -16, 1, -16)
-        end
-    end)
-    
-    userinputservice.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-            resizing = false
-        end
-    end)
+    if not VRService.VREnabled then    
+        titleb.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                if maximized then return end
+                dragging = true
+                drags = input.Position
+                startp = holder.Position
+            end
+        end)
+        
+        resizegrip.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 and not maximized then
+                resizing = true
+                dragstart = userinputservice:GetMouseLocation()
+                originalsize = holder.Size
+            end
+        end)
+        
+        userinputservice.InputChanged:Connect(function(input)
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                if maximized then return end
+                local delta = input.Position - drags
+                holder.Position = UDim2.new(startp.X.Scale, startp.X.Offset + delta.X, startp.Y.Scale, startp.Y.Offset + delta.Y)
+            elseif resizing and input.UserInputType == Enum.UserInputType.MouseMovement then
+                local currentpos = userinputservice:GetMouseLocation()
+                local delta = currentpos - dragstart
+                
+                local newwidth = math.max(100, originalsize.X.Offset + delta.X)
+                local newheight = math.max(100, originalsize.Y.Offset + delta.Y)
+                
+                holder.Size = UDim2.new(0, newwidth, 0, newheight)
+                mainf.Size = UDim2.new(0, newwidth, 0, newheight)
+                resizegrip.Position = UDim2.new(1, -16, 1, -16)
+            end
+        end)
+        
+        userinputservice.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+                resizing = false
+            end
+        end)
+    end
     
     local minsize = Vector2.new(480, 320)
     local function updatescale()
@@ -709,6 +714,6 @@ function uilib:Unload()
     self._vrmenu_parts = nil
 end
 
-notificationlibrary.SendNotification("UI Library Loaded.", "Better")
+notificationlibrary.SendNotification("UI Loaded.", "Better")
 
 return uilib
