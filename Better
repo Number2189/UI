@@ -246,6 +246,62 @@ function uilib:CreateWindow(title, size)
 
     utils.CreateCorner(resizegrip, 4)
     
+    local userProfile = Instance.new("Frame")
+    userProfile.Name = "UserProfile"
+    userProfile.Parent = mainf
+    userProfile.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    userProfile.BorderSizePixel = 0
+    userProfile.Size = UDim2.new(0, 200, 0, 50)
+    userProfile.Position = UDim2.new(0, 10, 1, -60)
+    userProfile.ZIndex = 5
+    createcorner(userProfile, 6)
+    createstroke(userProfile, Color3.fromRGB(60, 60, 60), 1)
+    
+    local profilePicture = Instance.new("ImageLabel")
+    profilePicture.Name = "ProfilePicture"
+    profilePicture.Parent = userProfile
+    profilePicture.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    profilePicture.BorderSizePixel = 0
+    profilePicture.Size = UDim2.new(0, 40, 0, 40)
+    profilePicture.Position = UDim2.new(0, 5, 0, 5)
+    profilePicture.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+    profilePicture.ScaleType = Enum.ScaleType.Crop
+    createcorner(profilePicture, 20)
+    createstroke(profilePicture, Color3.fromRGB(80, 80, 80), 1)
+    
+    local userInfo = Instance.new("Frame")
+    userInfo.Name = "UserInfo"
+    userInfo.Parent = userProfile
+    userInfo.BackgroundTransparency = 1
+    userInfo.Size = UDim2.new(1, -55, 1, -10)
+    userInfo.Position = UDim2.new(0, 50, 0, 5)
+    
+    local displayName = Instance.new("TextLabel")
+    displayName.Name = "DisplayName"
+    displayName.Parent = userInfo
+    displayName.BackgroundTransparency = 1
+    displayName.Size = UDim2.new(1, 0, 0, 20)
+    displayName.Position = UDim2.new(0, 0, 0, 0)
+    displayName.Font = Enum.Font.GothamBold
+    displayName.Text = "Display Name"
+    displayName.TextColor3 = Color3.fromRGB(255, 255, 255)
+    displayName.TextSize = 14
+    displayName.TextXAlignment = Enum.TextXAlignment.Left
+    displayName.TextYAlignment = Enum.TextYAlignment.Top
+    
+    local username = Instance.new("TextLabel")
+    username.Name = "Username"
+    username.Parent = userInfo
+    username.BackgroundTransparency = 1
+    username.Size = UDim2.new(1, 0, 0, 16)
+    username.Position = UDim2.new(0, 0, 0, 20)
+    username.Font = Enum.Font.Gotham
+    username.Text = "@username"
+    username.TextColor3 = Color3.fromRGB(180, 180, 180)
+    username.TextSize = 11
+    username.TextXAlignment = Enum.TextXAlignment.Left
+    username.TextYAlignment = Enum.TextYAlignment.Top
+    
     local maximized = false
     local dragging = false
     local drags = nil
@@ -416,6 +472,35 @@ function uilib:CreateWindow(title, size)
         contentlayout = contentlayout
     }
     local window = menu
+    
+    -- Function to set user profile information
+    function menu:SetUserProfile(displayNameText, usernameText, profileImageUrl)
+        if displayName and displayNameText then
+            displayName.Text = displayNameText
+        end
+        if username and usernameText then
+            username.Text = "@" .. usernameText
+        end
+        if profilePicture and profileImageUrl then
+            profilePicture.Image = profileImageUrl
+        end
+    end
+    
+    -- Function to get current user info and set profile
+    function menu:LoadUserProfile()
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        
+        if LocalPlayer then
+            local displayName = LocalPlayer.DisplayName
+            local username = LocalPlayer.Name
+            local userId = LocalPlayer.UserId
+            
+            -- Set the profile information
+            self:SetUserProfile(displayName, username, "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=150&height=150&format=png")
+        end
+    end
+    
     function menu:ApplyTheme(themename)
         themename = themename or themename
         local newtheme = themes.GetTheme(themename)
@@ -427,6 +512,15 @@ function uilib:CreateWindow(title, size)
         sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
         if self.main:FindFirstChildOfClass("UIStroke") then self.main.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
         if titleb:FindFirstChildOfClass("UIStroke") then titleb.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
+        
+        -- Update user profile theme
+        local userProfile = self.main:FindFirstChild("UserProfile")
+        if userProfile then
+            userProfile.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+            if userProfile:FindFirstChildOfClass("UIStroke") then 
+                userProfile.UIStroke.Color = Color3.fromRGB(60, 60, 60) 
+            end
+        end
         for _, t in pairs(self.tabs) do
             if t.button then
                 t.button.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
@@ -632,6 +726,9 @@ function uilib:CreateWindow(title, size)
 
     menu.UIConfigRef = uiconfig
     menu.UIScaleRef = uiscale
+    
+    -- Load user profile automatically
+    menu:LoadUserProfile()
 
     function menu:Unload()
         if uilib._vrmenu_parts then
