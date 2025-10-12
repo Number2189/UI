@@ -94,7 +94,7 @@ function uilib:CreateWindow(title, size)
         vrui.menuweld = Instance.new("Weld")
         vrui.menuweld.Part0 = vrui.base
         vrui.menuweld.Part1 = vrui.bx
-        vrui.menuweld.C1 = CFrame.new(0, 0, menudistance) * CFrame.Angles(math.rad(-90), 0, 0)
+        vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
         vrui.menuweld.Parent = vrui.bx
 
         sgui = Instance.new("SurfaceGui")
