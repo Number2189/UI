@@ -36,6 +36,9 @@ local dropdowns = loadstring(game:HttpGet(GithubDirectory("Components/Dropdowns"
 local keybinds = loadstring(game:HttpGet(GithubDirectory("Components/Keybinds")))()
 local notificationsettings = notificationlibrary.GetNotificationSettings()
 
+-- Load AcrylicBlur module
+local AcrylicBlur = require(script.Parent.Modules.AcrylicBlur)
+
 local themename = "Dark"
 local theme = themes.GetTheme(themename)
 local uilib = {}
@@ -57,9 +60,14 @@ end
 function springtween(object, properties)
     return utils.SpringTween(object, properties)
 end
-function uilib:CreateWindow(title, size)
+function uilib:CreateWindow(title, size, options)
     local DEFAULT_MENU_DISTANCE = 2.2
     local menudistance = DEFAULT_MENU_DISTANCE
+    
+    -- Handle options
+    options = options or {}
+    local enableAcrylic = options.Acrylic or false
+    local blurIntensity = options.BlurIntensity or 0.25
 
     local vrui = {}
 
@@ -180,6 +188,14 @@ function uilib:CreateWindow(title, size)
     DropdownDim.ZIndex = 29
     DropdownDim.Visible = false
     createcorner(mainf, 4)
+    
+    -- Apply acrylic blur effect if enabled
+    local blurEffect = nil
+    if enableAcrylic then
+        blurEffect = AcrylicBlur.new(mainf, "Rectangle")
+        blurEffect:SetIntensity(blurIntensity)
+    end
+    
     local uiscale = Instance.new("UIScale")
     uiscale.Parent = holder
     uiscale.Scale = 0.96
@@ -252,7 +268,7 @@ function uilib:CreateWindow(title, size)
     userProfile.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     userProfile.BorderSizePixel = 0
     userProfile.Size = UDim2.new(0, 136, 0, 50)
-    userProfile.Position = UDim2.new(0, 8, 1, -60)
+    userProfile.Position = UDim2.new(0, 0, 1, -60)
     userProfile.ZIndex = 28
     userProfile.Visible = true
     --createcorner(userProfile, 6)
@@ -510,6 +526,13 @@ function uilib:CreateWindow(title, size)
         end
     end
     
+    -- Function to set blur intensity
+    function menu:SetBlurIntensity(intensity)
+        if blurEffect then
+            blurEffect:SetIntensity(intensity)
+        end
+    end
+    
     function menu:ApplyTheme(themename)
         themename = themename or themename
         local newtheme = themes.GetTheme(themename)
@@ -740,6 +763,12 @@ function uilib:CreateWindow(title, size)
     menu:LoadUserProfile()
 
     function menu:Unload()
+        -- Clean up blur effect
+        if blurEffect then
+            blurEffect:Destroy()
+            blurEffect = nil
+        end
+        
         if uilib._vrmenu_parts then
             local vrui = uilib._vrmenu_parts
             if vrui.base and vrui.base.Parent then
