@@ -39,7 +39,13 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     utils.CreateCorner(colorpreview, 4)
 
     local colordialog = Instance.new("Frame")
-    colordialog.Parent = game.CoreGui:FindFirstChild("PCMenu").WindowHolder:FindFirstChild("Main")
+    local windowHolderParent = nil
+    if game.CoreGui:FindFirstChild("PCMenu") then
+        windowHolderParent = game.CoreGui.PCMenu.WindowHolder
+    elseif game.CoreGui:FindFirstChild("VRMenu") then
+        windowHolderParent = game.CoreGui.VRMenu.WindowHolder
+    end
+    colordialog.Parent = windowHolderParent
     colordialog.BackgroundColor3 = theme.dialog
     colordialog.BorderSizePixel = 0
     colordialog.Size = UDim2.new(0, 430, 0, 0)
@@ -344,9 +350,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     end)
     local dim
     local overlay
-    if game.CoreGui:FindFirstChild("PCMenu") then
-        overlay = game.CoreGui.PCMenu.WindowHolder.Main.RGBOverlay
-    end
+    overlay = windowHolderParent.Main.RGBOverlay
     if overlay then
         overlay.Visible = true
         dim = overlay:FindFirstChild("RGBDim")
