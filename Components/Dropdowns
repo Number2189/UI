@@ -5,6 +5,13 @@ local dropdowns = {}
 local runservice = game:GetService("RunService")
 
 function dropdowns.Create(parent, theme, text, options, default, callback)
+    local windowHolderParent = nil
+    if game.CoreGui:FindFirstChild("PCMenu") then
+        windowHolderParent = game.CoreGui.PCMenu.WindowHolder
+    elseif game.CoreGui:FindFirstChild("VRMenu") then
+        windowHolderParent = game.CoreGui.VRMenu.WindowHolder
+    end
+
     local dropdown = Instance.new("Frame")
     dropdown.Name = "Dropdown"
     dropdown.Parent = parent
@@ -39,7 +46,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
 
     local optioncontainer = Instance.new("Frame")
     optioncontainer.Name = "OptionContainer"
-    optioncontainer.Parent = game.CoreGui:FindFirstChild("PCMenu").WindowHolder:FindFirstChild("Main")
+    optioncontainer.Parent = windowHolderParent:FindFirstChild("Main")
     optioncontainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     optioncontainer.BorderSizePixel = 0
     optioncontainer.Size = UDim2.new(0, 220, 0, 0)
@@ -56,7 +63,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         if callback then callback(currentoption) end
     end
 
-    local overlay = game.CoreGui.PCMenu.WindowHolder.Main:FindFirstChild("DropdownOverlay")
+    local overlay = windowHolderParent.Main:FindFirstChild("DropdownOverlay")
     if not overlay then
         overlay = Instance.new("Frame")
         overlay.Name = "DropdownOverlay"
@@ -64,7 +71,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         overlay.BackgroundTransparency = 1
         overlay.BackgroundColor3 = Color3.new(0,0,0)
         overlay.ZIndex = 99
-        overlay.Parent = game.CoreGui.PCMenu.WindowHolder.Main
+        overlay.Parent = windowHolderParent.Main
     end
     local dim = overlay:FindFirstChild("DropdownDim")
     if not dim then
