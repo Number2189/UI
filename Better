@@ -259,7 +259,7 @@ function uilib:CreateWindow(title, size, options)
     userProfile.ZIndex = 28
     userProfile.Visible = true
     --createcorner(userProfile, 6)
-    createstroke(userProfile, Color3.fromRGB(60, 60, 60), 1)
+    --createstroke(userProfile, Color3.fromRGB(60, 60, 60), 1)
     
     local profilePicture = Instance.new("ImageLabel")
     profilePicture.Name = "ProfilePicture"
