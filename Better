@@ -46,7 +46,7 @@ function springtween(object, properties)
     return utils.SpringTween(object, properties)
 end
 function uilib:CreateWindow(title, size)
-    local DEFAULT_MENU_DISTANCE = 13
+    local DEFAULT_MENU_DISTANCE = -13
     local menudistance = DEFAULT_MENU_DISTANCE
 
     local vrui = {}
