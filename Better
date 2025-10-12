@@ -9,6 +9,16 @@ if game.CoreGui:FindFirstChild("VRMenu") then
     game.CoreGui:FindFirstChild("VRMenu"):Destroy()
 end
 
+-- Create VR UI folders like in uimainmodule.lua
+local VRMenuParts = Instance.new("Folder", workspace)
+VRMenuParts.Name = "VRMenuParts"
+
+local UIFolder = Instance.new("Folder", workspace)
+UIFolder.Name = "UIFolder"
+
+local DropdownFolder = Instance.new("Folder", UIFolder)
+DropdownFolder.Name = "UIDropdowns"
+
 function GithubDirectory(string)
 	return "https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/" .. string
 end
@@ -54,7 +64,7 @@ function uilib:CreateWindow(title, size)
     function uilib.SetMenuDistance(dist)
         menudistance = dist
         if vrui.menuweld and vrui.menuweld.Parent then
-            vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
+            vrui.menuweld.C1 = CFrame.new(0, 0, menudistance) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
         end
     end
 
@@ -62,34 +72,43 @@ function uilib:CreateWindow(title, size)
     if game:GetService("VRService").VREnabled then
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
-        local head = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head")
-        if not head then
-            head = LocalPlayer.Character and LocalPlayer.Character:WaitForChild("Head")
-        end
+        
+        vrui.base = Instance.new("Part")
+        vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
+        vrui.base.Transparency = 1
+        vrui.base.CanCollide = false
+        vrui.base.Massless = true
+        vrui.base.Parent = VRMenuParts
 
-        vrui.bx = Instance.new("Part")
-        vrui.bx.Size = Vector3.new(4, 2.2, 0.02)
-        vrui.bx.Transparency = 1
-        vrui.bx.CanCollide = false
-		vrui.bx.CanTouch = false
-		vrui.bx.CanQuery = false
-        vrui.bx.Massless = true
-        vrui.bx.Anchored = false
-        vrui.bx.Name = "MenuAdorneePart"
-        vrui.bx.Parent = workspace
+        local baseweld = Instance.new("Weld")
+        if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
+            baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
+        else
+            baseweld.Enabled = false
+            vrui.base.Anchored = true
+        end
+        baseweld.Part1 = vrui.base
+        baseweld.C1 = CFrame.new(0, -0.2, 0)
+        baseweld.Parent = vrui.base
+
+        vrui.billboard = Instance.new("Part")
+        vrui.billboard.Size = Vector3.new(1.1, 1, 0.01)
+        vrui.billboard.Transparency = 1
+        vrui.billboard.CanCollide = false
+        vrui.billboard.Massless = true
+        vrui.billboard.Parent = VRMenuParts
 
         vrui.menuweld = Instance.new("Weld")
-        vrui.menuweld.Part0 = head
-        vrui.menuweld.Part1 = vrui.bx
-        vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
-        vrui.menuweld.Parent = vrui.bx
+        vrui.menuweld.Part0 = vrui.base
+        vrui.menuweld.Part1 = vrui.billboard
+        vrui.menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
+        vrui.menuweld.Parent = vrui.billboard
 
         sgui = Instance.new("SurfaceGui")
-        sgui.Adornee = vrui.bx
+        sgui.Adornee = vrui.billboard
         sgui.AlwaysOnTop = true
         sgui.ResetOnSpawn = false
-        sgui.CanvasSize = Vector2.new(400, 512)
-        sgui.Face = Enum.NormalId.Back
+        sgui.CanvasSize = Vector2.new(572, 512)
         sgui.Name = "VRMenu"
         sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
@@ -615,8 +634,8 @@ function uilib:CreateWindow(title, size)
             if vrui.base and vrui.base.Parent then
                 vrui.base:Destroy()
             end
-            if vrui.bx and vrui.bx.Parent then
-                vrui.bx:Destroy()
+            if vrui.billboard and vrui.billboard.Parent then
+                vrui.billboard:Destroy()
             end
             uilib._vrmenu_parts = nil
         end
@@ -655,7 +674,7 @@ end
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
-uilib.Unload = function()
+function uilib:Unload()
     local existingPCMenu = game.CoreGui:FindFirstChild("PCMenu")
     if existingPCMenu then
         existingPCMenu:Destroy()
@@ -670,10 +689,21 @@ uilib.Unload = function()
         if vrui.base and vrui.base.Parent then
             vrui.base:Destroy()
         end
-        if vrui.bx and vrui.bx.Parent then
-            vrui.bx:Destroy()
+        if vrui.billboard and vrui.billboard.Parent then
+            vrui.billboard:Destroy()
         end
         self._vrmenu_parts = nil
+    end
+    
+    -- Clean up VR folders like in uimainmodule.lua
+    if VRMenuParts and VRMenuParts.Parent then
+        VRMenuParts:Destroy()
+    end
+    if UIFolder and UIFolder.Parent then
+        UIFolder:Destroy()
+    end
+    if DropdownFolder and DropdownFolder.Parent then
+        DropdownFolder:Destroy()
     end
     
     self._vrmenu_parts = nil
