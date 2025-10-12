@@ -63,7 +63,6 @@ function uilib:CreateWindow(title, size, options)
     local DEFAULT_MENU_DISTANCE = 2.2
     local menudistance = DEFAULT_MENU_DISTANCE
     
-    -- Handle options
     options = options or {}
     local enableAcrylic = options.Acrylic or false
     local blurIntensity = options.BlurIntensity or 0.25
@@ -188,11 +187,22 @@ function uilib:CreateWindow(title, size, options)
     DropdownDim.Visible = false
     createcorner(mainf, 4)
     
-    -- Apply acrylic blur effect if enabled
     local blurEffect = nil
     if enableAcrylic then
         blurEffect = AcrylicBlur.new(mainf, "Rectangle")
         blurEffect:SetIntensity(blurIntensity)
+        
+        local function setTransparency(obj, transparency)
+            if obj:IsA("GuiObject") and obj.BackgroundTransparency ~= 1 then
+                obj.BackgroundTransparency = transparency
+            end
+        end
+        
+        for _, descendant in pairs(mainf:GetDescendants()) do
+            setTransparency(descendant, 0.42)
+        end
+        
+        mainf.BackgroundTransparency = 0.42
     end
     
     local uiscale = Instance.new("UIScale")
@@ -497,7 +507,6 @@ function uilib:CreateWindow(title, size, options)
     }
     local window = menu
     
-    -- Function to set user profile information
     function menu:SetUserProfile(displayNameText, usernameText, profileImageUrl)
         if displayName and displayNameText then
             displayName.Text = displayNameText
@@ -510,7 +519,6 @@ function uilib:CreateWindow(title, size, options)
         end
     end
     
-    -- Function to get current user info and set profile
     function menu:LoadUserProfile()
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
@@ -520,15 +528,19 @@ function uilib:CreateWindow(title, size, options)
             local username = LocalPlayer.Name
             local userId = LocalPlayer.UserId
             
-            -- Set the profile information
             self:SetUserProfile(displayName, username, "https://www.roblox.com/headshot-thumbnail/image?userId=" .. userId .. "&width=150&height=150&format=png")
         end
     end
     
-    -- Function to set blur intensity
     function menu:SetBlurIntensity(intensity)
         if blurEffect then
             blurEffect:SetIntensity(intensity)
+        end
+    end
+    
+    function menu:ApplyAcrylicTransparency(obj)
+        if blurEffect and obj:IsA("GuiObject") and obj.BackgroundTransparency ~= 1 then
+            obj.BackgroundTransparency = 0.42
         end
     end
     
@@ -541,10 +553,15 @@ function uilib:CreateWindow(title, size, options)
         self.main.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
         titleb.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         sidebar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        
+        if blurEffect then
+            self.main.BackgroundTransparency = 0.42
+            titleb.BackgroundTransparency = 0.42
+            sidebar.BackgroundTransparency = 0.42
+        end
         if self.main:FindFirstChildOfClass("UIStroke") then self.main.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
         if titleb:FindFirstChildOfClass("UIStroke") then titleb.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
         
-        -- Update user profile theme
         local userProfile = self.holder:FindFirstChild("UserProfile")
         if userProfile then
             userProfile.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -555,17 +572,22 @@ function uilib:CreateWindow(title, size, options)
         for _, t in pairs(self.tabs) do
             if t.button then
                 t.button.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
+                if blurEffect then t.button.BackgroundTransparency = 0.42 end
                 if t.button:FindFirstChildOfClass("UIStroke") then t.button.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
             end
             for _, sp in pairs(t.spacers) do
                 if sp.frame then
                     sp.frame.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
+                    if blurEffect then sp.frame.BackgroundTransparency = 0.42 end
                     if sp.frame:FindFirstChildOfClass("UIStroke") then sp.frame.UIStroke.Color = Color3.fromRGB(60, 60, 60) end
                 end
                 for _, it in ipairs(sp.items) do
                     local el = it.element
                     if el and el:IsA("GuiObject") then
-                        pcall(function() el.BackgroundColor3 = Color3.fromRGB(36, 36, 36) end)
+                        pcall(function() 
+                            el.BackgroundColor3 = Color3.fromRGB(36, 36, 36)
+                            if blurEffect then el.BackgroundTransparency = 0.42 end
+                        end)
                         local s = el:FindFirstChildOfClass("UIStroke")
                         if s then s.Color = Color3.fromRGB(60, 60, 60) end
                     end
@@ -584,6 +606,7 @@ function uilib:CreateWindow(title, size, options)
         tabbutton.Text = name
         tabbutton.TextColor3 = Color3.fromRGB(255, 255, 255)
         tabbutton.TextSize = 14
+        if blurEffect then tabbutton.BackgroundTransparency = 0.42 end
         createcorner(tabbutton, 2)
         createstroke(tabbutton, Color3.fromRGB(60, 60, 60), 1)
         local tabcontent = Instance.new("ScrollingFrame")
@@ -632,6 +655,7 @@ function uilib:CreateWindow(title, size, options)
             spacer.BackgroundColor3 = Color3.fromRGB(29, 29, 29)
             spacer.BorderSizePixel = 0
             spacer.Size = UDim2.new(0, 400, 0, 89)
+            if blurEffect then spacer.BackgroundTransparency = 0.42 end
             createcorner(spacer, 5)
             createstroke(spacer, Color3.fromRGB(60, 60, 60), 1)
             local spacertitle = Instance.new("TextLabel")
@@ -758,11 +782,9 @@ function uilib:CreateWindow(title, size, options)
     menu.UIConfigRef = uiconfig
     menu.UIScaleRef = uiscale
     
-    -- Load user profile automatically
     menu:LoadUserProfile()
 
     function menu:Unload()
-        -- Clean up blur effect
         if blurEffect then
             blurEffect:Destroy()
             blurEffect = nil
