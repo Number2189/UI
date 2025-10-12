@@ -251,11 +251,11 @@ function uilib:CreateWindow(title, size)
     userProfile.Parent = holder
     userProfile.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     userProfile.BorderSizePixel = 0
-    userProfile.Size = UDim2.new(0, 200, 0, 50)
-    userProfile.Position = UDim2.new(0, 10, 1, -60)
+    userProfile.Size = UDim2.new(0, 136, 0, 50)
+    userProfile.Position = UDim2.new(0, 8, 1, -60)
     userProfile.ZIndex = 28
     userProfile.Visible = true
-    createcorner(userProfile, 6)
+    --createcorner(userProfile, 6)
     createstroke(userProfile, Color3.fromRGB(60, 60, 60), 1)
     
     local profilePicture = Instance.new("ImageLabel")
@@ -263,32 +263,32 @@ function uilib:CreateWindow(title, size)
     profilePicture.Parent = userProfile
     profilePicture.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     profilePicture.BorderSizePixel = 0
-    profilePicture.Size = UDim2.new(0, 40, 0, 40)
-    profilePicture.Position = UDim2.new(0, 5, 0, 5)
+    profilePicture.Size = UDim2.new(0, 35, 0, 35)
+    profilePicture.Position = UDim2.new(0, 5, 0, 7.5)
     profilePicture.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
     profilePicture.ScaleType = Enum.ScaleType.Crop
     profilePicture.ZIndex = 28
-    createcorner(profilePicture, 20)
+    createcorner(profilePicture, 17.5)
     createstroke(profilePicture, Color3.fromRGB(100, 100, 100), 1)
     
     local userInfo = Instance.new("Frame")
     userInfo.Name = "UserInfo"
     userInfo.Parent = userProfile
     userInfo.BackgroundTransparency = 1
-    userInfo.Size = UDim2.new(1, -55, 1, -10)
-    userInfo.Position = UDim2.new(0, 50, 0, 5)
+    userInfo.Size = UDim2.new(1, -45, 1, -10)
+    userInfo.Position = UDim2.new(0, 45, 0, 5)
     userInfo.ZIndex = 28
     
     local displayName = Instance.new("TextLabel")
     displayName.Name = "DisplayName"
     displayName.Parent = userInfo
     displayName.BackgroundTransparency = 1
-    displayName.Size = UDim2.new(1, 0, 0, 20)
+    displayName.Size = UDim2.new(1, 0, 0, 18)
     displayName.Position = UDim2.new(0, 0, 0, 0)
     displayName.Font = Enum.Font.GothamBold
     displayName.Text = "Display Name"
     displayName.TextColor3 = Color3.fromRGB(255, 255, 255)
-    displayName.TextSize = 14
+    displayName.TextSize = 12
     displayName.TextXAlignment = Enum.TextXAlignment.Left
     displayName.TextYAlignment = Enum.TextYAlignment.Top
     displayName.TextStrokeTransparency = 0.5
@@ -299,12 +299,12 @@ function uilib:CreateWindow(title, size)
     username.Name = "Username"
     username.Parent = userInfo
     username.BackgroundTransparency = 1
-    username.Size = UDim2.new(1, 0, 0, 16)
-    username.Position = UDim2.new(0, 0, 0, 20)
+    username.Size = UDim2.new(1, 0, 0, 14)
+    username.Position = UDim2.new(0, 0, 0, 18)
     username.Font = Enum.Font.Gotham
     username.Text = "@username"
     username.TextColor3 = Color3.fromRGB(200, 200, 200)
-    username.TextSize = 11
+    username.TextSize = 10
     username.TextXAlignment = Enum.TextXAlignment.Left
     username.TextYAlignment = Enum.TextYAlignment.Top
     username.TextStrokeTransparency = 0.5
