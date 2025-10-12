@@ -667,7 +667,7 @@ end
 
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
-function uilib:Unload()
+uilib.Unload = function()
     local existingPCMenu = game.CoreGui:FindFirstChild("PCMenu")
     if existingPCMenu then
         existingPCMenu:Destroy()
