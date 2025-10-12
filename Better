@@ -46,7 +46,7 @@ function springtween(object, properties)
     return utils.SpringTween(object, properties)
 end
 function uilib:CreateWindow(title, size)
-    local DEFAULT_MENU_DISTANCE = -13
+    local DEFAULT_MENU_DISTANCE = 2.2
     local menudistance = DEFAULT_MENU_DISTANCE
 
     local vrui = {}
@@ -67,21 +67,6 @@ function uilib:CreateWindow(title, size)
             head = LocalPlayer.Character and LocalPlayer.Character:WaitForChild("Head")
         end
 
-        vrui.base = Instance.new("Part")
-        vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
-        vrui.base.Transparency = 1
-        vrui.base.CanCollide = false
-        vrui.base.Massless = true
-        vrui.base.Anchored = false
-        vrui.base.Name = "MenuBasePart"
-        vrui.base.Parent = workspace
-
-        vrui.baseweld = Instance.new("Weld")
-        vrui.baseweld.Part0 = head
-        vrui.baseweld.Part1 = vrui.base
-        vrui.baseweld.C1 = CFrame.new(0, 0, 0)
-        vrui.baseweld.Parent = vrui.base
-
         vrui.bx = Instance.new("Part")
         vrui.bx.Size = Vector3.new(4, 2.2, 0.02)
         vrui.bx.Transparency = 1
@@ -92,7 +77,7 @@ function uilib:CreateWindow(title, size)
         vrui.bx.Parent = workspace
 
         vrui.menuweld = Instance.new("Weld")
-        vrui.menuweld.Part0 = vrui.base
+        vrui.menuweld.Part0 = head
         vrui.menuweld.Part1 = vrui.bx
         vrui.menuweld.C1 = CFrame.new(0, 0, menudistance)
         vrui.menuweld.Parent = vrui.bx
