@@ -374,7 +374,8 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     donebtn.MouseButton1Click:Connect(function()
         isopen = false
         colordialog.Visible = false
-        dim.Visible = false
+        if RGBDim then RGBDim.Visible = false end
+        if dim then dim.Visible = false end
         dimmed_wso = false
         if callback then
             callback(currentr/255, currentg/255, currentb/255)
