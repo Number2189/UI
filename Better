@@ -163,6 +163,7 @@ function uilib:CreateWindow(title, size, options)
     RGBDim.Size = UDim2.new(1,0,1,0)
     RGBDim.ZIndex = 29
     RGBDim.Visible = false
+    _G.RGBDim = RGBDim
     local DropdownOverlay = Instance.new("Frame")
     DropdownOverlay.Name = "DropdownOverlay"
     DropdownOverlay.Parent = mainf
@@ -181,6 +182,8 @@ function uilib:CreateWindow(title, size, options)
     DropdownDim.Size = UDim2.new(1,0,1,0)
     DropdownDim.ZIndex = 29
     DropdownDim.Visible = false
+    _G.DropdownDim = DropdownDim
+    _G.DropdownOverlay = DropdownOverlay
     createcorner(mainf, 4)
     
     local uiscale = Instance.new("UIScale")
