@@ -4,10 +4,10 @@ local runservice = game:GetService("RunService")
 local VRService = game:GetService("VRService")
 
 if game.CoreGui:FindFirstChild("PCMenu") then
-	game.CoreGui:FindFirstChild("PCMenu"):Destroy()
+    game.CoreGui:FindFirstChild("PCMenu"):Destroy()
 end
 if game.CoreGui:FindFirstChild("VRMenu") then
-	game.CoreGui:FindFirstChild("VRMenu"):Destroy()
+    game.CoreGui:FindFirstChild("VRMenu"):Destroy()
 end
 
 local VRMenuParts = Instance.new("Folder", workspace)
@@ -44,7 +44,7 @@ theme.accent = Color3.fromRGB(138, 43, 226)
 local uilib = {}
 
 function createcorner(parent, radius)
-	return utils.CreateCorner(parent, radius)
+    return utils.CreateCorner(parent, radius)
 end
 
 function createstroke(parent, color, thickness, transparency)
@@ -62,68 +62,68 @@ end
 function springtween(object, properties)
 	return smtween(object, properties, 0.4, Enum.EasingStyle.Quint)
 end
-
+    
 function uilib:CreateWindow(title, size, options)
-	options = options or {}
-	local vrui = {}
+    options = options or {}
+    local vrui = {}
 
-	local sgui
+    local sgui
 	if VRService.VREnabled then
-		local Players = game:GetService("Players")
-		local LocalPlayer = Players.LocalPlayer
-		
-		vrui.base = Instance.new("Part")
-		vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
-		vrui.base.Transparency = 1
-		vrui.base.CanCollide = false
-		vrui.base.Massless = true
-		vrui.base.Parent = VRMenuParts
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+        
+        vrui.base = Instance.new("Part")
+        vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
+        vrui.base.Transparency = 1
+        vrui.base.CanCollide = false
+        vrui.base.Massless = true
+        vrui.base.Parent = VRMenuParts
 
-		local baseweld = Instance.new("Weld")
-		if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
-			baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
-		else
-			baseweld.Enabled = false
-			vrui.base.Anchored = true
-		end
-		baseweld.Part1 = vrui.base
-		baseweld.C1 = CFrame.new(0, -0.2, 0)
-		baseweld.Parent = vrui.base
+        local baseweld = Instance.new("Weld")
+        if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
+            baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
+        else
+            baseweld.Enabled = false
+            vrui.base.Anchored = true
+        end
+        baseweld.Part1 = vrui.base
+        baseweld.C1 = CFrame.new(0, -0.2, 0)
+        baseweld.Parent = vrui.base
 
-		vrui.billboard = Instance.new("Part")
-		vrui.billboard.Size = Vector3.new(1.1, 1, 0.01)
-		vrui.billboard.Transparency = 1
-		vrui.billboard.CanCollide = false
-		vrui.billboard.Massless = true
-		vrui.billboard.Parent = VRMenuParts
+        vrui.billboard = Instance.new("Part")
+        vrui.billboard.Size = Vector3.new(1.1, 1, 0.01)
+        vrui.billboard.Transparency = 1
+        vrui.billboard.CanCollide = false
+        vrui.billboard.Massless = true
+        vrui.billboard.Parent = VRMenuParts
 
-		vrui.menuweld = Instance.new("Weld")
-		vrui.menuweld.Part0 = vrui.base
-		vrui.menuweld.Part1 = vrui.billboard
-		vrui.menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
-		vrui.menuweld.Parent = vrui.billboard
+        vrui.menuweld = Instance.new("Weld")
+        vrui.menuweld.Part0 = vrui.base
+        vrui.menuweld.Part1 = vrui.billboard
+        vrui.menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
+        vrui.menuweld.Parent = vrui.billboard
 
-		sgui = Instance.new("SurfaceGui")
-		sgui.Adornee = vrui.billboard
-		sgui.AlwaysOnTop = true
-		sgui.ResetOnSpawn = false
+        sgui = Instance.new("SurfaceGui")
+        sgui.Adornee = vrui.billboard
+        sgui.AlwaysOnTop = true
+        sgui.ResetOnSpawn = false
 		sgui.CanvasSize = Vector2.new(675, 458)
-		sgui.Name = "VRMenu"
-		sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        sgui.Name = "VRMenu"
+        sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-		uilib._vrmenu_parts = vrui
-	else
-		sgui = Instance.new("ScreenGui")
-		sgui.ResetOnSpawn = false
-		sgui.Name = "PCMenu"
-		sgui.IgnoreGuiInset = true
+        uilib._vrmenu_parts = vrui
+    else
+        sgui = Instance.new("ScreenGui")
+        sgui.ResetOnSpawn = false
+        sgui.Name = "PCMenu"
+        sgui.IgnoreGuiInset = true
 		sgui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-		if not runservice:IsStudio() then
-			sgui.Parent = game.CoreGui
-		else
-			sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-		end
-	end
+        if not runservice:IsStudio() then
+            sgui.Parent = game.CoreGui
+        else
+            sgui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+        end
+    end
 
 	local mainFrame = Instance.new("Frame")
 	mainFrame.Name = "MainFrame"
@@ -274,12 +274,12 @@ function uilib:CreateWindow(title, size, options)
 	accent.BorderSizePixel = 0
 	accent.Parent = mainFrame
 
-	local sidebar = Instance.new("Frame")
-	sidebar.Name = "Sidebar"
+    local sidebar = Instance.new("Frame")
+    sidebar.Name = "Sidebar"
 	sidebar.Size = UDim2.new(0, 150, 1, -62)
 	sidebar.Position = UDim2.new(0, 10, 0, 58)
 	sidebar.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
-	sidebar.BorderSizePixel = 0
+    sidebar.BorderSizePixel = 0
 	sidebar.Parent = mainFrame
 
 	local sidebarCorner = Instance.new("UICorner")
@@ -288,7 +288,7 @@ function uilib:CreateWindow(title, size, options)
 
 	local tabList = Instance.new("UIListLayout")
 	tabList.SortOrder = Enum.SortOrder.LayoutOrder
-	tabList.Padding = UDim.new(0, 8)
+	tabList.Padding = UDim.new(0, 5)
 	tabList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	tabList.Parent = sidebar
 
@@ -365,13 +365,13 @@ function uilib:CreateWindow(title, size, options)
 	contentFrame.BackgroundTransparency = 1
 	contentFrame.Parent = mainFrame
 
-	local dragging = false
+    local dragging = false
 	local dragInput, mousePos, framePos
 
-	if not VRService.VREnabled then
+    if not VRService.VREnabled then    
 		topBar.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
-				dragging = true
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
 				mousePos = input.Position
 				framePos = mainFrame.Position
 
@@ -380,21 +380,21 @@ function uilib:CreateWindow(title, size, options)
 						dragging = false
 					end
 				end)
-			end
-		end)
-
+            end
+        end)
+        
 		topBar.InputChanged:Connect(function(input)
 			if input.UserInputType == Enum.UserInputType.MouseMovement then
 				dragInput = input
-			end
-		end)
-
-		userinputservice.InputChanged:Connect(function(input)
+            end
+        end)
+        
+        userinputservice.InputChanged:Connect(function(input)
 			if input == dragInput and dragging then
 				local delta = input.Position - mousePos
 				mainFrame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
-			end
-		end)
+            end
+        end)
 	end
 
 	local resizeGrip = Instance.new("Frame")
@@ -433,17 +433,17 @@ function uilib:CreateWindow(title, size, options)
 
 	if not VRService.VREnabled then
 		resizeGrip.InputBegan:Connect(function(input)
-			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
 				resizing = true
 				resizeStart = input.Position
 				sizeStart = mainFrame.Size
 
 				input.Changed:Connect(function()
 					if input.UserInputState == Enum.UserInputState.End then
-						resizing = false
-					end
-				end)
-			end
+                resizing = false
+            end
+        end)
+    end
 		end)
 
 		resizeGrip.InputChanged:Connect(function(input)
@@ -519,9 +519,9 @@ function uilib:CreateWindow(title, size, options)
 					local buttonPosY = Window.CurrentTab.TabButton.AbsolutePosition.Y - mainFrame.AbsolutePosition.Y
 					local indicatorY = buttonPosY + (Window.CurrentTab.TabButton.AbsoluteSize.Y / 2) - 12.5
 					sharedIndicator.Position = UDim2.new(0, 20, 0, indicatorY)
-				end
-			end
-		end)
+            end
+        end
+    end)
 	end
 
 	function Window:CreateTab(name)
@@ -555,7 +555,7 @@ function uilib:CreateWindow(title, size, options)
 
 		local containerList = Instance.new("UIListLayout")
 		containerList.SortOrder = Enum.SortOrder.LayoutOrder
-		containerList.Padding = UDim.new(0, 10)
+		containerList.Padding = UDim.new(0, 7)
 		containerList.Parent = container
 
 		containerList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -573,8 +573,8 @@ function uilib:CreateWindow(title, size, options)
 					if inner then
 						inner.Size = UDim2.new(1, -24, 1, -48)
 					end
-				end
-			end
+        end
+    end
 		end)
 
 		local containerPadding = Instance.new("UIPadding")
@@ -842,7 +842,7 @@ function uilib:CreateWindow(title, size, options)
 
 			local sectionList = Instance.new("UIListLayout")
 			sectionList.SortOrder = Enum.SortOrder.LayoutOrder
-			sectionList.Padding = UDim.new(0, 8)
+			sectionList.Padding = UDim.new(0, 5)
 			sectionList.Parent = sectionContainer
 
 			sectionList:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
@@ -1017,46 +1017,46 @@ function uilib:CreateWindow(title, size, options)
 
 			function Section:AddSlider(text, min, max, default, callback, step)
 				local api = sliders.Create(sectionContainer, theme, text, min, max, default, callback, step)
-				return {
-					SetValue = api.SetValue,
-					GetValue = api.GetValue
-				}
-			end
+                return {
+                    SetValue = api.SetValue,
+                    GetValue = api.GetValue
+                }
+            end
 
 			function Section:AddRgb(text, defaultr, defaultg, defaultb, callback)
 				local api = rgbpicker.Create(sectionContainer, theme, text, defaultr, defaultg, defaultb, callback)
-				return {
-					Set = api.Set,
-					Get = api.Get
-				}
-			end
+                return {
+                    Set = api.Set,
+                    Get = api.Get
+                }
+            end
 
 			function Section:AddDropdown(text, options, default, callback)
 				local api = dropdowns.Create(sectionContainer, theme, text, options, default, callback)
-				return {
-					Set = api.Set,
-					Get = api.Get
-				}
-			end
+                return {
+                    Set = api.Set,
+                    Get = api.Get
+                }
+            end
 
 			function Section:AddKeybind(text, defaultkey, callback)
 				local api = keybinds.Create(sectionContainer, theme, text, defaultkey, callback)
-				return {
-					Set = api.Set,
-					Get = api.Get
-				}
-			end
+                return {
+                    Set = api.Set,
+                    Get = api.Get
+                }
+            end
 
 			return Section
 		end
 
 		function Tab:AddSlider(text, min, max, default, callback, step)
 			local api = sliders.Create(container, theme, text, min, max, default, callback, step)
-			return {
-				SetValue = api.SetValue,
-				GetValue = api.GetValue
-			}
-		end
+                return {
+                    SetValue = api.SetValue,
+                    GetValue = api.GetValue
+                }
+            end
 
 		function Tab:AddRgb(text, defaultr, defaultg, defaultb, callback)
 			local api = rgbpicker.Create(container, theme, text, defaultr, defaultg, defaultb, callback)
@@ -1097,21 +1097,21 @@ function uilib:CreateWindow(title, size, options)
 	end
 
 	Window.Unload = function()
-		if uilib._vrmenu_parts then
-			local vrui = uilib._vrmenu_parts
-			if vrui.base and vrui.base.Parent then
-				vrui.base:Destroy()
-			end
-			if vrui.billboard and vrui.billboard.Parent then
-				vrui.billboard:Destroy()
-			end
-			uilib._vrmenu_parts = nil
-		end
-		
-		if sgui and sgui.Parent then
-			sgui:Destroy()
-		end
-		
+        if uilib._vrmenu_parts then
+            local vrui = uilib._vrmenu_parts
+            if vrui.base and vrui.base.Parent then
+                vrui.base:Destroy()
+            end
+            if vrui.billboard and vrui.billboard.Parent then
+                vrui.billboard:Destroy()
+            end
+            uilib._vrmenu_parts = nil
+        end
+        
+        if sgui and sgui.Parent then
+            sgui:Destroy()
+        end
+        
 		Window.mainFrame = nil
 		Window.sidebar = nil
 		Window.resizeHandle = nil
@@ -1135,37 +1135,37 @@ end
 configmanager.Register("Notifications", notificationsettings, "Notifications.json")
 
 uilib.Unload = function()
-	local existingPCMenu = game.CoreGui:FindFirstChild("PCMenu")
-	if existingPCMenu then
-		existingPCMenu:Destroy()
-	end
-	local existingVRMenu = game.CoreGui:FindFirstChild("VRMenu")
-	if existingVRMenu then
-		existingVRMenu:Destroy()
-	end
-	
-	if uilib._vrmenu_parts then
-		local vrui = uilib._vrmenu_parts
-		if vrui.base and vrui.base.Parent then
-			vrui.base:Destroy()
-		end
-		if vrui.billboard and vrui.billboard.Parent then
-			vrui.billboard:Destroy()
-		end
-		uilib._vrmenu_parts = nil
-	end
-	
-	if VRMenuParts and VRMenuParts.Parent then
-		VRMenuParts:Destroy()
-	end
-	if UIFolder and UIFolder.Parent then
-		UIFolder:Destroy()
-	end
-	if DropdownFolder and DropdownFolder.Parent then
-		DropdownFolder:Destroy()
-	end
-	
-	uilib._vrmenu_parts = nil
+    local existingPCMenu = game.CoreGui:FindFirstChild("PCMenu")
+    if existingPCMenu then
+        existingPCMenu:Destroy()
+    end
+    local existingVRMenu = game.CoreGui:FindFirstChild("VRMenu")
+    if existingVRMenu then
+        existingVRMenu:Destroy()
+    end
+    
+    if uilib._vrmenu_parts then
+        local vrui = uilib._vrmenu_parts
+        if vrui.base and vrui.base.Parent then
+            vrui.base:Destroy()
+        end
+        if vrui.billboard and vrui.billboard.Parent then
+            vrui.billboard:Destroy()
+        end
+        uilib._vrmenu_parts = nil
+    end
+    
+    if VRMenuParts and VRMenuParts.Parent then
+        VRMenuParts:Destroy()
+    end
+    if UIFolder and UIFolder.Parent then
+        UIFolder:Destroy()
+    end
+    if DropdownFolder and DropdownFolder.Parent then
+        DropdownFolder:Destroy()
+    end
+    
+    uilib._vrmenu_parts = nil
 end
 
 notificationlibrary.SendNotification("UI Loaded.", "Better")
