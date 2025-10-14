@@ -6,10 +6,23 @@ local runservice = game:GetService("RunService")
 
 function dropdowns.Create(parent, theme, text, options, default, callback)
     local windowHolderParent = nil
+    local mainFrame = nil
+    
     if game.CoreGui:FindFirstChild("PCMenu") then
         windowHolderParent = game.CoreGui.PCMenu.WindowHolder
+        if windowHolderParent then
+            mainFrame = windowHolderParent:FindFirstChild("Main")
+        end
     elseif game.CoreGui:FindFirstChild("VRMenu") then
         windowHolderParent = game.CoreGui.VRMenu.WindowHolder
+        if windowHolderParent then
+            mainFrame = windowHolderParent:FindFirstChild("Main")
+        end
+    end
+    
+    if not mainFrame then
+        warn("Dropdown: Could not find Main frame")
+        return {Instance = nil, Set = function() end, Get = function() return default or options[1] end}
     end
 
     local dropdown = Instance.new("Frame")
@@ -19,7 +32,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
     dropdown.BorderSizePixel = 0
     dropdown.Size = UDim2.new(1, 0, 0, 25)
     dropdown.ZIndex = 38
-    utils.CreateCorner(dropdown, 4)
+    utils.CreateCorner(dropdown, 4) 
     utils.CreateStroke(dropdown)
 
     local label = Instance.new("TextButton")
@@ -46,7 +59,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
 
     local optioncontainer = Instance.new("Frame")
     optioncontainer.Name = "OptionContainer"
-    optioncontainer.Parent = windowHolderParent:FindFirstChild("Main")
+    optioncontainer.Parent = mainFrame
     optioncontainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     optioncontainer.BorderSizePixel = 0
     optioncontainer.Size = UDim2.new(0, 220, 0, 0)
@@ -63,7 +76,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         if callback then callback(currentoption) end
     end
 
-    local overlay = windowHolderParent.Main:FindFirstChild("DropdownOverlay")
+    local overlay = dropdownOverlay
     if not overlay then
         overlay = Instance.new("Frame")
         overlay.Name = "DropdownOverlay"
@@ -71,7 +84,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         overlay.BackgroundTransparency = 1
         overlay.BackgroundColor3 = Color3.new(0,0,0)
         overlay.ZIndex = 99
-        overlay.Parent = windowHolderParent.Main
+        overlay.Parent = mainFrame
     end
     local dim = overlay:FindFirstChild("DropdownDim")
     if not dim then
