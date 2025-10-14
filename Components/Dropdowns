@@ -30,7 +30,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
 	dropdown.Parent = parent
 	dropdown.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 	dropdown.BorderSizePixel = 0
-	dropdown.Size = UDim2.new(1, 0, 0, 36)
+	dropdown.Size = UDim2.new(1, 0, 0, 30)
 	dropdown.ZIndex = 38
 	
 	local dropdownCorner = Instance.new("UICorner")
@@ -112,7 +112,7 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
 		optioncontainer.Visible = isopen
 		if isopen then
 			if _G.UILibDimmed then return end
-			local targetheight = math.min(#options, 8) * 38 + 12
+			local targetheight = math.min(#options, 8) * 32 + 12
 			showdim()
 			utils.Tween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}, 0.3, Enum.EasingStyle.Quint):Play()
 			optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
@@ -134,8 +134,8 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
 		optionbutton.Parent = optioncontainer
 		optionbutton.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 		optionbutton.BorderSizePixel = 0
-		optionbutton.Size = UDim2.new(1, -12, 0, 32)
-		optionbutton.Position = UDim2.new(0, 6, 0, 6 + (i - 1) * 38)
+		optionbutton.Size = UDim2.new(1, -12, 0, 26)
+		optionbutton.Position = UDim2.new(0, 6, 0, 6 + (i - 1) * 32)
 		optionbutton.Text = option
 		optionbutton.TextColor3 = Color3.fromRGB(240, 240, 245)
 		optionbutton.TextSize = 13
