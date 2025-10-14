@@ -77,35 +77,47 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
     end
 
 
+    local function hidedim()
+        if _G.DropdownDim and _G.DropdownDim.Parent then
+            utils.Tween(_G.DropdownDim, {BackgroundTransparency = 1}, 0.15):Play()
+            task.wait(0.15)
+            _G.DropdownDim.Visible = false
+            if _G.DropdownOverlay then
+                _G.DropdownOverlay.Visible = false
+            end
+        end
+        _G.UILibDimmed = false
+    end
+
+    local function showdim()
+        if _G.DropdownDim and _G.DropdownDim.Parent then
+            if _G.DropdownOverlay then
+                _G.DropdownOverlay.Visible = true
+            end
+            _G.DropdownDim.BackgroundTransparency = 1
+            _G.DropdownDim.Visible = true
+            utils.Tween(_G.DropdownDim, {BackgroundTransparency = 0.5}, 0.15):Play()
+        end
+        _G.UILibDimmed = true
+    end
+
     local function toggledropdown()
         isopen = not isopen
         togglebutton.Text = isopen and "▲" or "▼"
         optioncontainer.Visible = isopen
         if isopen then
-            if dimmed_wso then return end
+            if _G.UILibDimmed then return end
             local targetheight = math.min(#options, 8) * 28 + 12
-            if _G.DropdownDim then
-                _G.DropdownOverlay.Visible = true
-                _G.DropdownDim.Visible = true
-                utils.Tween(_G.DropdownDim, {BackgroundTransparency = 0.7}, 0.22):Play()
-            end
+            showdim()
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
-            dimmed_wso = true
         else
             runservice:UnbindFromRenderStep("DropdownCenter")
             utils.Tween(optioncontainer, {Size = UDim2.new(0, 220, 0, 0)}, 0.2):Play()
             task.delay(0.22, function()
                 if not isopen then
                     optioncontainer.Visible = false
-                    if _G.DropdownDim then
-                        utils.Tween(_G.DropdownDim, {BackgroundTransparency = 1}, 0.22):Play()
-                        task.delay(0.12, function()
-                            _G.DropdownDim.Visible = false
-                        end)
-                        _G.DropdownOverlay.Visible = false
-                    end
-                    dimmed_wso = false
+                    hidedim()
                 end
             end)
         end
@@ -134,7 +146,6 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         end)
         optionbutton.MouseButton1Click:Connect(function()
             currentoption = option
-            dimmed_wso = false
             updatedropdown()
             toggledropdown()
         end)
