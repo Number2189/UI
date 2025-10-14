@@ -426,13 +426,28 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         utils.Tween(cancelbtn, {BackgroundColor3 = theme.dialogbutton}):Play()
     end)
 
+    local function hidedim()
+        if _G.RGBDim and _G.RGBDim.Parent then
+            utils.Tween(_G.RGBDim, {BackgroundTransparency = 1}, 0.15):Play()
+            task.wait(0.15)
+            _G.RGBDim.Visible = false
+        end
+        _G.UILibDimmed = false
+    end
+
+    local function showdim()
+        if _G.RGBDim and _G.RGBDim.Parent then
+            _G.RGBDim.BackgroundTransparency = 1
+            _G.RGBDim.Visible = true
+            utils.Tween(_G.RGBDim, {BackgroundTransparency = 0.5}, 0.15):Play()
+        end
+        _G.UILibDimmed = true
+    end
+
     donebtn.MouseButton1Click:Connect(function()
         isopen = false
         colordialog.Visible = false
-        if _G.RGBDim then
-            _G.RGBDim.Visible = false
-        end
-        dimmed_wso = false
+        hidedim()
         if callback then
             callback(currentr/255, currentg/255, currentb/255)
         end
@@ -446,26 +461,19 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         updatehsv()
         display()
         isopen = false
-        if _G.RGBDim then
-            _G.RGBDim.Visible = false
-        end
-        dimmed_wso = false
         colordialog.Visible = false
+        hidedim()
         runservice:UnbindFromRenderStep("ColorPickerCenter")
     end)
 
     local function togglecolorpicker()
         isopen = not isopen
         if isopen then
-            if dimmed_wso then return end
+            if _G.UILibDimmed then return end
             colordialog.Visible = true
-            if _G.RGBDim then
-                _G.RGBDim.Visible = true
-                utils.Tween(_G.RGBDim, {BackgroundTransparency = 0.7}, 0.22):Play()
-            end
+            showdim()
             utils.SpringTween(colordialog, {Size = UDim2.new(0, 430, 0, 330)}):Play()
             colordialog.Position = UDim2.new(0.5, -215, 0.5, -165)
-            dimmed_wso = true
             display()
         else
             runservice:UnbindFromRenderStep("ColorPickerCenter")
@@ -473,14 +481,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             task.delay(0.22, function()
                 if not isopen then
                     colordialog.Visible = false
-                    if _G.RGBDim then
-                        utils.Tween(_G.RGBDim, {BackgroundTransparency = 1}, 0.22):Play()
-                        task.delay(0.12, function()
-                            _G.RGBDim.Visible = false
-                        end)
-                        _G.RGBDim.Visible = false
-                    end
-                    dimmed_wso = false
+                    hidedim()
                 end
             end)
         end
