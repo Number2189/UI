@@ -427,24 +427,16 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     end)
 
     local function hidedim()
-        if _G.RGBDim and _G.RGBDim.Parent then
-            local overlay = _G.RGBDim.Parent
+        if _G.RGBDim then
             utils.Tween(_G.RGBDim, {BackgroundTransparency = 1}, 0.15):Play()
             task.wait(0.15)
             _G.RGBDim.Visible = false
-            if overlay then
-                overlay.Visible = false
-            end
         end
         _G.UILibDimmed = false
     end
 
     local function showdim()
-        if _G.RGBDim and _G.RGBDim.Parent then
-            local overlay = _G.RGBDim.Parent
-            if overlay then
-                overlay.Visible = true
-            end
+        if _G.RGBDim then
             _G.RGBDim.BackgroundTransparency = 1
             _G.RGBDim.Visible = true
             utils.Tween(_G.RGBDim, {BackgroundTransparency = 0.5}, 0.15):Play()
