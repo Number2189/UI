@@ -411,16 +411,6 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             end)
         end
     end)
-    if not _G.RGBDim then
-        _G.RGBDim = Instance.new("Frame")
-        _G.RGBDim.Name = "RGBDim"
-        _G.RGBDim.Size = UDim2.new(1, 0, 1, 0)
-        _G.RGBDim.BackgroundColor3 = Color3.new(0, 0, 0)
-        _G.RGBDim.BackgroundTransparency = 1
-        _G.RGBDim.ZIndex = 39
-        _G.RGBDim.Parent = windowHolderParent
-        _G.RGBDim.Visible = false
-    end
 
     donebtn.MouseEnter:Connect(function()
         utils.Tween(donebtn, {BackgroundColor3 = Color3.fromRGB(theme.accent.R * 255 + 20, theme.accent.G * 255 + 20, theme.accent.B * 255 + 20)}):Play()
