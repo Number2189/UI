@@ -813,7 +813,7 @@ function uilib:CreateWindow(title, size, options)
 			local sectionTitle = Instance.new("TextLabel")
 			sectionTitle.Name = "Title"
 			sectionTitle.Size = UDim2.new(1, -24, 0, 32)
-			sectionTitle.Position = UDim2.new(0, 12, 0, 8)
+			sectionTitle.Position = UDim2.new(0, 12, 0, 5)
 			sectionTitle.BackgroundTransparency = 1
 			sectionTitle.Text = title
 			sectionTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
