@@ -161,9 +161,10 @@ function uilib:CreateWindow(title, size, options)
     RGBDim.BackgroundTransparency = 1
     RGBDim.BorderSizePixel = 0
     RGBDim.Size = UDim2.new(1,0,1,0)
-    RGBDim.ZIndex = 29
+    RGBDim.ZIndex = 39
     RGBDim.Visible = false
     _G.RGBDim = RGBDim
+    _G.UILibDimmed = false
     local DropdownOverlay = Instance.new("Frame")
     DropdownOverlay.Name = "DropdownOverlay"
     DropdownOverlay.Parent = mainf
@@ -180,7 +181,7 @@ function uilib:CreateWindow(title, size, options)
     DropdownDim.BackgroundTransparency = 1
     DropdownDim.BorderSizePixel = 0
     DropdownDim.Size = UDim2.new(1,0,1,0)
-    DropdownDim.ZIndex = 29
+    DropdownDim.ZIndex = 39
     DropdownDim.Visible = false
     _G.DropdownDim = DropdownDim
     _G.DropdownOverlay = DropdownOverlay
