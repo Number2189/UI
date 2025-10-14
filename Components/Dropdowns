@@ -76,25 +76,26 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         if callback then callback(currentoption) end
     end
 
-    local overlay = dropdownOverlay
-    if not overlay then
-        overlay = Instance.new("Frame")
-        overlay.Name = "DropdownOverlay"
-        overlay.Size = UDim2.new(1, 0, 1, 0)
-        overlay.BackgroundTransparency = 1
-        overlay.BackgroundColor3 = Color3.new(0,0,0)
-        overlay.ZIndex = 99
-        overlay.Parent = mainFrame
+    if not _G.DropdownOverlay then
+        _G.DropdownOverlay = Instance.new("Frame")
+        _G.DropdownOverlay.Name = "DropdownOverlay"
+        _G.DropdownOverlay.Size = UDim2.new(1, 0, 1, 0)
+        _G.DropdownOverlay.BackgroundTransparency = 1
+        _G.DropdownOverlay.BackgroundColor3 = Color3.new(0, 0, 0)
+        _G.DropdownOverlay.ZIndex = 99
+        _G.DropdownOverlay.Parent = mainFrame
+        _G.DropdownOverlay.Visible = false
     end
-    local dim = overlay:FindFirstChild("DropdownDim")
-    if not dim then
-        dim = Instance.new("Frame")
-        dim.Name = "DropdownDim"
-        dim.Size = UDim2.new(1, 0, 1, 0)
-        dim.BackgroundColor3 = Color3.new(0,0,0)
-        dim.BackgroundTransparency = 1
-        dim.ZIndex = 100
-        dim.Parent = overlay
+    
+    if not _G.DropdownDim then
+        _G.DropdownDim = Instance.new("Frame")
+        _G.DropdownDim.Name = "DropdownDim"
+        _G.DropdownDim.Size = UDim2.new(1, 0, 1, 0)
+        _G.DropdownDim.BackgroundColor3 = Color3.new(0, 0, 0)
+        _G.DropdownDim.BackgroundTransparency = 1
+        _G.DropdownDim.ZIndex = 100
+        _G.DropdownDim.Parent = _G.DropdownOverlay
+        _G.DropdownDim.Visible = false
     end
 
     local function toggledropdown()
@@ -104,10 +105,10 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         if isopen then
             if dimmed_wso then return end
             local targetheight = math.min(#options, 8) * 28 + 12
-            if dim then
-                overlay.Visible = true
-                dim.Visible = true
-                utils.Tween(dim, {BackgroundTransparency = 0.7}, 0.22):Play()
+            if _G.DropdownDim then
+                _G.DropdownOverlay.Visible = true
+                _G.DropdownDim.Visible = true
+                utils.Tween(_G.DropdownDim, {BackgroundTransparency = 0.7}, 0.22):Play()
             end
             utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
             optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
@@ -118,11 +119,13 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
             task.delay(0.22, function()
                 if not isopen then
                     optioncontainer.Visible = false
-                    utils.Tween(dim, {BackgroundTransparency = 1}, 0.22):Play()
-                    task.delay(0.12, function()
-                        dim.Visible = false
-                    end)
-                    overlay.Visible = false
+                    if _G.DropdownDim then
+                        utils.Tween(_G.DropdownDim, {BackgroundTransparency = 1}, 0.22):Play()
+                        task.delay(0.12, function()
+                            _G.DropdownDim.Visible = false
+                        end)
+                        _G.DropdownOverlay.Visible = false
+                    end
                     dimmed_wso = false
                 end
             end)
