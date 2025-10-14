@@ -8,7 +8,7 @@ function sliders.Create(parent, theme, text, min, max, default, callback, step)
 	slider.Parent = parent
 	slider.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 	slider.BorderSizePixel = 0
-	slider.Size = UDim2.new(1, 0, 0, 36)
+	slider.Size = UDim2.new(1, 0, 0, 30)
 	
 	local sliderCorner = Instance.new("UICorner")
 	sliderCorner.CornerRadius = UDim.new(0, 7)
