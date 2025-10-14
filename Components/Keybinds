@@ -1,104 +1,112 @@
-local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+local utils = loadstring(game:HttpGet("https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/Utils"))()
 
 local keybinds = {}
 
 local userinputservice = game:GetService("UserInputService")
 
 function keybinds.Create(parent, theme, text, defaultkey, callback)
-    local keybind = Instance.new("Frame")
-    keybind.Name = "Keybind"
-    keybind.Parent = parent
-    keybind.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    keybind.BorderSizePixel = 0
-    keybind.Size = UDim2.new(1, 0, 0, 25)
-    utils.CreateCorner(keybind, 4)
-    utils.CreateStroke(keybind)
+	local keybind = Instance.new("Frame")
+	keybind.Name = "Keybind"
+	keybind.Parent = parent
+	keybind.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
+	keybind.BorderSizePixel = 0
+	keybind.Size = UDim2.new(1, 0, 0, 36)
+	
+	local keybindCorner = Instance.new("UICorner")
+	keybindCorner.CornerRadius = UDim.new(0, 7)
+	keybindCorner.Parent = keybind
 
-    local label = Instance.new("TextLabel")
-    label.Parent = keybind
-    label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 10, 0, 0)
-    label.Size = UDim2.new(1, -80, 1, 0)
-    label.Font = Enum.Font.SourceSans
-    label.Text = text
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
+	local label = Instance.new("TextLabel")
+	label.Parent = keybind
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.new(0, 14, 0, 0)
+	label.Size = UDim2.new(1, -100, 1, 0)
+	label.Font = Enum.Font.Gotham
+	label.Text = text
+	label.TextColor3 = Color3.fromRGB(240, 240, 245)
+	label.TextSize = 13
+	label.TextXAlignment = Enum.TextXAlignment.Left
 
-    local keybutton = Instance.new("TextButton")
-    keybutton.Parent = keybind
-    keybutton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    keybutton.BorderSizePixel = 0
-    keybutton.Position = UDim2.new(1, -70, 0.5, -10)
-    keybutton.Size = UDim2.new(0, 60, 0, 20)
-    keybutton.Text = defaultkey and defaultkey.Name or "None"
-    keybutton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    keybutton.TextSize = 12
-    keybutton.Font = Enum.Font.SourceSans
-    utils.CreateCorner(keybutton, 4)
-    utils.CreateStroke(keybutton)
+	local keybutton = Instance.new("TextButton")
+	keybutton.Parent = keybind
+	keybutton.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
+	keybutton.BorderSizePixel = 0
+	keybutton.Position = UDim2.new(1, -70, 0.5, -11)
+	keybutton.Size = UDim2.new(0, 62, 0, 22)
+	keybutton.Text = defaultkey and defaultkey.Name or "None"
+	keybutton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	keybutton.TextSize = 12
+	keybutton.Font = Enum.Font.Gotham
+	
+	local keyCorner = Instance.new("UICorner")
+	keyCorner.CornerRadius = UDim.new(0, 6)
+	keyCorner.Parent = keybutton
 
-    local currentkey = defaultkey
-    local listening = false
+	local currentkey = defaultkey
+	local listening = false
 
-    local function updatekey()
-        keybutton.Text = currentkey and currentkey.Name or "None"
-        if callback then callback(currentkey) end
-    end
+	local function updatekey()
+		keybutton.Text = currentkey and currentkey.Name or "None"
+		if callback then 
+			callback(currentkey) 
+		end
+	end
 
-    local function listenforinput()
-        if listening then return end
-        listening = true
-        keybutton.Text = "..."
-        keybutton.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
-        local connection
-        connection = userinputservice.InputBegan:Connect(function(input, gameprocessed)
-            if not gameprocessed and input.UserInputType == Enum.UserInputType.Keyboard then
-                currentkey = input.KeyCode
-                updatekey()
-                listening = false
-                keybutton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-                connection:Disconnect()
-            elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
-                currentkey = nil
-                updatekey()
-                listening = false
-                keybutton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-                connection:Disconnect()
-            end
-        end)
-    end
+	local function listenforinput()
+		if listening then return end
+		listening = true
+		keybutton.Text = "..."
+		keybutton.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
+		local connection
+		connection = userinputservice.InputBegan:Connect(function(input, gameprocessed)
+			if not gameprocessed and input.UserInputType == Enum.UserInputType.Keyboard then
+				currentkey = input.KeyCode
+				updatekey()
+				listening = false
+				keybutton.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
+				connection:Disconnect()
+			elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
+				currentkey = nil
+				updatekey()
+				listening = false
+				keybutton.BackgroundColor3 = Color3.fromRGB(45, 45, 52)
+				connection:Disconnect()
+			end
+		end)
+	end
 
-    keybutton.MouseButton1Click:Connect(listenforinput)
-    keybutton.MouseEnter:Connect(function()
-        if not listening then
-            utils.Tween(keybutton, {BackgroundColor3 = Color3.fromRGB(60, 60, 60)}):Play()
-        end
-    end)
-    keybutton.MouseLeave:Connect(function()
-        if not listening then
-            utils.Tween(keybutton, {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
-        end
-    end)
+	keybutton.MouseButton1Click:Connect(listenforinput)
+	keybutton.MouseEnter:Connect(function()
+		if not listening then
+			utils.Tween(keybutton, {BackgroundColor3 = Color3.fromRGB(60, 60, 67)}, 0.2):Play()
+		end
+	end)
+	keybutton.MouseLeave:Connect(function()
+		if not listening then
+			utils.Tween(keybutton, {BackgroundColor3 = Color3.fromRGB(45, 45, 52)}, 0.2):Play()
+		end
+	end)
 
-    userinputservice.InputBegan:Connect(function(input, gameprocessed)
-        if currentkey and input.KeyCode == currentkey and not gameprocessed then
-            if callback then callback(currentkey) end
-        end
-    end)
+	userinputservice.InputBegan:Connect(function(input, gameprocessed)
+		if currentkey and input.KeyCode == currentkey and not gameprocessed then
+			if callback then 
+				callback(currentkey) 
+			end
+		end
+	end)
 
-    updatekey()
+	updatekey()
 
-    return {
-        Instance = keybind,
-        Set = function(key)
-            currentkey = key
-            updatekey()
-        end,
-        Get = function()
-            return currentkey
-        end
-    }
+	return {
+		Instance = keybind,
+		Set = function(key)
+			currentkey = key
+			updatekey()
+		end,
+		Get = function()
+			return currentkey
+		end
+	}
 end
 
 return keybinds
