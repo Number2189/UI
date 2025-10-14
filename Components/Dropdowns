@@ -1,171 +1,179 @@
-local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+local utils = loadstring(game:HttpGet("https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/Utils"))()
 
 local dropdowns = {}
 
 local runservice = game:GetService("RunService")
 
 function dropdowns.Create(parent, theme, text, options, default, callback)
-    local windowHolderParent = nil
-    local mainFrame = nil
-    
-    if game.CoreGui:FindFirstChild("PCMenu") then
-        windowHolderParent = game.CoreGui.PCMenu.WindowHolder
-        if windowHolderParent then
-            mainFrame = windowHolderParent:FindFirstChild("Main")
-        end
-    elseif game.CoreGui:FindFirstChild("VRMenu") then
-        windowHolderParent = game.CoreGui.VRMenu.WindowHolder
-        if windowHolderParent then
-            mainFrame = windowHolderParent:FindFirstChild("Main")
-        end
-    end
-    
-    if not mainFrame then
-        warn("Dropdown: Could not find Main frame")
-        return {Instance = nil, Set = function() end, Get = function() return default or options[1] end}
-    end
+	local windowHolderParent = nil
+	local mainFrame = nil
+	
+	if game.CoreGui:FindFirstChild("PCMenu") then
+		windowHolderParent = game.CoreGui.PCMenu
+		if windowHolderParent then
+			mainFrame = windowHolderParent:FindFirstChild("MainFrame")
+		end
+	elseif game.CoreGui:FindFirstChild("VRMenu") then
+		windowHolderParent = game.CoreGui.VRMenu
+		if windowHolderParent then
+			mainFrame = windowHolderParent:FindFirstChild("MainFrame")
+		end
+	end
+	
+	if not mainFrame then
+		warn("Dropdown: Could not find Main frame")
+		return {Instance = nil, Set = function() end, Get = function() return default or options[1] end}
+	end
 
-    local dropdown = Instance.new("Frame")
-    dropdown.Name = "Dropdown"
-    dropdown.Parent = parent
-    dropdown.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    dropdown.BorderSizePixel = 0
-    dropdown.Size = UDim2.new(1, 0, 0, 25)
-    dropdown.ZIndex = 38
-    utils.CreateCorner(dropdown, 4) 
-    utils.CreateStroke(dropdown)
+	local dropdown = Instance.new("Frame")
+	dropdown.Name = "Dropdown"
+	dropdown.Parent = parent
+	dropdown.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
+	dropdown.BorderSizePixel = 0
+	dropdown.Size = UDim2.new(1, 0, 0, 36)
+	dropdown.ZIndex = 38
+	
+	local dropdownCorner = Instance.new("UICorner")
+	dropdownCorner.CornerRadius = UDim.new(0, 7)
+	dropdownCorner.Parent = dropdown
 
-    local label = Instance.new("TextButton")
-    label.Parent = dropdown
-    label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 10, 0, 0)
-    label.Size = UDim2.new(1, -50, 1, 0)
-    label.Font = Enum.Font.SourceSans
-    label.Text = text .. ": " .. (default or options[1])
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.TextSize = 14
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.ZIndex = 39
+	local label = Instance.new("TextButton")
+	label.Parent = dropdown
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.new(0, 14, 0, 0)
+	label.Size = UDim2.new(1, -50, 1, 0)
+	label.Font = Enum.Font.Gotham
+	label.Text = text .. ": " .. (default or options[1])
+	label.TextColor3 = Color3.fromRGB(240, 240, 245)
+	label.TextSize = 13
+	label.TextXAlignment = Enum.TextXAlignment.Left
+	label.ZIndex = 39
 
-    local togglebutton = Instance.new("TextButton")
-    togglebutton.Parent = dropdown
-    togglebutton.BackgroundTransparency = 1
-    togglebutton.Position = UDim2.new(1, -40, 0, 0)
-    togglebutton.Size = UDim2.new(0, 30, 1, 0)
-    togglebutton.Text = "▼"
-    togglebutton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    togglebutton.TextSize = 12
-    togglebutton.ZIndex = 39
+	local togglebutton = Instance.new("TextButton")
+	togglebutton.Parent = dropdown
+	togglebutton.BackgroundTransparency = 1
+	togglebutton.Position = UDim2.new(1, -40, 0, 0)
+	togglebutton.Size = UDim2.new(0, 30, 1, 0)
+	togglebutton.Text = "▼"
+	togglebutton.TextColor3 = Color3.fromRGB(200, 200, 200)
+	togglebutton.TextSize = 12
+	togglebutton.ZIndex = 39
 
-    local optioncontainer = Instance.new("Frame")
-    optioncontainer.Name = "OptionContainer"
-    optioncontainer.Parent = mainFrame
-    optioncontainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    optioncontainer.BorderSizePixel = 0
-    optioncontainer.Size = UDim2.new(0, 220, 0, 0)
-    optioncontainer.Visible = false
-    optioncontainer.ZIndex = 40
-    utils.CreateCorner(optioncontainer, 6)
-    utils.CreateStroke(optioncontainer)
+	local optioncontainer = Instance.new("Frame")
+	optioncontainer.Name = "OptionContainer"
+	optioncontainer.Parent = mainFrame
+	optioncontainer.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
+	optioncontainer.BorderSizePixel = 0
+	optioncontainer.Size = UDim2.new(0, 220, 0, 0)
+	optioncontainer.Visible = false
+	optioncontainer.ZIndex = 40
+	
+	local optionCorner = Instance.new("UICorner")
+	optionCorner.CornerRadius = UDim.new(0, 10)
+	optionCorner.Parent = optioncontainer
 
-    local isopen = false
-    local currentoption = default or options[1]
+	local isopen = false
+	local currentoption = default or options[1]
 
-    local function updatedropdown()
-        label.Text = text .. ": " .. currentoption
-        if callback then callback(currentoption) end
-    end
+	local function updatedropdown()
+		label.Text = text .. ": " .. currentoption
+		if callback then 
+			callback(currentoption) 
+		end
+	end
 
+	local function hidedim()
+		if _G.DropdownDim and _G.DropdownDim.Parent then
+			utils.Tween(_G.DropdownDim, {BackgroundTransparency = 1}, 0.15):Play()
+			task.wait(0.15)
+			_G.DropdownDim.Visible = false
+			if _G.DropdownOverlay then
+				_G.DropdownOverlay.Visible = false
+			end
+		end
+		_G.UILibDimmed = false
+	end
 
-    local function hidedim()
-        if _G.DropdownDim and _G.DropdownDim.Parent then
-            utils.Tween(_G.DropdownDim, {BackgroundTransparency = 1}, 0.15):Play()
-            task.wait(0.15)
-            _G.DropdownDim.Visible = false
-            if _G.DropdownOverlay then
-                _G.DropdownOverlay.Visible = false
-            end
-        end
-        _G.UILibDimmed = false
-    end
+	local function showdim()
+		if _G.DropdownDim and _G.DropdownDim.Parent then
+			if _G.DropdownOverlay then
+				_G.DropdownOverlay.Visible = true
+			end
+			_G.DropdownDim.BackgroundTransparency = 1
+			_G.DropdownDim.Visible = true
+			utils.Tween(_G.DropdownDim, {BackgroundTransparency = 0.5}, 0.15):Play()
+		end
+		_G.UILibDimmed = true
+	end
 
-    local function showdim()
-        if _G.DropdownDim and _G.DropdownDim.Parent then
-            if _G.DropdownOverlay then
-                _G.DropdownOverlay.Visible = true
-            end
-            _G.DropdownDim.BackgroundTransparency = 1
-            _G.DropdownDim.Visible = true
-            utils.Tween(_G.DropdownDim, {BackgroundTransparency = 0.5}, 0.15):Play()
-        end
-        _G.UILibDimmed = true
-    end
+	local function toggledropdown()
+		isopen = not isopen
+		togglebutton.Text = isopen and "▲" or "▼"
+		optioncontainer.Visible = isopen
+		if isopen then
+			if _G.UILibDimmed then return end
+			local targetheight = math.min(#options, 8) * 38 + 12
+			showdim()
+			utils.Tween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}, 0.3, Enum.EasingStyle.Quint):Play()
+			optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
+		else
+			runservice:UnbindFromRenderStep("DropdownCenter")
+			utils.Tween(optioncontainer, {Size = UDim2.new(0, 220, 0, 0)}, 0.2):Play()
+			task.delay(0.22, function()
+				if not isopen then
+					optioncontainer.Visible = false
+					hidedim()
+				end
+			end)
+		end
+	end
 
-    local function toggledropdown()
-        isopen = not isopen
-        togglebutton.Text = isopen and "▲" or "▼"
-        optioncontainer.Visible = isopen
-        if isopen then
-            if _G.UILibDimmed then return end
-            local targetheight = math.min(#options, 8) * 28 + 12
-            showdim()
-            utils.SpringTween(optioncontainer, {Size = UDim2.new(0, 220, 0, targetheight)}):Play()
-            optioncontainer.Position = UDim2.new(0.5, -110, 0.5, -50)
-        else
-            runservice:UnbindFromRenderStep("DropdownCenter")
-            utils.Tween(optioncontainer, {Size = UDim2.new(0, 220, 0, 0)}, 0.2):Play()
-            task.delay(0.22, function()
-                if not isopen then
-                    optioncontainer.Visible = false
-                    hidedim()
-                end
-            end)
-        end
-    end
+	for i, option in pairs(options) do
+		local optionbutton = Instance.new("TextButton")
+		optionbutton.Name = "OptionButton"
+		optionbutton.Parent = optioncontainer
+		optionbutton.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
+		optionbutton.BorderSizePixel = 0
+		optionbutton.Size = UDim2.new(1, -12, 0, 32)
+		optionbutton.Position = UDim2.new(0, 6, 0, 6 + (i - 1) * 38)
+		optionbutton.Text = option
+		optionbutton.TextColor3 = Color3.fromRGB(240, 240, 245)
+		optionbutton.TextSize = 13
+		optionbutton.Font = Enum.Font.Gotham
+		optionbutton.ZIndex = 41
+		
+		local optionCorner = Instance.new("UICorner")
+		optionCorner.CornerRadius = UDim.new(0, 7)
+		optionCorner.Parent = optionbutton
 
-    for _, option in pairs(options) do
-        local optionbutton = Instance.new("TextButton")
-        optionbutton.Name = "OptionButton"
-        optionbutton.Parent = optioncontainer
-        optionbutton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        optionbutton.BorderSizePixel = 0
-        optionbutton.Size = UDim2.new(1, -12, 0, 26)
-        optionbutton.Position = UDim2.new(0, 6, 0, 6 + (_ - 1) * 28)
-        optionbutton.Text = option
-        optionbutton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        optionbutton.TextSize = 12
-        optionbutton.Font = Enum.Font.SourceSans
-        optionbutton.ZIndex = 41
-        utils.CreateCorner(optionbutton, 4)
+		optionbutton.MouseEnter:Connect(function()
+			utils.Tween(optionbutton, {BackgroundColor3 = Color3.fromRGB(35, 35, 42)}, 0.2):Play()
+		end)
+		optionbutton.MouseLeave:Connect(function()
+			utils.Tween(optionbutton, {BackgroundColor3 = Color3.fromRGB(28, 28, 33)}, 0.2):Play()
+		end)
+		optionbutton.MouseButton1Click:Connect(function()
+			currentoption = option
+			updatedropdown()
+			toggledropdown()
+		end)
+	end
 
-        optionbutton.MouseEnter:Connect(function()
-            utils.Tween(optionbutton, {BackgroundColor3 = Color3.fromRGB(50, 50, 50)}):Play()
-        end)
-        optionbutton.MouseLeave:Connect(function()
-            utils.Tween(optionbutton, {BackgroundColor3 = Color3.fromRGB(40, 40, 40)}):Play()
-        end)
-        optionbutton.MouseButton1Click:Connect(function()
-            currentoption = option
-            updatedropdown()
-            toggledropdown()
-        end)
-    end
+	label.MouseButton1Click:Connect(toggledropdown)
+	togglebutton.MouseButton1Click:Connect(toggledropdown)
 
-    label.MouseButton1Click:Connect(toggledropdown)
-    togglebutton.MouseButton1Click:Connect(toggledropdown)
-
-    return {
-        Instance = dropdown,
-        Set = function(value)
-            if table.find(options, value) then
-                currentoption = value
-                updatedropdown()
-            end
-        end,
-        Get = function()
-            return currentoption
-        end
-    }
+	return {
+		Instance = dropdown,
+		Set = function(value)
+			if table.find(options, value) then
+				currentoption = value
+				updatedropdown()
+			end
+		end,
+		Get = function()
+			return currentoption
+		end
+	}
 end
 
 return dropdowns
