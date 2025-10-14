@@ -527,7 +527,7 @@ function uilib:CreateWindow(title, size, options)
 	function Window:CreateTab(name)
 		local tabButton = Instance.new("TextButton")
 		tabButton.Name = name
-		tabButton.Size = UDim2.new(1, -16, 0, 36)
+		tabButton.Size = UDim2.new(1, -8, 0, 28)
 		tabButton.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
 		tabButton.BorderSizePixel = 0
 		tabButton.Text = name
@@ -637,7 +637,7 @@ function uilib:CreateWindow(title, size, options)
 		function Tab:Button(text, callback)
 			local button = Instance.new("TextButton")
 			button.Name = "Button"
-			button.Size = UDim2.new(1, 0, 0, 36)
+			button.Size = UDim2.new(1, 0, 0, 30)
 			button.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 			button.BorderSizePixel = 0
 			button.Text = text
@@ -705,7 +705,7 @@ function uilib:CreateWindow(title, size, options)
 
 			local toggleFrame = Instance.new("Frame")
 			toggleFrame.Name = "Toggle"
-			toggleFrame.Size = UDim2.new(1, 0, 0, 36)
+			toggleFrame.Size = UDim2.new(1, 0, 0, 30)
 			toggleFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 			toggleFrame.BorderSizePixel = 0
 			toggleFrame.Parent = container
@@ -854,7 +854,7 @@ function uilib:CreateWindow(title, size, options)
 			function Section:Button(text, callback)
 				local button = Instance.new("TextButton")
 				button.Name = "Button"
-				button.Size = UDim2.new(1, 0, 0, 36)
+				button.Size = UDim2.new(1, 0, 0, 30)
 				button.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 				button.BorderSizePixel = 0
 				button.Text = text
@@ -922,7 +922,7 @@ function uilib:CreateWindow(title, size, options)
 
 				local toggleFrame = Instance.new("Frame")
 				toggleFrame.Name = "Toggle"
-				toggleFrame.Size = UDim2.new(1, 0, 0, 36)
+				toggleFrame.Size = UDim2.new(1, 0, 0, 30)
 				toggleFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 				toggleFrame.BorderSizePixel = 0
 				toggleFrame.Parent = sectionContainer
