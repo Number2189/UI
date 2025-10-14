@@ -76,27 +76,6 @@ function dropdowns.Create(parent, theme, text, options, default, callback)
         if callback then callback(currentoption) end
     end
 
-    if not _G.DropdownOverlay then
-        _G.DropdownOverlay = Instance.new("Frame")
-        _G.DropdownOverlay.Name = "DropdownOverlay"
-        _G.DropdownOverlay.Size = UDim2.new(1, 0, 1, 0)
-        _G.DropdownOverlay.BackgroundTransparency = 1
-        _G.DropdownOverlay.BackgroundColor3 = Color3.new(0, 0, 0)
-        _G.DropdownOverlay.ZIndex = 99
-        _G.DropdownOverlay.Parent = mainFrame
-        _G.DropdownOverlay.Visible = false
-    end
-    
-    if not _G.DropdownDim then
-        _G.DropdownDim = Instance.new("Frame")
-        _G.DropdownDim.Name = "DropdownDim"
-        _G.DropdownDim.Size = UDim2.new(1, 0, 1, 0)
-        _G.DropdownDim.BackgroundColor3 = Color3.new(0, 0, 0)
-        _G.DropdownDim.BackgroundTransparency = 1
-        _G.DropdownDim.ZIndex = 100
-        _G.DropdownDim.Parent = _G.DropdownOverlay
-        _G.DropdownDim.Visible = false
-    end
 
     local function toggledropdown()
         isopen = not isopen
