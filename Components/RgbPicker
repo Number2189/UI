@@ -416,7 +416,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     overlay = rgbOverlay
     if overlay then
         overlay.Visible = true
-        dim = overlay:FindFirstChild("RGBDim")
+        dim = RGBDim
     end
 
     donebtn.MouseEnter:Connect(function()
@@ -436,7 +436,9 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     donebtn.MouseButton1Click:Connect(function()
         isopen = false
         colordialog.Visible = false
-        dim.Visible = false
+        if dim then
+            dim.Visible = false
+        end
         dimmed_wso = false
         if callback then
             callback(currentr/255, currentg/255, currentb/255)
@@ -451,7 +453,9 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
         updatehsv()
         display()
         isopen = false
-        dim.Visible = false
+        if dim then
+            dim.Visible = false
+        end
         dimmed_wso = false
         colordialog.Visible = false
         runservice:UnbindFromRenderStep("ColorPickerCenter")
@@ -476,13 +480,13 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
             task.delay(0.22, function()
                 if not isopen then
                     colordialog.Visible = false
-                    if dim then
+                    if RGBDim then
                         utils.Tween(dim, {BackgroundTransparency = 1}, 0.22):Play()
                         task.delay(0.12, function()
                             dim.Visible = false
                         end)
+                        dim.Visible = false
                     end
-                    dim.Visible = false
                     dimmed_wso = false
                 end
             end)
