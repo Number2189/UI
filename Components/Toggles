@@ -1,75 +1,92 @@
-local utils = loadstring(game:HttpGet(GithubDirectory("Utils")))()
+local utils = loadstring(game:HttpGet("https://raw.githubusercontent.com/Number2189/UI/refs/heads/main/Utils"))()
 
 local toggles = {}
 
 function toggles.Create(parent, theme, text, default, callback)
-	local toggle = Instance.new("Frame")
-	toggle.Name = "Toggle"
-	toggle.Parent = parent
-	toggle.BackgroundColor3 = theme.dialog
-	toggle.BorderSizePixel = 0
-	toggle.Size = UDim2.new(1, 0, 0, 25)
-    utils.CreateCorner(toggle, 6)
-    utils.CreateStroke(toggle, theme.acrylicborder)
+	local toggled = default or false
 
-	local label = Instance.new("TextLabel")
-	label.Parent = toggle
-	label.BackgroundTransparency = 1
-	label.Position = UDim2.new(0, 10, 0, 0)
-	label.Size = UDim2.new(1, -50, 1, 0)
-	label.Font = Enum.Font.Gotham
-	label.Text = text
-	label.TextColor3 = Color3.fromRGB(255, 255, 255)
-	label.TextSize = 14
-	label.TextXAlignment = Enum.TextXAlignment.Left
+	local toggleFrame = Instance.new("Frame")
+	toggleFrame.Name = "Toggle"
+	toggleFrame.Size = UDim2.new(1, 0, 0, 36)
+	toggleFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
+	toggleFrame.BorderSizePixel = 0
+	toggleFrame.Parent = parent
 
-	local switch = Instance.new("Frame")
-	switch.Parent = toggle
-	switch.BackgroundColor3 = default and theme.accent or Color3.fromRGB(50, 50, 50)
-	switch.BorderSizePixel = 0
-	switch.Position = UDim2.new(1, -40, 0.5, -8)
-	switch.Size = UDim2.new(0, 30, 0, 16)
-    utils.CreateCorner(switch, 8)
+	local toggleCorner = Instance.new("UICorner")
+	toggleCorner.CornerRadius = UDim.new(0, 7)
+	toggleCorner.Parent = toggleFrame
 
-	local knob = Instance.new("Frame")
-	knob.Parent = switch
-	knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	knob.BorderSizePixel = 0
-	knob.Position = default and UDim2.new(1, -12, 0.5, -4) or UDim2.new(0, 2, 0.5, -4)
-	knob.Size = UDim2.new(0, 8, 0, 8)
-    utils.CreateCorner(knob, 4)
+	local toggleLabel = Instance.new("TextLabel")
+	toggleLabel.Name = "Label"
+	toggleLabel.Size = UDim2.new(1, -64, 1, 0)
+	toggleLabel.Position = UDim2.new(0, 14, 0, 0)
+	toggleLabel.BackgroundTransparency = 1
+	toggleLabel.Text = text
+	toggleLabel.TextColor3 = Color3.fromRGB(240, 240, 245)
+	toggleLabel.TextSize = 13
+	toggleLabel.Font = Enum.Font.Gotham
+	toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+	toggleLabel.Parent = toggleFrame
 
-	local state = default
-	local function update()
-        utils.Tween(switch, {BackgroundColor3 = state and theme.accent or Color3.fromRGB(50, 50, 50)}):Play()
-        utils.SpringTween(knob, {Position = state and UDim2.new(1, -12, 0.5, -4) or UDim2.new(0, 2, 0.5, -4)}):Play()
-	end
+	local toggleButton = Instance.new("Frame")
+	toggleButton.Name = "ToggleButton"
+	toggleButton.Size = UDim2.new(0, 40, 0, 22)
+	toggleButton.Position = UDim2.new(1, -50, 0.5, -11)
+	toggleButton.BackgroundColor3 = toggled and Color3.fromRGB(138, 43, 226) or Color3.fromRGB(45, 45, 52)
+	toggleButton.BorderSizePixel = 0
+	toggleButton.Parent = toggleFrame
 
-	local button = Instance.new("TextButton")
-	button.Parent = toggle
-	button.BackgroundTransparency = 1
-	button.Size = UDim2.new(1, 0, 1, 0)
-	button.Text = ""
-	button.MouseButton1Click:Connect(function()
-		state = not state
-		update()
-		if callback then callback(state) end
+	local toggleButtonCorner = Instance.new("UICorner")
+	toggleButtonCorner.CornerRadius = UDim.new(1, 0)
+	toggleButtonCorner.Parent = toggleButton
+
+	local toggleCircle = Instance.new("Frame")
+	toggleCircle.Name = "Circle"
+	toggleCircle.Size = UDim2.new(0, 18, 0, 18)
+	toggleCircle.Position = toggled and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)
+	toggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	toggleCircle.BorderSizePixel = 0
+	toggleCircle.Parent = toggleButton
+
+	local circleCorner = Instance.new("UICorner")
+	circleCorner.CornerRadius = UDim.new(1, 0)
+	circleCorner.Parent = toggleCircle
+
+	local clickDetector = Instance.new("TextButton")
+	clickDetector.Size = UDim2.new(1, 0, 1, 0)
+	clickDetector.BackgroundTransparency = 1
+	clickDetector.Text = ""
+	clickDetector.Parent = toggleFrame
+
+	clickDetector.MouseEnter:Connect(function()
+		utils.Tween(toggleFrame, {BackgroundColor3 = Color3.fromRGB(35, 35, 42)}, 0.2):Play()
 	end)
 
-	update()
+	clickDetector.MouseLeave:Connect(function()
+		utils.Tween(toggleFrame, {BackgroundColor3 = Color3.fromRGB(28, 28, 33)}, 0.2):Play()
+	end)
+
+	clickDetector.MouseButton1Click:Connect(function()
+		toggled = not toggled
+		utils.Tween(toggleButton, {BackgroundColor3 = toggled and Color3.fromRGB(138, 43, 226) or Color3.fromRGB(45, 45, 52)}, 0.25):Play()
+		utils.Tween(toggleCircle, {Position = toggled and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)}, 0.25):Play()
+
+		if callback then 
+			callback(toggled) 
+		end
+	end)
 
 	return {
-		Instance = toggle,
+		Instance = toggleFrame,
 		SetValue = function(value)
-			state = value
-			update()
+			toggled = value
+			utils.Tween(toggleButton, {BackgroundColor3 = toggled and Color3.fromRGB(138, 43, 226) or Color3.fromRGB(45, 45, 52)}, 0.25):Play()
+			utils.Tween(toggleCircle, {Position = toggled and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)}, 0.25):Play()
 		end,
 		GetValue = function()
-			return state
+			return toggled
 		end
 	}
 end
 
 return toggles
-
-
