@@ -7,10 +7,12 @@ local runservice = game:GetService("RunService")
 
 function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, callback)
     local windowHolderParent = nil
+    local isVR = false
     if game.CoreGui:FindFirstChild("PCMenu") then
         windowHolderParent = game.CoreGui.PCMenu.WindowHolder
     elseif game.CoreGui:FindFirstChild("VRMenu") then
         windowHolderParent = game.CoreGui.VRMenu.WindowHolder
+        isVR = true
     end
 
     local button = Instance.new("TextButton")
@@ -44,6 +46,69 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     colorpreview.Position = UDim2.new(1, -25, 0, 2.5)
     colorpreview.ZIndex = 39
     utils.CreateCorner(colorpreview, 4)
+    
+    local currentr = math.floor(defaultr * 255)
+    local currentg = math.floor(defaultg * 255)
+    local currentb = math.floor(defaultb * 255)
+    
+    if isVR then
+        local rgbinput = Instance.new("TextBox")
+        rgbinput.Parent = button
+        rgbinput.Size = UDim2.new(1, -35, 0, 20)
+        rgbinput.Position = UDim2.new(0, 10, 0, 30)
+        rgbinput.BackgroundColor3 = theme.dialogbutton
+        rgbinput.BorderSizePixel = 0
+        rgbinput.Text = currentr .. ", " .. currentg .. ", " .. currentb
+        rgbinput.TextColor3 = Color3.fromRGB(255, 255, 255)
+        rgbinput.TextSize = 12
+        rgbinput.Font = Enum.Font.Gotham
+        rgbinput.TextXAlignment = Enum.TextXAlignment.Center
+        rgbinput.ClearTextOnFocus = false
+        rgbinput.ZIndex = 39
+        utils.CreateCorner(rgbinput, 4)
+        utils.CreateStroke(rgbinput, Color3.fromRGB(60, 60, 60), 1)
+        
+        button.Size = UDim2.new(1, 0, 0, 60)
+        
+        rgbinput.FocusLost:Connect(function(enterpressed)
+            if enterpressed then
+                local parts = {}
+                for part in string.gmatch(rgbinput.Text, "[^,]+") do
+                    local num = tonumber(part:match("^%s*(.-)%s*$"))
+                    if num then
+                        table.insert(parts, num)
+                    end
+                end
+                
+                if #parts == 3 then
+                    local r, g, b = parts[1], parts[2], parts[3]
+                    if r >= 0 and r <= 255 and g >= 0 and g <= 255 and b >= 0 and b <= 255 then
+                        currentr = math.floor(r)
+                        currentg = math.floor(g)
+                        currentb = math.floor(b)
+                        utils.Tween(colorpreview, {BackgroundColor3 = Color3.fromRGB(currentr, currentg, currentb)}):Play()
+                        if callback then
+                            callback(currentr/255, currentg/255, currentb/255)
+                        end
+                    end
+                end
+            end
+        end)
+        
+        return {
+            Instance = button,
+            Set = function(r, g, b)
+                currentr = math.floor(r * 255)
+                currentg = math.floor(g * 255)
+                currentb = math.floor(b * 255)
+                rgbinput.Text = currentr .. ", " .. currentg .. ", " .. currentb
+                utils.Tween(colorpreview, {BackgroundColor3 = Color3.fromRGB(currentr, currentg, currentb)}):Play()
+            end,
+            Get = function()
+                return Color3.fromRGB(currentr, currentg, currentb)
+            end
+        }
+    end
 
     local colordialog = Instance.new("Frame")
     colordialog.Parent = windowHolderParent
@@ -60,9 +125,6 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     local currenthue = 0
     local currentsat = 0
     local currentvib = 0
-    local currentr = math.floor(defaultr * 255)
-    local currentg = math.floor(defaultg * 255)
-    local currentb = math.floor(defaultb * 255)
 
     local function rgbtohsv(r, g, b)
         r, g, b = r/255, g/255, b/255
@@ -374,8 +436,7 @@ function rgbpicker.Create(parent, theme, text, defaultr, defaultg, defaultb, cal
     donebtn.MouseButton1Click:Connect(function()
         isopen = false
         colordialog.Visible = false
-        if RGBDim then RGBDim.Visible = false end
-        if dim then dim.Visible = false end
+        dim.Visible = false
         dimmed_wso = false
         if callback then
             callback(currentr/255, currentg/255, currentb/255)
