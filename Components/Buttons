@@ -6,44 +6,55 @@ function buttons.Create(parent, theme, text, callback)
 	local button = Instance.new("TextButton")
 	button.Name = "Button"
 	button.Parent = parent
-	button.BackgroundColor3 = theme.dialogbutton
+	button.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 	button.BorderSizePixel = 0
-	button.Size = UDim2.new(1, 0, 0, 25)
+	button.Size = UDim2.new(1, 0, 0, 36)
 	button.Font = Enum.Font.Gotham
-	button.Text = ""
-	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Text = text
+	button.TextColor3 = Color3.fromRGB(240, 240, 245)
 	button.TextSize = 13
-	utils.CreateCorner(button, 6)
-	utils.CreateStroke(button, theme.dialogbuttonborder)
-
-	local label = Instance.new("TextLabel")
-	label.Parent = button
-	label.BackgroundTransparency = 1
-	label.Position = UDim2.new(0, 10, 0, 0)
-	label.Size = UDim2.new(1, -20, 1, 0)
-	label.Font = Enum.Font.Gotham
-	label.Text = text
-	label.TextColor3 = Color3.fromRGB(255, 255, 255)
-	label.TextSize = 13
-	label.TextXAlignment = Enum.TextXAlignment.Left
+	button.AutoButtonColor = false
+	button.ClipsDescendants = true
+	
+	local buttonCorner = Instance.new("UICorner")
+	buttonCorner.CornerRadius = UDim.new(0, 7)
+	buttonCorner.Parent = button
+	
+	local ripple = Instance.new("ImageLabel")
+	ripple.Name = "Ripple"
+	ripple.Size = UDim2.new(0, 0, 0, 0)
+	ripple.Position = UDim2.new(0.5, 0, 0.5, 0)
+	ripple.AnchorPoint = Vector2.new(0.5, 0.5)
+	ripple.BackgroundTransparency = 1
+	ripple.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+	ripple.ImageColor3 = Color3.fromRGB(138, 43, 226)
+	ripple.ImageTransparency = 0.5
+	ripple.ZIndex = 2
+	ripple.Parent = button
 
 	button.MouseEnter:Connect(function()
-		utils.Tween(button, {BackgroundColor3 = theme.element}):Play()
+		utils.Tween(button, {BackgroundColor3 = Color3.fromRGB(35, 35, 42)}, 0.2):Play()
 	end)
+	
 	button.MouseLeave:Connect(function()
-		utils.Tween(button, {BackgroundColor3 = theme.dialogbutton}):Play()
+		utils.Tween(button, {BackgroundColor3 = Color3.fromRGB(28, 28, 33)}, 0.2):Play()
 	end)
+	
 	button.MouseButton1Click:Connect(function()
-		if callback then callback() end
-		utils.QuickTween(button, {BackgroundColor3 = theme.tab}):Play()
-		task.delay(0.1, function()
-			utils.Tween(button, {BackgroundColor3 = theme.dialogbutton}):Play()
-		end)
+		ripple.Size = UDim2.new(0, 0, 0, 0)
+		ripple.ImageTransparency = 0.3
+		utils.Tween(ripple, {Size = UDim2.new(2, 0, 2, 0), ImageTransparency = 1}, 0.5):Play()
+		
+		utils.Tween(button, {BackgroundColor3 = Color3.fromRGB(138, 43, 226)}, 0.1):Play()
+		task.wait(0.15)
+		utils.Tween(button, {BackgroundColor3 = Color3.fromRGB(35, 35, 42)}, 0.15):Play()
+		
+		if callback then 
+			callback() 
+		end
 	end)
 
 	return button
 end
 
 return buttons
-
-
