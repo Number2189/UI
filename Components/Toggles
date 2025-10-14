@@ -7,7 +7,7 @@ function toggles.Create(parent, theme, text, default, callback)
 
 	local toggleFrame = Instance.new("Frame")
 	toggleFrame.Name = "Toggle"
-	toggleFrame.Size = UDim2.new(1, 0, 0, 36)
+	toggleFrame.Size = UDim2.new(1, 0, 0, 30)
 	toggleFrame.BackgroundColor3 = Color3.fromRGB(28, 28, 33)
 	toggleFrame.BorderSizePixel = 0
 	toggleFrame.Parent = parent
