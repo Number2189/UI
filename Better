@@ -135,18 +135,6 @@ function uilib:CreateWindow(title, size, options)
 	mainFrame.BackgroundTransparency = 1
 	mainFrame.Parent = sgui
 
-	local shadow = Instance.new("ImageLabel")
-	shadow.Name = "Shadow"
-	shadow.Size = UDim2.new(1.01185191, 40, 1.03930116, 40)
-	shadow.Position = UDim2.new(0, -20, 0, -27)
-	shadow.BackgroundTransparency = 1
-	shadow.Image = "rbxassetid://6015897843"
-	shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-	shadow.ImageTransparency = 0.5
-	shadow.ScaleType = Enum.ScaleType.Slice
-	shadow.SliceCenter = Rect.new(49, 49, 450, 450)
-	shadow.ZIndex = 0
-	shadow.Parent = mainFrame
 
 	local mainBg = Instance.new("Frame")
 	mainBg.Name = "MainBg"
@@ -156,8 +144,18 @@ function uilib:CreateWindow(title, size, options)
 	mainBg.Parent = mainFrame
 
 	local mainCorner = Instance.new("UICorner")
-	mainCorner.CornerRadius = UDim.new(0, 12)
+	mainCorner.CornerRadius = UDim.new(0, 7)
 	mainCorner.Parent = mainBg
+	
+	local mainFrameCorner = Instance.new("UICorner")
+	mainFrameCorner.CornerRadius = UDim.new(0, 7)
+	mainFrameCorner.Parent = mainFrame
+	
+	local mainFrameStroke = Instance.new("UIStroke")
+	mainFrameStroke.Color = Color3.fromRGB(40, 40, 45)
+	mainFrameStroke.Thickness = 1
+	mainFrameStroke.Transparency = 0.5
+	mainFrameStroke.Parent = mainFrame
 
 	local topBar = Instance.new("Frame")
 	topBar.Name = "TopBar"
@@ -167,7 +165,7 @@ function uilib:CreateWindow(title, size, options)
 	topBar.Parent = mainFrame
 
 	local topCorner = Instance.new("UICorner")
-	topCorner.CornerRadius = UDim.new(0, 12)
+	topCorner.CornerRadius = UDim.new(0, 7)
 	topCorner.Parent = topBar
 
 	local topBarBottom = Instance.new("Frame")
@@ -253,11 +251,6 @@ function uilib:CreateWindow(title, size, options)
 	end)
 
 	local minimized = false
-	minimizeButton.MouseButton1Click:Connect(function()
-		minimized = not minimized
-		local targetSize = minimized and UDim2.new(0, 675, 0, 50) or (size or UDim2.new(0, 675, 0, 458))
-		smtween(mainFrame, {Size = targetSize}, 0.3):Play()
-	end)
 
 	closeButton.MouseButton1Click:Connect(function()
 		smtween(mainFrame, {Size = UDim2.new(0, 0, 0, 0)}, 0.2):Play()
@@ -272,7 +265,12 @@ function uilib:CreateWindow(title, size, options)
 	accent.Position = UDim2.new(0, 0, 0, 50)
 	accent.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
 	accent.BorderSizePixel = 0
+	accent.ZIndex = 2
 	accent.Parent = mainFrame
+	
+	local accentCorner = Instance.new("UICorner")
+	accentCorner.CornerRadius = UDim.new(1, 0)
+	accentCorner.Parent = accent
 
     local sidebar = Instance.new("Frame")
     sidebar.Name = "Sidebar"
@@ -283,7 +281,7 @@ function uilib:CreateWindow(title, size, options)
 	sidebar.Parent = mainFrame
 
 	local sidebarCorner = Instance.new("UICorner")
-	sidebarCorner.CornerRadius = UDim.new(0, 10)
+	sidebarCorner.CornerRadius = UDim.new(0, 7)
 	sidebarCorner.Parent = sidebar
 
 	local tabList = Instance.new("UIListLayout")
@@ -482,6 +480,29 @@ function uilib:CreateWindow(title, size, options)
 	Window.resizeHandle = resizeHandle
 	Window.contentFrame = contentFrame
 	Window.sharedIndicator = sharedIndicator
+
+	minimizeButton.MouseButton1Click:Connect(function()
+		minimized = not minimized
+        if minimized then
+			sidebar.Visible = false
+			contentFrame.Visible = false
+			accent.Visible = false
+			resizeHandle.Visible = false
+			resizeGrip.Visible = false
+			sharedIndicator.Visible = false
+			mainBg.Visible = false
+		else
+			sidebar.Visible = true
+			contentFrame.Visible = true
+			accent.Visible = true
+			resizeHandle.Visible = true
+			resizeGrip.Visible = true
+			if Window.CurrentTab then
+				sharedIndicator.Visible = true
+			end
+			mainBg.Visible = true
+		end
+	end)
 
 	local resizingSidebar = false
 	local resizeInput, resizeStartX, sidebarStartWidth
@@ -807,7 +828,7 @@ function uilib:CreateWindow(title, size, options)
 			sectionFrame.Parent = container
 
 			local sectionCorner = Instance.new("UICorner")
-			sectionCorner.CornerRadius = UDim.new(0, 10)
+			sectionCorner.CornerRadius = UDim.new(0, 7)
 			sectionCorner.Parent = sectionFrame
 
 			local sectionTitle = Instance.new("TextLabel")
@@ -824,7 +845,7 @@ function uilib:CreateWindow(title, size, options)
 
 			local titleUnderline = Instance.new("Frame")
 			titleUnderline.Size = UDim2.new(1, -24, 0, 2)
-			titleUnderline.Position = UDim2.new(0, 12, 0, 38)
+			titleUnderline.Position = UDim2.new(0, 5, 0, 38)
 			titleUnderline.BackgroundColor3 = Color3.fromRGB(138, 43, 226)
 			titleUnderline.BorderSizePixel = 0
 			titleUnderline.Parent = sectionFrame
