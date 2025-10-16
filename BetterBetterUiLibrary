@@ -15,7 +15,7 @@ local Theme = {
 }
 function Library:CreateWindow(config)
 	config = config or {}
-	local windowTitle = config.Title or "UI Library"
+	local windowTitle = config.Title or "Better UI Library"
 	local windowSize = config.Size or UDim2.new(0, 455, 0, 294)
 	local customAccent = config.AccentColor or Theme.Accent
 	if config.AccentColor then
@@ -26,7 +26,10 @@ function Library:CreateWindow(config)
 	window.CurrentTab = nil
 	local ScreenGui = Instance.new("ScreenGui")
 	ScreenGui.Name = windowTitle
-	ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	local success, result = pcall(function()
+		return game:GetService("CoreGui")
+	end)
+	ScreenGui.Parent = success and result or game.Players.LocalPlayer:WaitForChild("PlayerGui")
 	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	ScreenGui.ResetOnSpawn = false
 	local MainBackground = Instance.new("Frame")
