@@ -1,5 +1,14 @@
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local VRService = game:GetService("VRService")
+
+if workspace:FindFirstChild("VRMenuParts") then
+	workspace:FindFirstChild("VRMenuParts"):Destroy()
+end
+
+local VRMenuParts = Instance.new("Folder", workspace)
+VRMenuParts.Name = "VRMenuParts"
+
 local Library = {}
 Library.__index = Library
 local Theme = {
@@ -24,14 +33,63 @@ function Library:CreateWindow(config)
 	local window = {}
 	window.Tabs = {}
 	window.CurrentTab = nil
-	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Name = windowTitle
-	local success, result = pcall(function()
-		return game:GetService("CoreGui")
-	end)
-	ScreenGui.Parent = success and result or game.Players.LocalPlayer:WaitForChild("PlayerGui")
-	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-	ScreenGui.ResetOnSpawn = false
+	local vrui = {}
+	local ScreenGui
+	
+	if VRService.VREnabled then
+		local Players = game:GetService("Players")
+		local LocalPlayer = Players.LocalPlayer
+		
+		vrui.base = Instance.new("Part")
+		vrui.base.Size = Vector3.new(0.01, 0.01, 0.01)
+		vrui.base.Transparency = 1
+		vrui.base.CanCollide = false
+		vrui.base.Massless = true
+		vrui.base.Parent = VRMenuParts
+		
+		local baseweld = Instance.new("Weld")
+		if workspace.CurrentCamera:FindFirstChild("VirtualHands") then
+			baseweld.Part0 = workspace.CurrentCamera:WaitForChild("VirtualHands"):WaitForChild("LeftHand")
+		else
+			baseweld.Enabled = false
+			vrui.base.Anchored = true
+		end
+		baseweld.Part1 = vrui.base
+		baseweld.C1 = CFrame.new(0, -0.2, 0)
+		baseweld.Parent = vrui.base
+		
+		vrui.billboard = Instance.new("Part")
+		vrui.billboard.Size = Vector3.new(0.7, 0.5, 0.01)
+		vrui.billboard.Transparency = 1
+		vrui.billboard.CanCollide = false
+		vrui.billboard.Massless = true
+		vrui.billboard.Parent = VRMenuParts
+		
+		vrui.menuweld = Instance.new("Weld")
+		vrui.menuweld.Part0 = vrui.base
+		vrui.menuweld.Part1 = vrui.billboard
+		vrui.menuweld.C1 = CFrame.new(-0.17, -0.57, 0) * CFrame.Angles(math.rad(-90), math.rad(90), 0)
+		vrui.menuweld.Parent = vrui.billboard
+		
+		ScreenGui = Instance.new("SurfaceGui")
+		ScreenGui.Adornee = vrui.billboard
+		ScreenGui.AlwaysOnTop = true
+		ScreenGui.ResetOnSpawn = false
+		ScreenGui.CanvasSize = Vector2.new(455, 294)
+		ScreenGui.Name = "VRMenu"
+		ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+		
+		window._vrmenu_parts = vrui
+	else
+		ScreenGui = Instance.new("ScreenGui")
+		ScreenGui.Name = windowTitle
+		local success, result = pcall(function()
+			return game:GetService("CoreGui")
+		end)
+		ScreenGui.Parent = success and result or game.Players.LocalPlayer:WaitForChild("PlayerGui")
+		ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+		ScreenGui.ResetOnSpawn = false
+	end
 	local MainBackground = Instance.new("Frame")
 MainBackground.Name = "MainBackground"
 	MainBackground.Parent = ScreenGui
@@ -86,6 +144,16 @@ Titlebar.BorderSizePixel = 0
 	CloseButton.TextColor3 = Theme.Text
 	CloseButton.TextSize = 20
 	CloseButton.MouseButton1Click:Connect(function()
+		if window._vrmenu_parts then
+			local vr = window._vrmenu_parts
+			if vr.base and vr.base.Parent then
+				vr.base:Destroy()
+			end
+			if vr.billboard and vr.billboard.Parent then
+				vr.billboard:Destroy()
+			end
+			window._vrmenu_parts = nil
+		end
 		ScreenGui:Destroy()
 	end)
 	local Sidebar = Instance.new("Frame")
@@ -125,34 +193,36 @@ Sidebar.BorderSizePixel = 0
 			TabContainer.Visible = true
 		end
 	end)
-	local dragging = false
-	local dragInput, mousePos, framePos
-	Titlebar.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-			mousePos = input.Position
-			framePos = MainBackground.Position
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
-		end
-	end)
-	UserInputService.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement then
-			dragInput = input
-		end
-	end)
-	game:GetService("RunService").Heartbeat:Connect(function()
-		if dragging and dragInput then
-			local delta = dragInput.Position - mousePos
-			MainBackground.Position = UDim2.new(
-				framePos.X.Scale, framePos.X.Offset + delta.X,
-				framePos.Y.Scale, framePos.Y.Offset + delta.Y
-			)
-		end
-	end)
+	if not VRService.VREnabled then
+		local dragging = false
+		local dragInput, mousePos, framePos
+		Titlebar.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				dragging = true
+				mousePos = input.Position
+				framePos = MainBackground.Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragging = false
+					end
+				end)
+			end
+		end)
+		UserInputService.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement then
+				dragInput = input
+			end
+		end)
+		game:GetService("RunService").Heartbeat:Connect(function()
+			if dragging and dragInput then
+				local delta = dragInput.Position - mousePos
+				MainBackground.Position = UDim2.new(
+					framePos.X.Scale, framePos.X.Offset + delta.X,
+					framePos.Y.Scale, framePos.Y.Offset + delta.Y
+				)
+			end
+		end)
+	end
 	local UIToggleKey = config.ToggleKey or Enum.KeyCode.RightShift
 	local uiVisible = true
 	UserInputService.InputBegan:Connect(function(input, gameProcessed)
@@ -614,7 +684,7 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 				SliderLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 				SliderLabel.TextSize = 12
 				SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
-				local SliderValue = Instance.new("TextLabel")
+				local SliderValue = Instance.new("TextBox")
 				SliderValue.Name = "Value"
 				SliderValue.Parent = SliderFrame
 				SliderValue.BackgroundTransparency = 1
@@ -625,6 +695,8 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 				SliderValue.TextColor3 = Theme.Accent
 				SliderValue.TextSize = 12
 				SliderValue.TextXAlignment = Enum.TextXAlignment.Right
+				SliderValue.ClearTextOnFocus = false
+				SliderValue.TextEditable = true
 				local SliderBar = Instance.new("Frame")
 				SliderBar.Name = "Bar"
 				SliderBar.Parent = SliderFrame
@@ -692,6 +764,18 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 				SliderBar.MouseLeave:Connect(function()
 					TweenService:Create(SliderLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextColor3 = Color3.fromRGB(180, 180, 180)}):Play()
 					TweenService:Create(SliderFill, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Theme.Accent}):Play()
+				end)
+				SliderValue.FocusLost:Connect(function()
+					local inputValue = tonumber(SliderValue.Text)
+					if inputValue then
+						sliderValue = math.floor(inputValue / increment + 0.5) * increment
+						sliderValue = math.clamp(sliderValue, min, max)
+						SliderFill.Size = UDim2.new((sliderValue - min) / (max - min), 0, 1, 0)
+						SliderValue.Text = tostring(sliderValue)
+						callback(sliderValue)
+					else
+						SliderValue.Text = tostring(sliderValue)
+					end
 				end)
 				UpdateSize()
 				return {
@@ -954,7 +1038,7 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 					SliderLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
 					SliderLabel.TextSize = 10
 					SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
-					local SliderValue = Instance.new("TextLabel")
+					local SliderValue = Instance.new("TextBox")
 					SliderValue.Name = "Value"
 					SliderValue.Parent = SliderFrame
 					SliderValue.BackgroundTransparency = 1
@@ -965,6 +1049,8 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 					SliderValue.TextColor3 = Theme.Accent
 					SliderValue.TextSize = 10
 					SliderValue.TextXAlignment = Enum.TextXAlignment.Right
+					SliderValue.ClearTextOnFocus = false
+					SliderValue.TextEditable = true
 					local SliderBar = Instance.new("Frame")
 					SliderBar.Name = "Bar"
 					SliderBar.Parent = SliderFrame
@@ -1026,6 +1112,24 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 					end)
 					SliderButton.MouseButton1Click:Connect(function(input)
 						UpdateSlider(input)
+					end)
+					SliderValue.FocusLost:Connect(function()
+						local inputValue = tonumber(SliderValue.Text)
+						if inputValue then
+							sliderValue = math.floor(inputValue + 0.5)
+							sliderValue = math.clamp(sliderValue, 0, 255)
+							SliderFill.Size = UDim2.new(sliderValue / 255, 0, 1, 0)
+							SliderValue.Text = tostring(sliderValue)
+							local r, g, b = currentColor.R * 255, currentColor.G * 255, currentColor.B * 255
+							if colorIndex == 1 then r = sliderValue
+							elseif colorIndex == 2 then g = sliderValue
+							else b = sliderValue end
+							currentColor = Color3.fromRGB(r, g, b)
+							ColorPreview.BackgroundColor3 = currentColor
+							callback(currentColor)
+						else
+							SliderValue.Text = tostring(sliderValue)
+						end
 					end)
 					return {
 						SetValue = function(value)
