@@ -59,7 +59,7 @@ function Library:CreateWindow(config)
 		baseweld.Parent = vrui.base
 		
 		vrui.billboard = Instance.new("Part")
-		vrui.billboard.Size = Vector3.new(0.7, 0.5, 0.01)
+		vrui.billboard.Size = Vector3.new(1.1, 0.7, 0.01) -- 0.7, 0.5, 0.01
 		vrui.billboard.Transparency = 1
 		vrui.billboard.CanCollide = false
 		vrui.billboard.Massless = true
@@ -95,8 +95,13 @@ MainBackground.Name = "MainBackground"
 	MainBackground.Parent = ScreenGui
 	MainBackground.BackgroundColor3 = Theme.Background
 MainBackground.BorderSizePixel = 0
-	MainBackground.Position = UDim2.new(0.5, -windowSize.X.Offset/2, 0.5, -windowSize.Y.Offset/2)
-	MainBackground.Size = windowSize
+	if VRService.VREnabled then
+		MainBackground.Position = UDim2.new(0, 0, 0, 0)
+		MainBackground.Size = UDim2.new(1, 0, 1, 0)
+	else
+		MainBackground.Position = UDim2.new(0.5, -windowSize.X.Offset/2, 0.5, -windowSize.Y.Offset/2)
+		MainBackground.Size = windowSize
+	end
 	local MainCorner = Instance.new("UICorner")
 	MainCorner.Parent = MainBackground
 	MainCorner.CornerRadius = UDim.new(0, 5)
@@ -132,7 +137,7 @@ Titlebar.BorderSizePixel = 0
 	MinimizeButton.TextColor3 = Theme.Text
 	MinimizeButton.TextSize = 20
 	local isMinimized = false
-	local originalSize = windowSize
+	local originalSize = VRService.VREnabled and UDim2.new(1, 0, 1, 0) or windowSize
 	local CloseButton = Instance.new("TextButton")
 	CloseButton.Name = "CloseButton"
 	CloseButton.Parent = Titlebar
@@ -470,13 +475,13 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 		function tab:CreateSection(sectionName)
 			local section = {}
 			section.Name = sectionName
-			section.Collapsed = false
+			section.Collapsed = true
 			local SectionFrame = Instance.new("Frame")
 			SectionFrame.Name = sectionName
 			SectionFrame.Parent = ScrollingFrame
 			SectionFrame.BackgroundColor3 = Theme.Section
 			SectionFrame.BorderSizePixel = 0
-			SectionFrame.Size = UDim2.new(1, -8, 0, 30)
+			SectionFrame.Size = UDim2.new(1, -8, 0, 26)
 			SectionFrame.ClipsDescendants = true
 			local SectionCorner = Instance.new("UICorner")
 			SectionCorner.Parent = SectionFrame
@@ -509,7 +514,7 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 			CollapseIndicator.Position = UDim2.new(1, -20, 0, 0)
 			CollapseIndicator.Size = UDim2.new(0, 20, 1, 0)
 			CollapseIndicator.Font = Enum.Font.GothamBold
-			CollapseIndicator.Text = "−"
+			CollapseIndicator.Text = "+"
 			CollapseIndicator.TextColor3 = Theme.Accent
 			CollapseIndicator.TextSize = 16
 			local SectionContent = Instance.new("Frame")
@@ -518,7 +523,7 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 			SectionContent.BackgroundTransparency = 1
 			SectionContent.Position = UDim2.new(0, 0, 0, 26)
 			SectionContent.Size = UDim2.new(1, 0, 1, -26)
-			SectionContent.Visible = true
+			SectionContent.Visible = false
 			local ContentLayout = Instance.new("UIListLayout")
 			ContentLayout.Parent = SectionContent
 			ContentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
