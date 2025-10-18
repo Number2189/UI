@@ -286,6 +286,42 @@ Sidebar.BorderSizePixel = 0
 				)
 			end
 		end)
+		local ResizeGrip = Instance.new("TextLabel")
+		ResizeGrip.Name = "ResizeGrip"
+		ResizeGrip.Parent = MainBackground
+		ResizeGrip.BackgroundTransparency = 1
+		ResizeGrip.Position = UDim2.new(1, -20, 1, -20)
+		ResizeGrip.Size = UDim2.new(0, 20, 0, 20)
+		ResizeGrip.Font = Enum.Font.GothamBold
+		ResizeGrip.Text = "⋰"
+		ResizeGrip.TextColor3 = Color3.fromRGB(100, 100, 100)
+		ResizeGrip.TextSize = 18
+		ResizeGrip.TextTransparency = 0.5
+		ResizeGrip.ZIndex = 5
+		window._themeElements.ResizeGrip = ResizeGrip
+		local resizing = false
+		local resizeStart, sizeStart
+		ResizeGrip.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				resizing = true
+				resizeStart = input.Position
+				sizeStart = MainBackground.Size
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						resizing = false
+					end
+				end)
+			end
+		end)
+		game:GetService("RunService").Heartbeat:Connect(function()
+			if resizing then
+				local mouse = UserInputService:GetMouseLocation()
+				local delta = Vector2.new(mouse.X - resizeStart.X, mouse.Y - resizeStart.Y)
+				local newWidth = math.max(400, sizeStart.X.Offset + delta.X)
+				local newHeight = math.max(250, sizeStart.Y.Offset + delta.Y)
+				MainBackground.Size = UDim2.new(sizeStart.X.Scale, newWidth, sizeStart.Y.Scale, newHeight)
+			end
+		end)
 	end
 	local UIToggleKey = config.ToggleKey or Enum.KeyCode.RightShift
 	local uiVisible = true
@@ -898,13 +934,23 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 					callback(Textbox.Text, enterPressed)
 				end)
 				Textbox.Focused:Connect(function()
-					TweenService:Create(Textbox, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(30, 30, 33)}):Play()
+					local brighterBg = Color3.fromRGB(
+						math.min(Theme.TabButton.R * 255 * 1.15, 255),
+						math.min(Theme.TabButton.G * 255 * 1.15, 255),
+						math.min(Theme.TabButton.B * 255 * 1.15, 255)
+					)
+					TweenService:Create(Textbox, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = brighterBg}):Play()
 					TweenService:Create(TextboxLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextColor3 = Theme.Text}):Play()
 				end)
 				Textbox.MouseEnter:Connect(function()
 					if not Textbox:IsFocused() then
 						TweenService:Create(TextboxLabel, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {TextColor3 = Theme.Text}):Play()
-						TweenService:Create(Textbox, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(28, 28, 31)}):Play()
+						local hoverBg = Color3.fromRGB(
+							math.min(Theme.TabButton.R * 255 * 1.08, 255),
+							math.min(Theme.TabButton.G * 255 * 1.08, 255),
+							math.min(Theme.TabButton.B * 255 * 1.08, 255)
+						)
+						TweenService:Create(Textbox, TweenInfo.new(0.3, Enum.EasingStyle.Quint), {BackgroundColor3 = hoverBg}):Play()
 					end
 				end)
 				Textbox.MouseLeave:Connect(function()
@@ -1480,7 +1526,12 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 					end)
 					OptionButton.MouseEnter:Connect(function()
 						if not selectedOptions[option] then
-							TweenService:Create(OptionButton, TweenInfo.new(0.2, Enum.EasingStyle.Quint), {BackgroundColor3 = Color3.fromRGB(35, 35, 38)}):Play()
+							local hoverBg = Color3.fromRGB(
+								math.min(Theme.TabButton.R * 255 * 1.2, 255),
+								math.min(Theme.TabButton.G * 255 * 1.2, 255),
+								math.min(Theme.TabButton.B * 255 * 1.2, 255)
+							)
+							TweenService:Create(OptionButton, TweenInfo.new(0.2, Enum.EasingStyle.Quint), {BackgroundColor3 = hoverBg}):Play()
 						end
 					end)
 					OptionButton.MouseLeave:Connect(function()
@@ -1540,6 +1591,14 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 		if window._themeElements.Sidebar then
 			TweenService:Create(window._themeElements.Sidebar, tweenInfo, {BackgroundColor3 = Theme.Sidebar}):Play()
 		end
+		if window._themeElements.ResizeGrip then
+			local gripColor = Color3.fromRGB(
+				Theme.Text.R * 255 * 0.4,
+				Theme.Text.G * 255 * 0.4,
+				Theme.Text.B * 255 * 0.4
+			)
+			TweenService:Create(window._themeElements.ResizeGrip, tweenInfo, {TextColor3 = gripColor}):Play()
+		end
 		for _, tab in pairs(window.Tabs) do
 			if tab.Button then
 				TweenService:Create(tab.Button, tweenInfo, {BackgroundColor3 = Theme.TabButton}):Play()
@@ -1572,6 +1631,9 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 						if content then
 							for _, element in ipairs(content:GetChildren()) do
 								if element:IsA("GuiObject") then
+									if element:IsA("TextButton") and not element:FindFirstChild("Indicator") then
+										TweenService:Create(element, tweenInfo, {BackgroundColor3 = Theme.TabButton}):Play()
+									end
 									local indicator = element:FindFirstChild("Indicator")
 									if indicator then
 										local darkerAccent = Color3.fromRGB(
@@ -1610,29 +1672,41 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 									if input and input:IsA("TextBox") then
 										TweenService:Create(input, tweenInfo, {BackgroundColor3 = Theme.TabButton, TextColor3 = Theme.Text}):Play()
 									end
-									local colorPreview = element:FindFirstChild("ColorPreview")
-									if colorPreview then
-										local sliders = element:FindFirstChild("Sliders")
-										if sliders then
-											TweenService:Create(sliders, tweenInfo, {BackgroundColor3 = Theme.Section}):Play()
-											for _, slider in ipairs(sliders:GetChildren()) do
-												if slider:IsA("Frame") then
-													local sliderValue = slider:FindFirstChild("Value")
-													if sliderValue then
-														TweenService:Create(sliderValue, tweenInfo, {TextColor3 = Theme.Accent}):Play()
-													end
-													local sliderBar = slider:FindFirstChild("Bar")
-													if sliderBar then
-														local darkerAccent = Color3.fromRGB(
-															math.max(Theme.Accent.R * 255 * 0.3, 0),
-															math.max(Theme.Accent.G * 255 * 0.3, 0),
-															math.max(Theme.Accent.B * 255 * 0.3, 0)
-														)
-														TweenService:Create(sliderBar, tweenInfo, {BackgroundColor3 = darkerAccent}):Play()
-														local sliderFill = sliderBar:FindFirstChild("Fill")
-														if sliderFill then
-															TweenService:Create(sliderFill, tweenInfo, {BackgroundColor3 = Theme.Accent}):Play()
-														end
+									local label = element:FindFirstChild("Label")
+									if label and label:IsA("TextLabel") then
+										if not element:FindFirstChild("Indicator") then
+											TweenService:Create(label, tweenInfo, {TextColor3 = Color3.fromRGB(180, 180, 180)}):Play()
+										end
+									end
+									local rgbButton = element:FindFirstChild("Button")
+									local slidersContainer = element:FindFirstChild("Sliders")
+									if rgbButton and slidersContainer then
+										local rgbLabel = rgbButton:FindFirstChild("Label")
+										if rgbLabel then
+											TweenService:Create(rgbLabel, tweenInfo, {TextColor3 = Color3.fromRGB(180, 180, 180)}):Play()
+										end
+										TweenService:Create(slidersContainer, tweenInfo, {BackgroundColor3 = Theme.Section}):Play()
+										for _, slider in ipairs(slidersContainer:GetChildren()) do
+											if slider:IsA("Frame") and (slider.Name == "R" or slider.Name == "G" or slider.Name == "B") then
+												local sliderLabel = slider:FindFirstChild("Label")
+												if sliderLabel then
+													TweenService:Create(sliderLabel, tweenInfo, {TextColor3 = Color3.fromRGB(180, 180, 180)}):Play()
+												end
+												local sliderValue = slider:FindFirstChild("Value")
+												if sliderValue then
+													TweenService:Create(sliderValue, tweenInfo, {TextColor3 = Theme.Accent}):Play()
+												end
+												local sliderBar = slider:FindFirstChild("Bar")
+												if sliderBar then
+													local darkerAccent = Color3.fromRGB(
+														math.max(Theme.Accent.R * 255 * 0.3, 0),
+														math.max(Theme.Accent.G * 255 * 0.3, 0),
+														math.max(Theme.Accent.B * 255 * 0.3, 0)
+													)
+													TweenService:Create(sliderBar, tweenInfo, {BackgroundColor3 = darkerAccent}):Play()
+													local sliderFill = sliderBar:FindFirstChild("Fill")
+													if sliderFill then
+														TweenService:Create(sliderFill, tweenInfo, {BackgroundColor3 = Theme.Accent}):Play()
 													end
 												end
 											end
@@ -1647,8 +1721,13 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 											end
 										end
 									end
-									if element.ClassName == "Frame" and element.Name ~= "Indicator" and element.Name ~= "Bar" then
-										if element.BackgroundColor3 == Color3.fromRGB(24, 24, 27) or element.BackgroundColor3 == Color3.fromRGB(18, 25, 35) or element.BackgroundColor3 == Color3.fromRGB(35, 25, 45) then
+									if element.ClassName == "Frame" and element.Name ~= "Indicator" and element.Name ~= "Bar" and element.Name ~= "List" then
+										local title = element:FindFirstChild("Title")
+										local contentText = element:FindFirstChild("Content")
+										if title and contentText then
+											TweenService:Create(element, tweenInfo, {BackgroundColor3 = Theme.TabButton}):Play()
+											TweenService:Create(title, tweenInfo, {TextColor3 = Theme.Text}):Play()
+										elseif element.BackgroundTransparency ~= 1 then
 											TweenService:Create(element, tweenInfo, {BackgroundColor3 = Theme.TabButton}):Play()
 										end
 									end
