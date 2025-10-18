@@ -56,6 +56,17 @@ local Themes = {
 		Text = Color3.fromRGB(255, 255, 255),
 		ToggleOff = Color3.fromRGB(70, 58, 70),
 		TabContent = Color3.fromRGB(21, 23, 24)
+	},
+	DarkTw = {
+		Background = Color3.fromRGB(18, 18, 18),
+		TitleBar = Color3.fromRGB(22, 22, 22),
+		Sidebar = Color3.fromRGB(24, 24, 24),
+		TabButton = Color3.fromRGB(28, 28, 28),
+		Section = Color3.fromRGB(20, 20, 20),
+		Accent = Color3.fromRGB(220, 200, 160),
+		Text = Color3.fromRGB(240, 235, 220),
+		ToggleOff = Color3.fromRGB(45, 45, 45),
+		TabContent = Color3.fromRGB(22, 22, 22)
 	}
 }
 
