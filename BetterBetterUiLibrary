@@ -1561,6 +1561,103 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 					end
 				}
 			end
+			function section:AddGraph(config)
+				config = config or {}
+				local graphName = config.Name or "Graph"
+				local maxDataPoints = config.MaxPoints or 50
+				local minValue = config.Min or 0
+				local maxValue = config.Max or 100
+				local lineColor = config.LineColor or Theme.Accent
+				local dataPoints = {}
+				local GraphFrame = Instance.new("Frame")
+				GraphFrame.Name = graphName
+				GraphFrame.Parent = SectionContent
+				GraphFrame.BackgroundTransparency = 1
+				GraphFrame.Size = UDim2.new(1, -20, 0, 120)
+				local GraphLabel = Instance.new("TextLabel")
+				GraphLabel.Name = "Label"
+				GraphLabel.Parent = GraphFrame
+				GraphLabel.BackgroundTransparency = 1
+				GraphLabel.Position = UDim2.new(0, 5, 0, 0)
+				GraphLabel.Size = UDim2.new(0.7, 0, 0, 15)
+				GraphLabel.Font = Enum.Font.Gotham
+				GraphLabel.Text = graphName
+				GraphLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+				GraphLabel.TextSize = 12
+				GraphLabel.TextXAlignment = Enum.TextXAlignment.Left
+				local GraphValue = Instance.new("TextLabel")
+				GraphValue.Name = "Value"
+				GraphValue.Parent = GraphFrame
+				GraphValue.BackgroundTransparency = 1
+				GraphValue.Position = UDim2.new(0.7, 0, 0, 0)
+				GraphValue.Size = UDim2.new(0.3, -5, 0, 15)
+				GraphValue.Font = Enum.Font.Gotham
+				GraphValue.Text = "0"
+				GraphValue.TextColor3 = Theme.Accent
+				GraphValue.TextSize = 12
+				GraphValue.TextXAlignment = Enum.TextXAlignment.Right
+				local GraphCanvas = Instance.new("Frame")
+				GraphCanvas.Name = "Canvas"
+				GraphCanvas.Parent = GraphFrame
+				GraphCanvas.BackgroundColor3 = Theme.TabButton
+				GraphCanvas.BorderSizePixel = 0
+				GraphCanvas.Position = UDim2.new(0, 5, 0, 20)
+				GraphCanvas.Size = UDim2.new(1, -10, 1, -25)
+				local CanvasCorner = Instance.new("UICorner")
+				CanvasCorner.Parent = GraphCanvas
+				CanvasCorner.CornerRadius = UDim.new(0, 5)
+				local function DrawGraph()
+					for _, child in ipairs(GraphCanvas:GetChildren()) do
+						if child:IsA("Frame") and child.Name == "Line" then
+							child:Destroy()
+						end
+					end
+					if #dataPoints < 2 then return end
+					local canvasWidth = GraphCanvas.AbsoluteSize.X
+					local canvasHeight = GraphCanvas.AbsoluteSize.Y
+					local spacing = canvasWidth / (maxDataPoints - 1)
+					for i = 1, #dataPoints - 1 do
+						local x1 = (i - 1) * spacing
+						local y1 = canvasHeight - ((dataPoints[i] - minValue) / (maxValue - minValue)) * canvasHeight
+						local x2 = i * spacing
+						local y2 = canvasHeight - ((dataPoints[i + 1] - minValue) / (maxValue - minValue)) * canvasHeight
+						y1 = math.clamp(y1, 0, canvasHeight)
+						y2 = math.clamp(y2, 0, canvasHeight)
+						local length = math.sqrt((x2 - x1)^2 + (y2 - y1)^2)
+						local angle = math.atan2(y2 - y1, x2 - x1)
+						local Line = Instance.new("Frame")
+						Line.Name = "Line"
+						Line.Parent = GraphCanvas
+						Line.BackgroundColor3 = lineColor
+						Line.BorderSizePixel = 0
+						Line.Position = UDim2.new(0, x1, 0, y1)
+						Line.Size = UDim2.new(0, length, 0, 2)
+						Line.AnchorPoint = Vector2.new(0, 0.5)
+						Line.Rotation = math.deg(angle)
+						Line.ZIndex = 2
+					end
+				end
+				GraphCanvas:GetPropertyChangedSignal("AbsoluteSize"):Connect(DrawGraph)
+				UpdateSize()
+				return {
+					AddValue = function(value)
+						table.insert(dataPoints, value)
+						if #dataPoints > maxDataPoints then
+							table.remove(dataPoints, 1)
+						end
+						GraphValue.Text = tostring(math.floor(value * 10) / 10)
+						DrawGraph()
+					end,
+					Clear = function()
+						dataPoints = {}
+						DrawGraph()
+					end,
+					SetLineColor = function(color)
+						lineColor = color
+						DrawGraph()
+					end
+				}
+			end
 			table.insert(tab.Sections, section)
 			UpdateSize()
 			return section
@@ -1730,6 +1827,104 @@ TabTitle.TextXAlignment = Enum.TextXAlignment.Left
 										elseif element.BackgroundTransparency ~= 1 then
 											TweenService:Create(element, tweenInfo, {BackgroundColor3 = Theme.TabButton}):Play()
 										end
+									end
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+	function window:SetLayout(layoutName)
+		local layouts = {
+			Compact = {
+				WindowSize = UDim2.new(0, 400, 0, 250),
+				SidebarWidth = 120,
+				ElementHeight = 20,
+				Spacing = 2,
+				FontSize = {
+					Title = 14,
+					Label = 11,
+					Text = 10
+				}
+			},
+			Comfortable = {
+				WindowSize = UDim2.new(0, 455, 0, 294),
+				SidebarWidth = 143,
+				ElementHeight = 23,
+				Spacing = 4,
+				FontSize = {
+					Title = 15,
+					Label = 12,
+					Text = 11
+				}
+			},
+			Large = {
+				WindowSize = UDim2.new(0, 550, 0, 350),
+				SidebarWidth = 170,
+				ElementHeight = 28,
+				Spacing = 6,
+				FontSize = {
+					Title = 17,
+					Label = 14,
+					Text = 13
+				}
+			}
+		}
+		if not layouts[layoutName] then
+			return
+		end
+		local layout = layouts[layoutName]
+		local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quint)
+		if not VRService.VREnabled then
+			TweenService:Create(MainBackground, tweenInfo, {Size = layout.WindowSize}):Play()
+			local newX = 0.5 * ScreenGui.AbsoluteSize.X - layout.WindowSize.X.Offset / 2
+			local newY = 0.5 * ScreenGui.AbsoluteSize.Y - layout.WindowSize.Y.Offset / 2
+			TweenService:Create(MainBackground, tweenInfo, {Position = UDim2.new(0, newX, 0, newY)}):Play()
+		end
+		TweenService:Create(Sidebar, tweenInfo, {Size = UDim2.new(0, layout.SidebarWidth, 1, -35)}):Play()
+		TweenService:Create(TabContainer, tweenInfo, {Position = UDim2.new(0, layout.SidebarWidth, 0, 35), Size = UDim2.new(1, -layout.SidebarWidth, 1, -35)}):Play()
+		for _, tab in pairs(window.Tabs) do
+			if tab.Button then
+				TweenService:Create(tab.Button, tweenInfo, {Size = UDim2.new(0, layout.SidebarWidth - 23, 0, layout.ElementHeight)}):Play()
+			end
+			if tab.ScrollFrame then
+				local scrollList = tab.ScrollFrame:FindFirstChildOfClass("UIListLayout")
+				if scrollList then
+					scrollList.Padding = UDim.new(0, layout.Spacing)
+				end
+			end
+		end
+		if window._themeElements.TitleLabel then
+			window._themeElements.TitleLabel.TextSize = layout.FontSize.Title
+		end
+		for _, tab in pairs(window.Tabs) do
+			local tabTitle = tab.Button:FindFirstChild("TabTitle")
+			if tabTitle then
+				tabTitle.TextSize = layout.FontSize.Label
+			end
+			if tab.ScrollFrame then
+				for _, section in ipairs(tab.ScrollFrame:GetChildren()) do
+					if section:IsA("Frame") then
+						local sectionTitle = section:FindFirstChild("SectionTitleButton")
+						if sectionTitle then
+							local titleLabel = sectionTitle:FindFirstChild("SectionTitle")
+							if titleLabel then
+								titleLabel.TextSize = layout.FontSize.Title
+							end
+						end
+						local content = section:FindFirstChild("Content")
+						if content then
+							local contentLayout = content:FindFirstChildOfClass("UIListLayout")
+							if contentLayout then
+								contentLayout.Padding = UDim.new(0, layout.Spacing)
+							end
+							for _, element in ipairs(content:GetChildren()) do
+								if element:IsA("GuiObject") then
+									local label = element:FindFirstChild("Label")
+									if label and label:IsA("TextLabel") then
+										label.TextSize = layout.FontSize.Label
 									end
 								end
 							end
