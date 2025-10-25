@@ -146,6 +146,7 @@ function updateGui(blurObj)
 end
 
 function BlurredGui.updateAll()
+	return
 	for i = 1, #BlursList do
 		updateGui(BlursList[i])
 	end
