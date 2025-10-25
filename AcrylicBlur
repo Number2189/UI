@@ -146,7 +146,6 @@ function updateGui(blurObj)
 end
 
 function BlurredGui.updateAll()
-	return
 	for i = 1, #BlursList do
 		updateGui(BlursList[i])
 	end
@@ -156,7 +155,14 @@ function BlurredGui.updateAll()
 		for i = 1, #PartsList do
 			cframes[i] = workspace.CurrentCamera.CFrame
 		end
-		workspace:BulkMoveTo(PartsList, cframes, Enum.BulkMoveMode.FireCFrameChanged)
+        
+		local filteredParts = {}
+		for i = 1, #PartsList do
+			if typeof(PartsList[i]) == "Instance" and PartsList[i]:IsA("BasePart") then
+				table.insert(filteredParts, PartsList[i])
+			end
+		end
+		workspace:BulkMoveTo(filteredParts, cframes, Enum.BulkMoveMode.FireCFrameChanged)
 	end
 
 	BLUR_OBJ.FocusDistance = 0.25 - camera.NearPlaneZ
